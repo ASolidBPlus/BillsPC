@@ -186,15 +186,15 @@ const BASE_STATS_G2: Record<
   143: { hp: 160, atk: 110, def: 65, spa: 65, spd: 65, spe: 30 },
 };
 
+// Gen 3 base-stat OVERRIDES — only species where Gen 3 differs from Gen 1/2.
+// For Gen 1 species, the only real Gen-3-era rebalance was Charizard's SpA
+// going from 85 → 109. Everything else carried forward unchanged through Gen 3.
+// (Other Gen 1 species got buffs in Gen 6+, not Gen 3.)
 const BASE_STATS_G3: Record<
   number,
   { hp: number; atk: number; def: number; spa: number; spd: number; spe: number }
 > = {
-  35: { hp: 70, atk: 45, def: 48, spa: 60, spd: 65, spe: 35 },
-  22: { hp: 65, atk: 90, def: 65, spa: 61, spd: 61, spe: 100 },
-  43: { hp: 45, atk: 50, def: 55, spa: 75, spd: 65, spe: 30 },
-  74: { hp: 40, atk: 80, def: 100, spa: 30, spd: 30, spe: 20 },
-  116: { hp: 30, atk: 40, def: 70, spa: 70, spd: 25, spe: 60 },
+  6: { hp: 78, atk: 84, def: 78, spa: 109, spd: 85, spe: 100 }, // Charizard — SpA buffed in Gen 3
 };
 
 // Local extension tables for any species we encounter beyond the originals.
@@ -557,8 +557,12 @@ console.log(`\n=== Trainer ===`);
 console.log(`Name: "${playerName}" TID: ${tid}`);
 
 // ---------- Box layout ----------
+// Stored boxes 1-6 at 0x4000, 7-12 at 0x6000. ALSO the live current PC box
+// is at 0x30C0 — same 1122-byte layout. The stored slot for the current box
+// can be stale; the truth lives at 0x30C0 until the player switches boxes.
 const BOX_SIZE = 1122;
 const BOX_BANK_OFFSETS = [0x4000, 0x6000];
+const CURRENT_BOX_OFFSET = 0x30c0;
 
 interface BoxMon {
   boxIdx: number; // 1-12
@@ -587,85 +591,95 @@ interface BoxMon {
 const allMons: BoxMon[] = [];
 const boxCounts: number[] = [];
 
+function readBoxAt(boxOff: number, boxNum: number): void {
+  const count = sav[boxOff];
+  if (count > 20) {
+    console.log(`Box ${boxNum} @0x${boxOff.toString(16)}: invalid count=${count}, skipping`);
+    boxCounts.push(0);
+    return;
+  }
+  boxCounts.push(count);
+  const monRecBase = boxOff + 0x16;
+  const otBase = boxOff + 0x2aa;
+  const nickBase = boxOff + 0x386;
+  for (let s = 0; s < count; s++) {
+    const mOff = monRecBase + s * 33;
+    const speciesByte = sav[mOff];
+    const ndex = INTERNAL_TO_NDEX[speciesByte] ?? 0;
+    const dvWord = be16(sav, mOff + 0x1b);
+    const dvs = {
+      atk: (dvWord >> 12) & 0xf,
+      def: (dvWord >> 8) & 0xf,
+      spe: (dvWord >> 4) & 0xf,
+      special: dvWord & 0xf,
+    };
+    const ppRaw = [sav[mOff + 0x1d], sav[mOff + 0x1e], sav[mOff + 0x1f], sav[mOff + 0x20]];
+    const pp: [number, number, number, number] = [
+      ppRaw[0] & 0x3f,
+      ppRaw[1] & 0x3f,
+      ppRaw[2] & 0x3f,
+      ppRaw[3] & 0x3f,
+    ];
+    const ppUps: [number, number, number, number] = [
+      (ppRaw[0] >> 6) & 0x3,
+      (ppRaw[1] >> 6) & 0x3,
+      (ppRaw[2] >> 6) & 0x3,
+      (ppRaw[3] >> 6) & 0x3,
+    ];
+    const otNameBytes = sav.subarray(otBase + s * 11, otBase + (s + 1) * 11);
+    const nicknameBytes = sav.subarray(nickBase + s * 11, nickBase + (s + 1) * 11);
+    allMons.push({
+      boxIdx: boxNum,
+      slotIdx: s,
+      internalSpecies: speciesByte,
+      ndex,
+      level: sav[mOff + 0x03],
+      exp: be24(sav, mOff + 0x0e),
+      currentHp: be16(sav, mOff + 0x01),
+      status: sav[mOff + 0x04],
+      type1: sav[mOff + 0x05],
+      type2: sav[mOff + 0x06],
+      catchRate: sav[mOff + 0x07],
+      moves: [sav[mOff + 0x08], sav[mOff + 0x09], sav[mOff + 0x0a], sav[mOff + 0x0b]],
+      otTid: be16(sav, mOff + 0x0c),
+      statExp: {
+        hp: be16(sav, mOff + 0x11),
+        atk: be16(sav, mOff + 0x13),
+        def: be16(sav, mOff + 0x15),
+        spe: be16(sav, mOff + 0x17),
+        special: be16(sav, mOff + 0x19),
+      },
+      dvs,
+      pp,
+      ppUps,
+      otNameBytes: new Uint8Array(otNameBytes),
+      nicknameBytes: new Uint8Array(nicknameBytes),
+      otName: decodeG1(otNameBytes),
+      nickname: decodeG1(nicknameBytes),
+    });
+  }
+}
+
+// Read current PC box first (it can hold the freshest data for the box the
+// player was in when saving) — call it box 0 to distinguish from stored 1..12.
+readBoxAt(CURRENT_BOX_OFFSET, 0);
+
 for (let bank = 0; bank < 2; bank++) {
   for (let bIdx = 0; bIdx < 6; bIdx++) {
     const boxOff = BOX_BANK_OFFSETS[bank] + bIdx * BOX_SIZE;
     const boxNum = bank * 6 + bIdx + 1;
-    const count = sav[boxOff];
-    if (count > 20) {
-      console.log(`Box ${boxNum} @0x${boxOff.toString(16)}: invalid count=${count}, skipping`);
-      boxCounts.push(0);
-      continue;
-    }
-    boxCounts.push(count);
-    const monRecBase = boxOff + 0x16;
-    const otBase = boxOff + 0x2aa;
-    const nickBase = boxOff + 0x386;
-    for (let s = 0; s < count; s++) {
-      const mOff = monRecBase + s * 33;
-      const speciesByte = sav[mOff];
-      const ndex = INTERNAL_TO_NDEX[speciesByte] ?? 0;
-      const dvWord = be16(sav, mOff + 0x1b);
-      const dvs = {
-        atk: (dvWord >> 12) & 0xf,
-        def: (dvWord >> 8) & 0xf,
-        spe: (dvWord >> 4) & 0xf,
-        special: dvWord & 0xf,
-      };
-      const ppRaw = [sav[mOff + 0x1d], sav[mOff + 0x1e], sav[mOff + 0x1f], sav[mOff + 0x20]];
-      const pp: [number, number, number, number] = [
-        ppRaw[0] & 0x3f,
-        ppRaw[1] & 0x3f,
-        ppRaw[2] & 0x3f,
-        ppRaw[3] & 0x3f,
-      ];
-      const ppUps: [number, number, number, number] = [
-        (ppRaw[0] >> 6) & 0x3,
-        (ppRaw[1] >> 6) & 0x3,
-        (ppRaw[2] >> 6) & 0x3,
-        (ppRaw[3] >> 6) & 0x3,
-      ];
-      const otNameBytes = sav.subarray(otBase + s * 11, otBase + (s + 1) * 11);
-      const nicknameBytes = sav.subarray(nickBase + s * 11, nickBase + (s + 1) * 11);
-      allMons.push({
-        boxIdx: boxNum,
-        slotIdx: s,
-        internalSpecies: speciesByte,
-        ndex,
-        level: sav[mOff + 0x03],
-        exp: be24(sav, mOff + 0x0e),
-        currentHp: be16(sav, mOff + 0x01),
-        status: sav[mOff + 0x04],
-        type1: sav[mOff + 0x05],
-        type2: sav[mOff + 0x06],
-        catchRate: sav[mOff + 0x07],
-        moves: [sav[mOff + 0x08], sav[mOff + 0x09], sav[mOff + 0x0a], sav[mOff + 0x0b]],
-        otTid: be16(sav, mOff + 0x0c),
-        statExp: {
-          hp: be16(sav, mOff + 0x11),
-          atk: be16(sav, mOff + 0x13),
-          def: be16(sav, mOff + 0x15),
-          spe: be16(sav, mOff + 0x17),
-          special: be16(sav, mOff + 0x19),
-        },
-        dvs,
-        pp,
-        ppUps,
-        otNameBytes: new Uint8Array(otNameBytes),
-        nicknameBytes: new Uint8Array(nicknameBytes),
-        otName: decodeG1(otNameBytes),
-        nickname: decodeG1(nicknameBytes),
-      });
-    }
+    readBoxAt(boxOff, boxNum);
   }
 }
 
 // ---------- Print all boxes ----------
 console.log(`\n=== Boxes ===`);
 let runningIndex = 0;
-for (let b = 0; b < 12; b++) {
+// boxCounts[0] = current box (box 0), [1..12] = stored boxes.
+for (let b = 0; b < boxCounts.length; b++) {
   const cnt = boxCounts[b];
-  console.log(`\n-- Box ${b + 1} (count=${cnt}) --`);
+  const label = b === 0 ? 'Current (0x30C0)' : `Stored ${b}`;
+  console.log(`\n-- Box ${label} (count=${cnt}) --`);
   for (let s = 0; s < cnt; s++) {
     const m = allMons[runningIndex++];
     const dvSum = m.dvs.atk + m.dvs.def + m.dvs.spe + m.dvs.special;
