@@ -46,7 +46,7 @@ const ORIGIN_GAME_FIRERED = 4;
 const BALL_POKEBALL = 4;
 
 const SPECIES_MIN = 1;
-const SPECIES_MAX = 412;
+const SPECIES_MAX = 386;
 
 /**
  * Pad a 0xFF-terminated string field to the fixed wire length. The
@@ -90,7 +90,7 @@ function trimNameField(field: Uint8Array): Uint8Array {
 
 /** Sentinel `_meta` returned by `unpackBoxed` (PLAN §4.7 step 9). */
 export const DECODED_META: ConvertMetadata = {
-  pidSearchIterations: -1,
+  pidSearchIterations: 0,
   evScalingApplied: false,
   evRemainderDistributed: 0,
   zeroDvOverridesApplied: [],
