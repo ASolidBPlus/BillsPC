@@ -146,10 +146,12 @@ export const INTERNAL_TO_NDEX: Readonly<Record<number, number>> = {
   0x16: 130,
   0x58: 131,
   0x59: 132,
-  0x42: 133,
-  0x43: 134,
-  0x44: 135,
-  0x45: 136,
+  // Eeveelutions are at internal IDs 0x66-0x69 per pokered constants/pokemon_constants.asm:
+  // 0x66 EEVEE, 0x67 FLAREON, 0x68 JOLTEON, 0x69 VAPOREON. (0x42-0x45 are MissingNo.)
+  0x66: 133,
+  0x67: 136,
+  0x68: 135,
+  0x69: 134,
   0x4b: 137,
   0x4a: 138,
   0x4c: 139,

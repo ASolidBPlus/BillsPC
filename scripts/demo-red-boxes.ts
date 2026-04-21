@@ -151,10 +151,11 @@ const INTERNAL_TO_NDEX: Record<number, number> = {
   0x16: 130,
   0x58: 131,
   0x59: 132,
-  0x42: 133,
-  0x43: 134,
-  0x44: 135,
-  0x45: 136,
+  // Eeveelutions live at 0x66-0x69 (per pokered), NOT 0x42-0x45 (those are MissingNo).
+  0x66: 133, // Eevee
+  0x67: 136, // Flareon
+  0x68: 135, // Jolteon
+  0x69: 134, // Vaporeon
   0x4b: 137,
   0x4a: 138,
   0x4c: 139,
