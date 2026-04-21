@@ -3,1506 +3,5404 @@
     "gen3DexId": 1,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 65
+    "ability0": 65,
+    "base": {
+      "hp": 45,
+      "atk": 49,
+      "def": 49,
+      "spa": 65,
+      "spd": 65,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 2,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 65
+    "ability0": 65,
+    "base": {
+      "hp": 60,
+      "atk": 62,
+      "def": 63,
+      "spa": 80,
+      "spd": 80,
+      "spe": 60
+    }
   },
   {
     "gen3DexId": 3,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 65
+    "ability0": 65,
+    "base": {
+      "hp": 80,
+      "atk": 82,
+      "def": 83,
+      "spa": 100,
+      "spd": 100,
+      "spe": 80
+    }
   },
   {
     "gen3DexId": 4,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 66
+    "ability0": 66,
+    "base": {
+      "hp": 39,
+      "atk": 52,
+      "def": 43,
+      "spa": 60,
+      "spd": 50,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 5,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 66
+    "ability0": 66,
+    "base": {
+      "hp": 58,
+      "atk": 64,
+      "def": 58,
+      "spa": 80,
+      "spd": 65,
+      "spe": 80
+    }
   },
   {
     "gen3DexId": 6,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 66
+    "ability0": 66,
+    "base": {
+      "hp": 78,
+      "atk": 84,
+      "def": 78,
+      "spa": 109,
+      "spd": 85,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 7,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 67
+    "ability0": 67,
+    "base": {
+      "hp": 44,
+      "atk": 48,
+      "def": 65,
+      "spa": 50,
+      "spd": 64,
+      "spe": 43
+    }
   },
   {
     "gen3DexId": 8,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 67
+    "ability0": 67,
+    "base": {
+      "hp": 59,
+      "atk": 63,
+      "def": 80,
+      "spa": 65,
+      "spd": 80,
+      "spe": 58
+    }
   },
   {
     "gen3DexId": 9,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 67
+    "ability0": 67,
+    "base": {
+      "hp": 79,
+      "atk": 83,
+      "def": 100,
+      "spa": 85,
+      "spd": 105,
+      "spe": 78
+    }
   },
   {
     "gen3DexId": 10,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 19
+    "ability0": 19,
+    "base": {
+      "hp": 45,
+      "atk": 30,
+      "def": 35,
+      "spa": 20,
+      "spd": 20,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 11,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 61
+    "ability0": 61,
+    "base": {
+      "hp": 50,
+      "atk": 20,
+      "def": 55,
+      "spa": 25,
+      "spd": 25,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 12,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 14
+    "ability0": 14,
+    "base": {
+      "hp": 60,
+      "atk": 45,
+      "def": 50,
+      "spa": 80,
+      "spd": 80,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 13,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 19
+    "ability0": 19,
+    "base": {
+      "hp": 40,
+      "atk": 35,
+      "def": 30,
+      "spa": 20,
+      "spd": 20,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 14,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 61
+    "ability0": 61,
+    "base": {
+      "hp": 45,
+      "atk": 25,
+      "def": 50,
+      "spa": 25,
+      "spd": 25,
+      "spe": 35
+    }
   },
   {
     "gen3DexId": 15,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 68
+    "ability0": 68,
+    "base": {
+      "hp": 65,
+      "atk": 80,
+      "def": 40,
+      "spa": 45,
+      "spd": 80,
+      "spe": 75
+    }
   },
   {
     "gen3DexId": 16,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 51
+    "ability0": 51,
+    "base": {
+      "hp": 40,
+      "atk": 45,
+      "def": 40,
+      "spa": 35,
+      "spd": 35,
+      "spe": 56
+    }
   },
   {
     "gen3DexId": 17,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 51
+    "ability0": 51,
+    "base": {
+      "hp": 63,
+      "atk": 60,
+      "def": 55,
+      "spa": 50,
+      "spd": 50,
+      "spe": 71
+    }
   },
   {
     "gen3DexId": 18,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 51
+    "ability0": 51,
+    "base": {
+      "hp": 83,
+      "atk": 80,
+      "def": 75,
+      "spa": 70,
+      "spd": 70,
+      "spe": 91
+    }
   },
   {
     "gen3DexId": 19,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 50
+    "ability0": 50,
+    "base": {
+      "hp": 30,
+      "atk": 56,
+      "def": 35,
+      "spa": 25,
+      "spd": 35,
+      "spe": 72
+    }
   },
   {
     "gen3DexId": 20,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 50
+    "ability0": 50,
+    "base": {
+      "hp": 55,
+      "atk": 81,
+      "def": 60,
+      "spa": 50,
+      "spd": 70,
+      "spe": 97
+    }
   },
   {
     "gen3DexId": 21,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 51
+    "ability0": 51,
+    "base": {
+      "hp": 40,
+      "atk": 60,
+      "def": 30,
+      "spa": 31,
+      "spd": 31,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 22,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 51
+    "ability0": 51,
+    "base": {
+      "hp": 65,
+      "atk": 90,
+      "def": 65,
+      "spa": 61,
+      "spd": 61,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 23,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 22
+    "ability0": 22,
+    "base": {
+      "hp": 35,
+      "atk": 60,
+      "def": 44,
+      "spa": 40,
+      "spd": 54,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 24,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 22
+    "ability0": 22,
+    "base": {
+      "hp": 60,
+      "atk": 85,
+      "def": 69,
+      "spa": 65,
+      "spd": 79,
+      "spe": 80
+    }
   },
   {
     "gen3DexId": 25,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 9
+    "ability0": 9,
+    "base": {
+      "hp": 35,
+      "atk": 55,
+      "def": 30,
+      "spa": 50,
+      "spd": 40,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 26,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 9
+    "ability0": 9,
+    "base": {
+      "hp": 60,
+      "atk": 90,
+      "def": 55,
+      "spa": 90,
+      "spd": 80,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 27,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 8
+    "ability0": 8,
+    "base": {
+      "hp": 50,
+      "atk": 75,
+      "def": 85,
+      "spa": 20,
+      "spd": 30,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 28,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 8
+    "ability0": 8,
+    "base": {
+      "hp": 75,
+      "atk": 100,
+      "def": 110,
+      "spa": 45,
+      "spd": 55,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 29,
     "genderRatio": 254,
     "baseFriendship": 70,
-    "ability0": 38
+    "ability0": 38,
+    "base": {
+      "hp": 55,
+      "atk": 47,
+      "def": 52,
+      "spa": 40,
+      "spd": 40,
+      "spe": 41
+    }
   },
   {
     "gen3DexId": 30,
     "genderRatio": 254,
     "baseFriendship": 70,
-    "ability0": 38
+    "ability0": 38,
+    "base": {
+      "hp": 70,
+      "atk": 62,
+      "def": 67,
+      "spa": 55,
+      "spd": 55,
+      "spe": 56
+    }
   },
   {
     "gen3DexId": 31,
     "genderRatio": 254,
     "baseFriendship": 70,
-    "ability0": 38
+    "ability0": 38,
+    "base": {
+      "hp": 90,
+      "atk": 82,
+      "def": 87,
+      "spa": 75,
+      "spd": 85,
+      "spe": 76
+    }
   },
   {
     "gen3DexId": 32,
     "genderRatio": 0,
     "baseFriendship": 70,
-    "ability0": 38
+    "ability0": 38,
+    "base": {
+      "hp": 46,
+      "atk": 57,
+      "def": 40,
+      "spa": 40,
+      "spd": 40,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 33,
     "genderRatio": 0,
     "baseFriendship": 70,
-    "ability0": 38
+    "ability0": 38,
+    "base": {
+      "hp": 61,
+      "atk": 72,
+      "def": 57,
+      "spa": 55,
+      "spd": 55,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 34,
     "genderRatio": 0,
     "baseFriendship": 70,
-    "ability0": 38
+    "ability0": 38,
+    "base": {
+      "hp": 81,
+      "atk": 92,
+      "def": 77,
+      "spa": 85,
+      "spd": 75,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 35,
     "genderRatio": 191,
     "baseFriendship": 140,
-    "ability0": 56
+    "ability0": 56,
+    "base": {
+      "hp": 70,
+      "atk": 45,
+      "def": 48,
+      "spa": 60,
+      "spd": 65,
+      "spe": 35
+    }
   },
   {
     "gen3DexId": 36,
     "genderRatio": 191,
     "baseFriendship": 140,
-    "ability0": 56
+    "ability0": 56,
+    "base": {
+      "hp": 95,
+      "atk": 70,
+      "def": 73,
+      "spa": 85,
+      "spd": 90,
+      "spe": 60
+    }
   },
   {
     "gen3DexId": 37,
     "genderRatio": 191,
     "baseFriendship": 70,
-    "ability0": 18
+    "ability0": 18,
+    "base": {
+      "hp": 38,
+      "atk": 41,
+      "def": 40,
+      "spa": 50,
+      "spd": 65,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 38,
     "genderRatio": 191,
     "baseFriendship": 70,
-    "ability0": 18
+    "ability0": 18,
+    "base": {
+      "hp": 73,
+      "atk": 76,
+      "def": 75,
+      "spa": 81,
+      "spd": 100,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 39,
     "genderRatio": 191,
     "baseFriendship": 70,
-    "ability0": 56
+    "ability0": 56,
+    "base": {
+      "hp": 115,
+      "atk": 45,
+      "def": 20,
+      "spa": 45,
+      "spd": 25,
+      "spe": 20
+    }
   },
   {
     "gen3DexId": 40,
     "genderRatio": 191,
     "baseFriendship": 70,
-    "ability0": 56
+    "ability0": 56,
+    "base": {
+      "hp": 140,
+      "atk": 70,
+      "def": 45,
+      "spa": 75,
+      "spd": 50,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 41,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 39
+    "ability0": 39,
+    "base": {
+      "hp": 40,
+      "atk": 45,
+      "def": 35,
+      "spa": 30,
+      "spd": 40,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 42,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 39
+    "ability0": 39,
+    "base": {
+      "hp": 75,
+      "atk": 80,
+      "def": 70,
+      "spa": 65,
+      "spd": 75,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 43,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 45,
+      "atk": 50,
+      "def": 55,
+      "spa": 75,
+      "spd": 65,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 44,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 60,
+      "atk": 65,
+      "def": 70,
+      "spa": 85,
+      "spd": 75,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 45,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 75,
+      "atk": 80,
+      "def": 85,
+      "spa": 100,
+      "spd": 90,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 46,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 27
+    "ability0": 27,
+    "base": {
+      "hp": 35,
+      "atk": 70,
+      "def": 55,
+      "spa": 45,
+      "spd": 55,
+      "spe": 25
+    }
   },
   {
     "gen3DexId": 47,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 27
+    "ability0": 27,
+    "base": {
+      "hp": 60,
+      "atk": 95,
+      "def": 80,
+      "spa": 60,
+      "spd": 80,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 48,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 14
+    "ability0": 14,
+    "base": {
+      "hp": 60,
+      "atk": 55,
+      "def": 50,
+      "spa": 40,
+      "spd": 55,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 49,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 19
+    "ability0": 19,
+    "base": {
+      "hp": 70,
+      "atk": 65,
+      "def": 60,
+      "spa": 90,
+      "spd": 75,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 50,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 8
+    "ability0": 8,
+    "base": {
+      "hp": 10,
+      "atk": 55,
+      "def": 25,
+      "spa": 35,
+      "spd": 45,
+      "spe": 95
+    }
   },
   {
     "gen3DexId": 51,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 8
+    "ability0": 8,
+    "base": {
+      "hp": 35,
+      "atk": 80,
+      "def": 50,
+      "spa": 50,
+      "spd": 70,
+      "spe": 120
+    }
   },
   {
     "gen3DexId": 52,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 53
+    "ability0": 53,
+    "base": {
+      "hp": 40,
+      "atk": 45,
+      "def": 35,
+      "spa": 40,
+      "spd": 40,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 53,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 7
+    "ability0": 7,
+    "base": {
+      "hp": 65,
+      "atk": 70,
+      "def": 60,
+      "spa": 65,
+      "spd": 65,
+      "spe": 115
+    }
   },
   {
     "gen3DexId": 54,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 6
+    "ability0": 6,
+    "base": {
+      "hp": 50,
+      "atk": 52,
+      "def": 48,
+      "spa": 65,
+      "spd": 50,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 55,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 6
+    "ability0": 6,
+    "base": {
+      "hp": 80,
+      "atk": 82,
+      "def": 78,
+      "spa": 95,
+      "spd": 80,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 56,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 72
+    "ability0": 72,
+    "base": {
+      "hp": 40,
+      "atk": 80,
+      "def": 35,
+      "spa": 35,
+      "spd": 45,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 57,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 72
+    "ability0": 72,
+    "base": {
+      "hp": 65,
+      "atk": 105,
+      "def": 60,
+      "spa": 60,
+      "spd": 70,
+      "spe": 95
+    }
   },
   {
     "gen3DexId": 58,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 22
+    "ability0": 22,
+    "base": {
+      "hp": 55,
+      "atk": 70,
+      "def": 45,
+      "spa": 70,
+      "spd": 50,
+      "spe": 60
+    }
   },
   {
     "gen3DexId": 59,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 22
+    "ability0": 22,
+    "base": {
+      "hp": 90,
+      "atk": 110,
+      "def": 80,
+      "spa": 100,
+      "spd": 80,
+      "spe": 95
+    }
   },
   {
     "gen3DexId": 60,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 11
+    "ability0": 11,
+    "base": {
+      "hp": 40,
+      "atk": 50,
+      "def": 40,
+      "spa": 40,
+      "spd": 40,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 61,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 11
+    "ability0": 11,
+    "base": {
+      "hp": 65,
+      "atk": 65,
+      "def": 65,
+      "spa": 50,
+      "spd": 50,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 62,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 11
+    "ability0": 11,
+    "base": {
+      "hp": 90,
+      "atk": 85,
+      "def": 95,
+      "spa": 70,
+      "spd": 90,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 63,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 28
+    "ability0": 28,
+    "base": {
+      "hp": 25,
+      "atk": 20,
+      "def": 15,
+      "spa": 105,
+      "spd": 55,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 64,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 28
+    "ability0": 28,
+    "base": {
+      "hp": 40,
+      "atk": 35,
+      "def": 30,
+      "spa": 120,
+      "spd": 70,
+      "spe": 105
+    }
   },
   {
     "gen3DexId": 65,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 28
+    "ability0": 28,
+    "base": {
+      "hp": 55,
+      "atk": 50,
+      "def": 45,
+      "spa": 135,
+      "spd": 85,
+      "spe": 120
+    }
   },
   {
     "gen3DexId": 66,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 62
+    "ability0": 62,
+    "base": {
+      "hp": 70,
+      "atk": 80,
+      "def": 50,
+      "spa": 35,
+      "spd": 35,
+      "spe": 35
+    }
   },
   {
     "gen3DexId": 67,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 62
+    "ability0": 62,
+    "base": {
+      "hp": 80,
+      "atk": 100,
+      "def": 70,
+      "spa": 50,
+      "spd": 60,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 68,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 62
+    "ability0": 62,
+    "base": {
+      "hp": 90,
+      "atk": 130,
+      "def": 80,
+      "spa": 65,
+      "spd": 85,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 69,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 50,
+      "atk": 75,
+      "def": 35,
+      "spa": 70,
+      "spd": 30,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 70,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 65,
+      "atk": 90,
+      "def": 50,
+      "spa": 85,
+      "spd": 45,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 71,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 80,
+      "atk": 105,
+      "def": 65,
+      "spa": 100,
+      "spd": 60,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 72,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 29
+    "ability0": 29,
+    "base": {
+      "hp": 40,
+      "atk": 40,
+      "def": 35,
+      "spa": 50,
+      "spd": 100,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 73,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 29
+    "ability0": 29,
+    "base": {
+      "hp": 80,
+      "atk": 70,
+      "def": 65,
+      "spa": 80,
+      "spd": 120,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 74,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 69
+    "ability0": 69,
+    "base": {
+      "hp": 40,
+      "atk": 80,
+      "def": 100,
+      "spa": 30,
+      "spd": 30,
+      "spe": 20
+    }
   },
   {
     "gen3DexId": 75,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 69
+    "ability0": 69,
+    "base": {
+      "hp": 55,
+      "atk": 95,
+      "def": 115,
+      "spa": 45,
+      "spd": 45,
+      "spe": 35
+    }
   },
   {
     "gen3DexId": 76,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 69
+    "ability0": 69,
+    "base": {
+      "hp": 80,
+      "atk": 110,
+      "def": 130,
+      "spa": 55,
+      "spd": 65,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 77,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 50
+    "ability0": 50,
+    "base": {
+      "hp": 50,
+      "atk": 85,
+      "def": 55,
+      "spa": 65,
+      "spd": 65,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 78,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 50
+    "ability0": 50,
+    "base": {
+      "hp": 65,
+      "atk": 100,
+      "def": 70,
+      "spa": 80,
+      "spd": 80,
+      "spe": 105
+    }
   },
   {
     "gen3DexId": 79,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 12
+    "ability0": 12,
+    "base": {
+      "hp": 90,
+      "atk": 65,
+      "def": 65,
+      "spa": 40,
+      "spd": 40,
+      "spe": 15
+    }
   },
   {
     "gen3DexId": 80,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 12
+    "ability0": 12,
+    "base": {
+      "hp": 95,
+      "atk": 75,
+      "def": 110,
+      "spa": 100,
+      "spd": 80,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 81,
     "genderRatio": 255,
     "baseFriendship": 70,
-    "ability0": 42
+    "ability0": 42,
+    "base": {
+      "hp": 25,
+      "atk": 35,
+      "def": 70,
+      "spa": 95,
+      "spd": 55,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 82,
     "genderRatio": 255,
     "baseFriendship": 70,
-    "ability0": 42
+    "ability0": 42,
+    "base": {
+      "hp": 50,
+      "atk": 60,
+      "def": 95,
+      "spa": 120,
+      "spd": 70,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 83,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 51
+    "ability0": 51,
+    "base": {
+      "hp": 52,
+      "atk": 65,
+      "def": 55,
+      "spa": 58,
+      "spd": 62,
+      "spe": 60
+    }
   },
   {
     "gen3DexId": 84,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 50
+    "ability0": 50,
+    "base": {
+      "hp": 35,
+      "atk": 85,
+      "def": 45,
+      "spa": 35,
+      "spd": 35,
+      "spe": 75
+    }
   },
   {
     "gen3DexId": 85,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 50
+    "ability0": 50,
+    "base": {
+      "hp": 60,
+      "atk": 110,
+      "def": 70,
+      "spa": 60,
+      "spd": 60,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 86,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 47
+    "ability0": 47,
+    "base": {
+      "hp": 65,
+      "atk": 45,
+      "def": 55,
+      "spa": 45,
+      "spd": 70,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 87,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 47
+    "ability0": 47,
+    "base": {
+      "hp": 90,
+      "atk": 70,
+      "def": 80,
+      "spa": 70,
+      "spd": 95,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 88,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 1
+    "ability0": 1,
+    "base": {
+      "hp": 80,
+      "atk": 80,
+      "def": 50,
+      "spa": 40,
+      "spd": 50,
+      "spe": 25
+    }
   },
   {
     "gen3DexId": 89,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 1
+    "ability0": 1,
+    "base": {
+      "hp": 105,
+      "atk": 105,
+      "def": 75,
+      "spa": 65,
+      "spd": 100,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 90,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 75
+    "ability0": 75,
+    "base": {
+      "hp": 30,
+      "atk": 65,
+      "def": 100,
+      "spa": 45,
+      "spd": 25,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 91,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 75
+    "ability0": 75,
+    "base": {
+      "hp": 50,
+      "atk": 95,
+      "def": 180,
+      "spa": 85,
+      "spd": 45,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 92,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 26
+    "ability0": 26,
+    "base": {
+      "hp": 30,
+      "atk": 35,
+      "def": 30,
+      "spa": 100,
+      "spd": 35,
+      "spe": 80
+    }
   },
   {
     "gen3DexId": 93,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 26
+    "ability0": 26,
+    "base": {
+      "hp": 45,
+      "atk": 50,
+      "def": 45,
+      "spa": 115,
+      "spd": 55,
+      "spe": 95
+    }
   },
   {
     "gen3DexId": 94,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 26
+    "ability0": 26,
+    "base": {
+      "hp": 60,
+      "atk": 65,
+      "def": 60,
+      "spa": 130,
+      "spd": 75,
+      "spe": 110
+    }
   },
   {
     "gen3DexId": 95,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 69
+    "ability0": 69,
+    "base": {
+      "hp": 35,
+      "atk": 45,
+      "def": 160,
+      "spa": 30,
+      "spd": 45,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 96,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 15
+    "ability0": 15,
+    "base": {
+      "hp": 60,
+      "atk": 48,
+      "def": 45,
+      "spa": 43,
+      "spd": 90,
+      "spe": 42
+    }
   },
   {
     "gen3DexId": 97,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 15
+    "ability0": 15,
+    "base": {
+      "hp": 85,
+      "atk": 73,
+      "def": 70,
+      "spa": 73,
+      "spd": 115,
+      "spe": 67
+    }
   },
   {
     "gen3DexId": 98,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 52
+    "ability0": 52,
+    "base": {
+      "hp": 30,
+      "atk": 105,
+      "def": 90,
+      "spa": 25,
+      "spd": 25,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 99,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 52
+    "ability0": 52,
+    "base": {
+      "hp": 55,
+      "atk": 130,
+      "def": 115,
+      "spa": 50,
+      "spd": 50,
+      "spe": 75
+    }
   },
   {
     "gen3DexId": 100,
     "genderRatio": 255,
     "baseFriendship": 70,
-    "ability0": 43
+    "ability0": 43,
+    "base": {
+      "hp": 40,
+      "atk": 30,
+      "def": 50,
+      "spa": 55,
+      "spd": 55,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 101,
     "genderRatio": 255,
     "baseFriendship": 70,
-    "ability0": 43
+    "ability0": 43,
+    "base": {
+      "hp": 60,
+      "atk": 50,
+      "def": 70,
+      "spa": 80,
+      "spd": 80,
+      "spe": 140
+    }
   },
   {
     "gen3DexId": 102,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 60,
+      "atk": 40,
+      "def": 80,
+      "spa": 60,
+      "spd": 45,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 103,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 95,
+      "atk": 95,
+      "def": 85,
+      "spa": 125,
+      "spd": 65,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 104,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 69
+    "ability0": 69,
+    "base": {
+      "hp": 50,
+      "atk": 50,
+      "def": 95,
+      "spa": 40,
+      "spd": 50,
+      "spe": 35
+    }
   },
   {
     "gen3DexId": 105,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 69
+    "ability0": 69,
+    "base": {
+      "hp": 60,
+      "atk": 80,
+      "def": 110,
+      "spa": 50,
+      "spd": 80,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 106,
     "genderRatio": 0,
     "baseFriendship": 70,
-    "ability0": 7
+    "ability0": 7,
+    "base": {
+      "hp": 50,
+      "atk": 120,
+      "def": 53,
+      "spa": 35,
+      "spd": 110,
+      "spe": 87
+    }
   },
   {
     "gen3DexId": 107,
     "genderRatio": 0,
     "baseFriendship": 70,
-    "ability0": 51
+    "ability0": 51,
+    "base": {
+      "hp": 50,
+      "atk": 105,
+      "def": 79,
+      "spa": 35,
+      "spd": 110,
+      "spe": 76
+    }
   },
   {
     "gen3DexId": 108,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 20
+    "ability0": 20,
+    "base": {
+      "hp": 90,
+      "atk": 55,
+      "def": 75,
+      "spa": 60,
+      "spd": 75,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 109,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 26
+    "ability0": 26,
+    "base": {
+      "hp": 40,
+      "atk": 65,
+      "def": 95,
+      "spa": 60,
+      "spd": 45,
+      "spe": 35
+    }
   },
   {
     "gen3DexId": 110,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 26
+    "ability0": 26,
+    "base": {
+      "hp": 65,
+      "atk": 90,
+      "def": 120,
+      "spa": 85,
+      "spd": 70,
+      "spe": 60
+    }
   },
   {
     "gen3DexId": 111,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 31
+    "ability0": 31,
+    "base": {
+      "hp": 80,
+      "atk": 85,
+      "def": 95,
+      "spa": 30,
+      "spd": 30,
+      "spe": 25
+    }
   },
   {
     "gen3DexId": 112,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 31
+    "ability0": 31,
+    "base": {
+      "hp": 105,
+      "atk": 130,
+      "def": 120,
+      "spa": 45,
+      "spd": 45,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 113,
     "genderRatio": 254,
     "baseFriendship": 140,
-    "ability0": 30
+    "ability0": 30,
+    "base": {
+      "hp": 250,
+      "atk": 5,
+      "def": 5,
+      "spa": 35,
+      "spd": 105,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 114,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 65,
+      "atk": 55,
+      "def": 115,
+      "spa": 100,
+      "spd": 40,
+      "spe": 60
+    }
   },
   {
     "gen3DexId": 115,
     "genderRatio": 254,
     "baseFriendship": 70,
-    "ability0": 48
+    "ability0": 48,
+    "base": {
+      "hp": 105,
+      "atk": 95,
+      "def": 80,
+      "spa": 40,
+      "spd": 80,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 116,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 33
+    "ability0": 33,
+    "base": {
+      "hp": 30,
+      "atk": 40,
+      "def": 70,
+      "spa": 70,
+      "spd": 25,
+      "spe": 60
+    }
   },
   {
     "gen3DexId": 117,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 38
+    "ability0": 38,
+    "base": {
+      "hp": 55,
+      "atk": 65,
+      "def": 95,
+      "spa": 95,
+      "spd": 45,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 118,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 33
+    "ability0": 33,
+    "base": {
+      "hp": 45,
+      "atk": 67,
+      "def": 60,
+      "spa": 35,
+      "spd": 50,
+      "spe": 63
+    }
   },
   {
     "gen3DexId": 119,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 33
+    "ability0": 33,
+    "base": {
+      "hp": 80,
+      "atk": 92,
+      "def": 65,
+      "spa": 65,
+      "spd": 80,
+      "spe": 68
+    }
   },
   {
     "gen3DexId": 120,
     "genderRatio": 255,
     "baseFriendship": 70,
-    "ability0": 35
+    "ability0": 35,
+    "base": {
+      "hp": 30,
+      "atk": 45,
+      "def": 55,
+      "spa": 70,
+      "spd": 55,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 121,
     "genderRatio": 255,
     "baseFriendship": 70,
-    "ability0": 35
+    "ability0": 35,
+    "base": {
+      "hp": 60,
+      "atk": 75,
+      "def": 85,
+      "spa": 100,
+      "spd": 85,
+      "spe": 115
+    }
   },
   {
     "gen3DexId": 122,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 43
+    "ability0": 43,
+    "base": {
+      "hp": 40,
+      "atk": 45,
+      "def": 65,
+      "spa": 100,
+      "spd": 120,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 123,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 68
+    "ability0": 68,
+    "base": {
+      "hp": 70,
+      "atk": 110,
+      "def": 80,
+      "spa": 55,
+      "spd": 80,
+      "spe": 105
+    }
   },
   {
     "gen3DexId": 124,
     "genderRatio": 254,
     "baseFriendship": 70,
-    "ability0": 12
+    "ability0": 12,
+    "base": {
+      "hp": 65,
+      "atk": 50,
+      "def": 35,
+      "spa": 115,
+      "spd": 95,
+      "spe": 95
+    }
   },
   {
     "gen3DexId": 125,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 9
+    "ability0": 9,
+    "base": {
+      "hp": 65,
+      "atk": 83,
+      "def": 57,
+      "spa": 95,
+      "spd": 85,
+      "spe": 105
+    }
   },
   {
     "gen3DexId": 126,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 49
+    "ability0": 49,
+    "base": {
+      "hp": 65,
+      "atk": 95,
+      "def": 57,
+      "spa": 100,
+      "spd": 85,
+      "spe": 93
+    }
   },
   {
     "gen3DexId": 127,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 52
+    "ability0": 52,
+    "base": {
+      "hp": 65,
+      "atk": 125,
+      "def": 100,
+      "spa": 55,
+      "spd": 70,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 128,
     "genderRatio": 0,
     "baseFriendship": 70,
-    "ability0": 22
+    "ability0": 22,
+    "base": {
+      "hp": 75,
+      "atk": 100,
+      "def": 95,
+      "spa": 40,
+      "spd": 70,
+      "spe": 110
+    }
   },
   {
     "gen3DexId": 129,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 33
+    "ability0": 33,
+    "base": {
+      "hp": 20,
+      "atk": 10,
+      "def": 55,
+      "spa": 15,
+      "spd": 20,
+      "spe": 80
+    }
   },
   {
     "gen3DexId": 130,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 22
+    "ability0": 22,
+    "base": {
+      "hp": 95,
+      "atk": 125,
+      "def": 79,
+      "spa": 60,
+      "spd": 100,
+      "spe": 81
+    }
   },
   {
     "gen3DexId": 131,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 11
+    "ability0": 11,
+    "base": {
+      "hp": 130,
+      "atk": 85,
+      "def": 80,
+      "spa": 85,
+      "spd": 95,
+      "spe": 60
+    }
   },
   {
     "gen3DexId": 132,
     "genderRatio": 255,
     "baseFriendship": 70,
-    "ability0": 7
+    "ability0": 7,
+    "base": {
+      "hp": 48,
+      "atk": 48,
+      "def": 48,
+      "spa": 48,
+      "spd": 48,
+      "spe": 48
+    }
   },
   {
     "gen3DexId": 133,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 50
+    "ability0": 50,
+    "base": {
+      "hp": 55,
+      "atk": 55,
+      "def": 50,
+      "spa": 45,
+      "spd": 65,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 134,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 11
+    "ability0": 11,
+    "base": {
+      "hp": 130,
+      "atk": 65,
+      "def": 60,
+      "spa": 110,
+      "spd": 95,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 135,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 10
+    "ability0": 10,
+    "base": {
+      "hp": 65,
+      "atk": 65,
+      "def": 60,
+      "spa": 110,
+      "spd": 95,
+      "spe": 130
+    }
   },
   {
     "gen3DexId": 136,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 18
+    "ability0": 18,
+    "base": {
+      "hp": 65,
+      "atk": 130,
+      "def": 60,
+      "spa": 95,
+      "spd": 110,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 137,
     "genderRatio": 255,
     "baseFriendship": 70,
-    "ability0": 36
+    "ability0": 36,
+    "base": {
+      "hp": 65,
+      "atk": 60,
+      "def": 70,
+      "spa": 85,
+      "spd": 75,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 138,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 33
+    "ability0": 33,
+    "base": {
+      "hp": 35,
+      "atk": 40,
+      "def": 100,
+      "spa": 90,
+      "spd": 55,
+      "spe": 35
+    }
   },
   {
     "gen3DexId": 139,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 33
+    "ability0": 33,
+    "base": {
+      "hp": 70,
+      "atk": 60,
+      "def": 125,
+      "spa": 115,
+      "spd": 70,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 140,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 33
+    "ability0": 33,
+    "base": {
+      "hp": 30,
+      "atk": 80,
+      "def": 90,
+      "spa": 55,
+      "spd": 45,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 141,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 33
+    "ability0": 33,
+    "base": {
+      "hp": 60,
+      "atk": 115,
+      "def": 105,
+      "spa": 65,
+      "spd": 70,
+      "spe": 80
+    }
   },
   {
     "gen3DexId": 142,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 69
+    "ability0": 69,
+    "base": {
+      "hp": 80,
+      "atk": 105,
+      "def": 65,
+      "spa": 60,
+      "spd": 75,
+      "spe": 130
+    }
   },
   {
     "gen3DexId": 143,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 17
+    "ability0": 17,
+    "base": {
+      "hp": 160,
+      "atk": 110,
+      "def": 65,
+      "spa": 65,
+      "spd": 110,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 144,
     "genderRatio": 255,
     "baseFriendship": 35,
-    "ability0": 46
+    "ability0": 46,
+    "base": {
+      "hp": 90,
+      "atk": 85,
+      "def": 100,
+      "spa": 95,
+      "spd": 125,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 145,
     "genderRatio": 255,
     "baseFriendship": 35,
-    "ability0": 46
+    "ability0": 46,
+    "base": {
+      "hp": 90,
+      "atk": 90,
+      "def": 85,
+      "spa": 125,
+      "spd": 90,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 146,
     "genderRatio": 255,
     "baseFriendship": 35,
-    "ability0": 46
+    "ability0": 46,
+    "base": {
+      "hp": 90,
+      "atk": 100,
+      "def": 90,
+      "spa": 125,
+      "spd": 85,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 147,
     "genderRatio": 127,
     "baseFriendship": 35,
-    "ability0": 61
+    "ability0": 61,
+    "base": {
+      "hp": 41,
+      "atk": 64,
+      "def": 45,
+      "spa": 50,
+      "spd": 50,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 148,
     "genderRatio": 127,
     "baseFriendship": 35,
-    "ability0": 61
+    "ability0": 61,
+    "base": {
+      "hp": 61,
+      "atk": 84,
+      "def": 65,
+      "spa": 70,
+      "spd": 70,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 149,
     "genderRatio": 127,
     "baseFriendship": 35,
-    "ability0": 39
+    "ability0": 39,
+    "base": {
+      "hp": 91,
+      "atk": 134,
+      "def": 95,
+      "spa": 100,
+      "spd": 100,
+      "spe": 80
+    }
   },
   {
     "gen3DexId": 150,
     "genderRatio": 255,
     "baseFriendship": 0,
-    "ability0": 46
+    "ability0": 46,
+    "base": {
+      "hp": 106,
+      "atk": 110,
+      "def": 90,
+      "spa": 154,
+      "spd": 90,
+      "spe": 130
+    }
   },
   {
     "gen3DexId": 151,
     "genderRatio": 255,
     "baseFriendship": 100,
-    "ability0": 28
+    "ability0": 28,
+    "base": {
+      "hp": 100,
+      "atk": 100,
+      "def": 100,
+      "spa": 100,
+      "spd": 100,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 152,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 65
+    "ability0": 65,
+    "base": {
+      "hp": 45,
+      "atk": 49,
+      "def": 65,
+      "spa": 49,
+      "spd": 65,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 153,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 65
+    "ability0": 65,
+    "base": {
+      "hp": 60,
+      "atk": 62,
+      "def": 80,
+      "spa": 63,
+      "spd": 80,
+      "spe": 60
+    }
   },
   {
     "gen3DexId": 154,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 65
+    "ability0": 65,
+    "base": {
+      "hp": 80,
+      "atk": 82,
+      "def": 100,
+      "spa": 83,
+      "spd": 100,
+      "spe": 80
+    }
   },
   {
     "gen3DexId": 155,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 66
+    "ability0": 66,
+    "base": {
+      "hp": 39,
+      "atk": 52,
+      "def": 43,
+      "spa": 60,
+      "spd": 50,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 156,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 66
+    "ability0": 66,
+    "base": {
+      "hp": 58,
+      "atk": 64,
+      "def": 58,
+      "spa": 80,
+      "spd": 65,
+      "spe": 80
+    }
   },
   {
     "gen3DexId": 157,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 66
+    "ability0": 66,
+    "base": {
+      "hp": 78,
+      "atk": 84,
+      "def": 78,
+      "spa": 109,
+      "spd": 85,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 158,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 67
+    "ability0": 67,
+    "base": {
+      "hp": 50,
+      "atk": 65,
+      "def": 64,
+      "spa": 44,
+      "spd": 48,
+      "spe": 43
+    }
   },
   {
     "gen3DexId": 159,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 67
+    "ability0": 67,
+    "base": {
+      "hp": 65,
+      "atk": 80,
+      "def": 80,
+      "spa": 59,
+      "spd": 63,
+      "spe": 58
+    }
   },
   {
     "gen3DexId": 160,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 67
+    "ability0": 67,
+    "base": {
+      "hp": 85,
+      "atk": 105,
+      "def": 100,
+      "spa": 79,
+      "spd": 83,
+      "spe": 78
+    }
   },
   {
     "gen3DexId": 161,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 50
+    "ability0": 50,
+    "base": {
+      "hp": 35,
+      "atk": 46,
+      "def": 34,
+      "spa": 35,
+      "spd": 45,
+      "spe": 20
+    }
   },
   {
     "gen3DexId": 162,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 50
+    "ability0": 50,
+    "base": {
+      "hp": 85,
+      "atk": 76,
+      "def": 64,
+      "spa": 45,
+      "spd": 55,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 163,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 15
+    "ability0": 15,
+    "base": {
+      "hp": 60,
+      "atk": 30,
+      "def": 30,
+      "spa": 36,
+      "spd": 56,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 164,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 15
+    "ability0": 15,
+    "base": {
+      "hp": 100,
+      "atk": 50,
+      "def": 50,
+      "spa": 76,
+      "spd": 96,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 165,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 68
+    "ability0": 68,
+    "base": {
+      "hp": 40,
+      "atk": 20,
+      "def": 30,
+      "spa": 40,
+      "spd": 80,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 166,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 68
+    "ability0": 68,
+    "base": {
+      "hp": 55,
+      "atk": 35,
+      "def": 50,
+      "spa": 55,
+      "spd": 110,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 167,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 68
+    "ability0": 68,
+    "base": {
+      "hp": 40,
+      "atk": 60,
+      "def": 40,
+      "spa": 40,
+      "spd": 40,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 168,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 68
+    "ability0": 68,
+    "base": {
+      "hp": 70,
+      "atk": 90,
+      "def": 70,
+      "spa": 60,
+      "spd": 60,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 169,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 39
+    "ability0": 39,
+    "base": {
+      "hp": 85,
+      "atk": 90,
+      "def": 80,
+      "spa": 70,
+      "spd": 80,
+      "spe": 130
+    }
   },
   {
     "gen3DexId": 170,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 10
+    "ability0": 10,
+    "base": {
+      "hp": 75,
+      "atk": 38,
+      "def": 38,
+      "spa": 56,
+      "spd": 56,
+      "spe": 67
+    }
   },
   {
     "gen3DexId": 171,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 10
+    "ability0": 10,
+    "base": {
+      "hp": 125,
+      "atk": 58,
+      "def": 58,
+      "spa": 76,
+      "spd": 76,
+      "spe": 67
+    }
   },
   {
     "gen3DexId": 172,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 9
+    "ability0": 9,
+    "base": {
+      "hp": 20,
+      "atk": 40,
+      "def": 15,
+      "spa": 35,
+      "spd": 35,
+      "spe": 60
+    }
   },
   {
     "gen3DexId": 173,
     "genderRatio": 191,
     "baseFriendship": 140,
-    "ability0": 56
+    "ability0": 56,
+    "base": {
+      "hp": 50,
+      "atk": 25,
+      "def": 28,
+      "spa": 45,
+      "spd": 55,
+      "spe": 15
+    }
   },
   {
     "gen3DexId": 174,
     "genderRatio": 191,
     "baseFriendship": 70,
-    "ability0": 56
+    "ability0": 56,
+    "base": {
+      "hp": 90,
+      "atk": 30,
+      "def": 15,
+      "spa": 40,
+      "spd": 20,
+      "spe": 15
+    }
   },
   {
     "gen3DexId": 175,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 55
+    "ability0": 55,
+    "base": {
+      "hp": 35,
+      "atk": 20,
+      "def": 65,
+      "spa": 40,
+      "spd": 65,
+      "spe": 20
+    }
   },
   {
     "gen3DexId": 176,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 55
+    "ability0": 55,
+    "base": {
+      "hp": 55,
+      "atk": 40,
+      "def": 85,
+      "spa": 80,
+      "spd": 105,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 177,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 28
+    "ability0": 28,
+    "base": {
+      "hp": 40,
+      "atk": 50,
+      "def": 45,
+      "spa": 70,
+      "spd": 45,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 178,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 28
+    "ability0": 28,
+    "base": {
+      "hp": 65,
+      "atk": 75,
+      "def": 70,
+      "spa": 95,
+      "spd": 70,
+      "spe": 95
+    }
   },
   {
     "gen3DexId": 179,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 9
+    "ability0": 9,
+    "base": {
+      "hp": 55,
+      "atk": 40,
+      "def": 40,
+      "spa": 65,
+      "spd": 45,
+      "spe": 35
+    }
   },
   {
     "gen3DexId": 180,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 9
+    "ability0": 9,
+    "base": {
+      "hp": 70,
+      "atk": 55,
+      "def": 55,
+      "spa": 80,
+      "spd": 60,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 181,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 9
+    "ability0": 9,
+    "base": {
+      "hp": 90,
+      "atk": 75,
+      "def": 75,
+      "spa": 115,
+      "spd": 90,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 182,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 75,
+      "atk": 80,
+      "def": 85,
+      "spa": 90,
+      "spd": 100,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 183,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 47
+    "ability0": 47,
+    "base": {
+      "hp": 70,
+      "atk": 20,
+      "def": 50,
+      "spa": 20,
+      "spd": 50,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 184,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 47
+    "ability0": 47,
+    "base": {
+      "hp": 100,
+      "atk": 50,
+      "def": 80,
+      "spa": 50,
+      "spd": 80,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 185,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 5
+    "ability0": 5,
+    "base": {
+      "hp": 70,
+      "atk": 100,
+      "def": 115,
+      "spa": 30,
+      "spd": 65,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 186,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 11
+    "ability0": 11,
+    "base": {
+      "hp": 90,
+      "atk": 75,
+      "def": 75,
+      "spa": 90,
+      "spd": 100,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 187,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 35,
+      "atk": 35,
+      "def": 40,
+      "spa": 35,
+      "spd": 55,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 188,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 55,
+      "atk": 45,
+      "def": 50,
+      "spa": 45,
+      "spd": 65,
+      "spe": 80
+    }
   },
   {
     "gen3DexId": 189,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 75,
+      "atk": 55,
+      "def": 70,
+      "spa": 55,
+      "spd": 85,
+      "spe": 110
+    }
   },
   {
     "gen3DexId": 190,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 50
+    "ability0": 50,
+    "base": {
+      "hp": 55,
+      "atk": 70,
+      "def": 55,
+      "spa": 40,
+      "spd": 55,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 191,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 30,
+      "atk": 30,
+      "def": 30,
+      "spa": 30,
+      "spd": 30,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 192,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 34
+    "ability0": 34,
+    "base": {
+      "hp": 75,
+      "atk": 75,
+      "def": 55,
+      "spa": 105,
+      "spd": 85,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 193,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 3
+    "ability0": 3,
+    "base": {
+      "hp": 65,
+      "atk": 65,
+      "def": 45,
+      "spa": 75,
+      "spd": 45,
+      "spe": 95
+    }
   },
   {
     "gen3DexId": 194,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 6
+    "ability0": 6,
+    "base": {
+      "hp": 55,
+      "atk": 45,
+      "def": 45,
+      "spa": 25,
+      "spd": 25,
+      "spe": 15
+    }
   },
   {
     "gen3DexId": 195,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 6
+    "ability0": 6,
+    "base": {
+      "hp": 95,
+      "atk": 85,
+      "def": 85,
+      "spa": 65,
+      "spd": 65,
+      "spe": 35
+    }
   },
   {
     "gen3DexId": 196,
     "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 28
+    "ability0": 28,
+    "base": {
+      "hp": 65,
+      "atk": 65,
+      "def": 60,
+      "spa": 130,
+      "spd": 95,
+      "spe": 110
+    }
   },
   {
     "gen3DexId": 197,
     "genderRatio": 31,
     "baseFriendship": 35,
-    "ability0": 28
+    "ability0": 28,
+    "base": {
+      "hp": 95,
+      "atk": 65,
+      "def": 110,
+      "spa": 60,
+      "spd": 130,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 198,
     "genderRatio": 127,
     "baseFriendship": 35,
-    "ability0": 15
+    "ability0": 15,
+    "base": {
+      "hp": 60,
+      "atk": 85,
+      "def": 42,
+      "spa": 85,
+      "spd": 42,
+      "spe": 91
+    }
   },
   {
     "gen3DexId": 199,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 12
+    "ability0": 12,
+    "base": {
+      "hp": 95,
+      "atk": 75,
+      "def": 80,
+      "spa": 100,
+      "spd": 110,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 200,
     "genderRatio": 127,
     "baseFriendship": 35,
-    "ability0": 26
+    "ability0": 26,
+    "base": {
+      "hp": 60,
+      "atk": 60,
+      "def": 60,
+      "spa": 85,
+      "spd": 85,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 201,
     "genderRatio": 255,
     "baseFriendship": 70,
-    "ability0": 26
+    "ability0": 26,
+    "base": {
+      "hp": 48,
+      "atk": 72,
+      "def": 48,
+      "spa": 72,
+      "spd": 48,
+      "spe": 48
+    }
   },
   {
     "gen3DexId": 202,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 23
+    "ability0": 23,
+    "base": {
+      "hp": 190,
+      "atk": 33,
+      "def": 58,
+      "spa": 33,
+      "spd": 58,
+      "spe": 33
+    }
   },
   {
     "gen3DexId": 203,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 39
+    "ability0": 39,
+    "base": {
+      "hp": 70,
+      "atk": 80,
+      "def": 65,
+      "spa": 90,
+      "spd": 65,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 204,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 5
+    "ability0": 5,
+    "base": {
+      "hp": 50,
+      "atk": 65,
+      "def": 90,
+      "spa": 35,
+      "spd": 35,
+      "spe": 15
+    }
   },
   {
     "gen3DexId": 205,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 5
+    "ability0": 5,
+    "base": {
+      "hp": 75,
+      "atk": 90,
+      "def": 140,
+      "spa": 60,
+      "spd": 60,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 206,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 32
+    "ability0": 32,
+    "base": {
+      "hp": 100,
+      "atk": 70,
+      "def": 70,
+      "spa": 65,
+      "spd": 65,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 207,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 52
+    "ability0": 52,
+    "base": {
+      "hp": 65,
+      "atk": 75,
+      "def": 105,
+      "spa": 35,
+      "spd": 65,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 208,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 69
+    "ability0": 69,
+    "base": {
+      "hp": 75,
+      "atk": 85,
+      "def": 200,
+      "spa": 55,
+      "spd": 65,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 209,
     "genderRatio": 191,
     "baseFriendship": 70,
-    "ability0": 22
+    "ability0": 22,
+    "base": {
+      "hp": 60,
+      "atk": 80,
+      "def": 50,
+      "spa": 40,
+      "spd": 40,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 210,
     "genderRatio": 191,
     "baseFriendship": 70,
-    "ability0": 22
+    "ability0": 22,
+    "base": {
+      "hp": 90,
+      "atk": 120,
+      "def": 75,
+      "spa": 60,
+      "spd": 60,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 211,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 38
+    "ability0": 38,
+    "base": {
+      "hp": 65,
+      "atk": 95,
+      "def": 75,
+      "spa": 55,
+      "spd": 55,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 212,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 68
+    "ability0": 68,
+    "base": {
+      "hp": 70,
+      "atk": 130,
+      "def": 100,
+      "spa": 55,
+      "spd": 80,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 213,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 5
+    "ability0": 5,
+    "base": {
+      "hp": 20,
+      "atk": 10,
+      "def": 230,
+      "spa": 10,
+      "spd": 230,
+      "spe": 5
+    }
   },
   {
     "gen3DexId": 214,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 68
+    "ability0": 68,
+    "base": {
+      "hp": 80,
+      "atk": 125,
+      "def": 75,
+      "spa": 40,
+      "spd": 95,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 215,
     "genderRatio": 127,
     "baseFriendship": 35,
-    "ability0": 39
+    "ability0": 39,
+    "base": {
+      "hp": 55,
+      "atk": 95,
+      "def": 55,
+      "spa": 35,
+      "spd": 75,
+      "spe": 115
+    }
   },
   {
     "gen3DexId": 216,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 53
+    "ability0": 53,
+    "base": {
+      "hp": 60,
+      "atk": 80,
+      "def": 50,
+      "spa": 50,
+      "spd": 50,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 217,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 62
+    "ability0": 62,
+    "base": {
+      "hp": 90,
+      "atk": 130,
+      "def": 75,
+      "spa": 75,
+      "spd": 75,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 218,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 40
+    "ability0": 40,
+    "base": {
+      "hp": 40,
+      "atk": 40,
+      "def": 40,
+      "spa": 70,
+      "spd": 40,
+      "spe": 20
+    }
   },
   {
     "gen3DexId": 219,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 40
+    "ability0": 40,
+    "base": {
+      "hp": 50,
+      "atk": 50,
+      "def": 120,
+      "spa": 80,
+      "spd": 80,
+      "spe": 30
+    }
   },
   {
     "gen3DexId": 220,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 12
+    "ability0": 12,
+    "base": {
+      "hp": 50,
+      "atk": 50,
+      "def": 40,
+      "spa": 30,
+      "spd": 30,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 221,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 12
+    "ability0": 12,
+    "base": {
+      "hp": 100,
+      "atk": 100,
+      "def": 80,
+      "spa": 60,
+      "spd": 60,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 222,
     "genderRatio": 191,
     "baseFriendship": 70,
-    "ability0": 55
+    "ability0": 55,
+    "base": {
+      "hp": 55,
+      "atk": 55,
+      "def": 85,
+      "spa": 65,
+      "spd": 85,
+      "spe": 35
+    }
   },
   {
     "gen3DexId": 223,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 55
+    "ability0": 55,
+    "base": {
+      "hp": 35,
+      "atk": 65,
+      "def": 35,
+      "spa": 65,
+      "spd": 35,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 224,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 21
+    "ability0": 21,
+    "base": {
+      "hp": 75,
+      "atk": 105,
+      "def": 75,
+      "spa": 105,
+      "spd": 75,
+      "spe": 45
+    }
   },
   {
     "gen3DexId": 225,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 72
+    "ability0": 72,
+    "base": {
+      "hp": 45,
+      "atk": 55,
+      "def": 45,
+      "spa": 65,
+      "spd": 45,
+      "spe": 75
+    }
   },
   {
     "gen3DexId": 226,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 33
+    "ability0": 33,
+    "base": {
+      "hp": 65,
+      "atk": 40,
+      "def": 70,
+      "spa": 80,
+      "spd": 140,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 227,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 51
+    "ability0": 51,
+    "base": {
+      "hp": 65,
+      "atk": 80,
+      "def": 140,
+      "spa": 40,
+      "spd": 70,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 228,
     "genderRatio": 127,
     "baseFriendship": 35,
-    "ability0": 48
+    "ability0": 48,
+    "base": {
+      "hp": 45,
+      "atk": 60,
+      "def": 30,
+      "spa": 80,
+      "spd": 50,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 229,
     "genderRatio": 127,
     "baseFriendship": 35,
-    "ability0": 48
+    "ability0": 48,
+    "base": {
+      "hp": 75,
+      "atk": 90,
+      "def": 50,
+      "spa": 110,
+      "spd": 80,
+      "spe": 95
+    }
   },
   {
     "gen3DexId": 230,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 33
+    "ability0": 33,
+    "base": {
+      "hp": 75,
+      "atk": 95,
+      "def": 95,
+      "spa": 95,
+      "spd": 95,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 231,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 53
+    "ability0": 53,
+    "base": {
+      "hp": 90,
+      "atk": 60,
+      "def": 60,
+      "spa": 40,
+      "spd": 40,
+      "spe": 40
+    }
   },
   {
     "gen3DexId": 232,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 5
+    "ability0": 5,
+    "base": {
+      "hp": 90,
+      "atk": 120,
+      "def": 120,
+      "spa": 60,
+      "spd": 60,
+      "spe": 50
+    }
   },
   {
     "gen3DexId": 233,
     "genderRatio": 255,
     "baseFriendship": 70,
-    "ability0": 36
+    "ability0": 36,
+    "base": {
+      "hp": 85,
+      "atk": 80,
+      "def": 90,
+      "spa": 105,
+      "spd": 95,
+      "spe": 60
+    }
   },
   {
     "gen3DexId": 234,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 22
+    "ability0": 22,
+    "base": {
+      "hp": 73,
+      "atk": 95,
+      "def": 62,
+      "spa": 85,
+      "spd": 65,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 235,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 20
+    "ability0": 20,
+    "base": {
+      "hp": 55,
+      "atk": 20,
+      "def": 35,
+      "spa": 20,
+      "spd": 45,
+      "spe": 75
+    }
   },
   {
     "gen3DexId": 236,
     "genderRatio": 0,
     "baseFriendship": 70,
-    "ability0": 62
+    "ability0": 62,
+    "base": {
+      "hp": 35,
+      "atk": 35,
+      "def": 35,
+      "spa": 35,
+      "spd": 35,
+      "spe": 35
+    }
   },
   {
     "gen3DexId": 237,
     "genderRatio": 0,
     "baseFriendship": 70,
-    "ability0": 22
+    "ability0": 22,
+    "base": {
+      "hp": 50,
+      "atk": 95,
+      "def": 95,
+      "spa": 35,
+      "spd": 110,
+      "spe": 70
+    }
   },
   {
     "gen3DexId": 238,
     "genderRatio": 254,
     "baseFriendship": 70,
-    "ability0": 12
+    "ability0": 12,
+    "base": {
+      "hp": 45,
+      "atk": 30,
+      "def": 15,
+      "spa": 85,
+      "spd": 65,
+      "spe": 65
+    }
   },
   {
     "gen3DexId": 239,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 9
+    "ability0": 9,
+    "base": {
+      "hp": 45,
+      "atk": 63,
+      "def": 37,
+      "spa": 65,
+      "spd": 55,
+      "spe": 95
+    }
   },
   {
     "gen3DexId": 240,
     "genderRatio": 63,
     "baseFriendship": 70,
-    "ability0": 49
+    "ability0": 49,
+    "base": {
+      "hp": 45,
+      "atk": 75,
+      "def": 37,
+      "spa": 70,
+      "spd": 55,
+      "spe": 83
+    }
   },
   {
     "gen3DexId": 241,
     "genderRatio": 254,
     "baseFriendship": 70,
-    "ability0": 47
+    "ability0": 47,
+    "base": {
+      "hp": 95,
+      "atk": 80,
+      "def": 105,
+      "spa": 40,
+      "spd": 70,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 242,
     "genderRatio": 254,
     "baseFriendship": 140,
-    "ability0": 30
+    "ability0": 30,
+    "base": {
+      "hp": 255,
+      "atk": 10,
+      "def": 10,
+      "spa": 75,
+      "spd": 135,
+      "spe": 55
+    }
   },
   {
     "gen3DexId": 243,
     "genderRatio": 255,
     "baseFriendship": 35,
-    "ability0": 46
+    "ability0": 46,
+    "base": {
+      "hp": 90,
+      "atk": 85,
+      "def": 75,
+      "spa": 115,
+      "spd": 100,
+      "spe": 115
+    }
   },
   {
     "gen3DexId": 244,
     "genderRatio": 255,
     "baseFriendship": 35,
-    "ability0": 46
+    "ability0": 46,
+    "base": {
+      "hp": 115,
+      "atk": 115,
+      "def": 85,
+      "spa": 90,
+      "spd": 75,
+      "spe": 100
+    }
   },
   {
     "gen3DexId": 245,
     "genderRatio": 255,
     "baseFriendship": 35,
-    "ability0": 46
+    "ability0": 46,
+    "base": {
+      "hp": 100,
+      "atk": 75,
+      "def": 115,
+      "spa": 90,
+      "spd": 115,
+      "spe": 85
+    }
   },
   {
     "gen3DexId": 246,
     "genderRatio": 127,
     "baseFriendship": 35,
-    "ability0": 62
+    "ability0": 62,
+    "base": {
+      "hp": 50,
+      "atk": 64,
+      "def": 50,
+      "spa": 45,
+      "spd": 50,
+      "spe": 41
+    }
   },
   {
     "gen3DexId": 247,
     "genderRatio": 127,
     "baseFriendship": 35,
-    "ability0": 61
+    "ability0": 61,
+    "base": {
+      "hp": 70,
+      "atk": 84,
+      "def": 70,
+      "spa": 65,
+      "spd": 70,
+      "spe": 51
+    }
   },
   {
     "gen3DexId": 248,
     "genderRatio": 127,
     "baseFriendship": 35,
-    "ability0": 45
+    "ability0": 45,
+    "base": {
+      "hp": 100,
+      "atk": 134,
+      "def": 110,
+      "spa": 95,
+      "spd": 100,
+      "spe": 61
+    }
   },
   {
     "gen3DexId": 249,
     "genderRatio": 255,
     "baseFriendship": 0,
-    "ability0": 46
+    "ability0": 46,
+    "base": {
+      "hp": 106,
+      "atk": 90,
+      "def": 130,
+      "spa": 90,
+      "spd": 154,
+      "spe": 110
+    }
   },
   {
     "gen3DexId": 250,
     "genderRatio": 255,
     "baseFriendship": 0,
-    "ability0": 46
+    "ability0": 46,
+    "base": {
+      "hp": 106,
+      "atk": 130,
+      "def": 90,
+      "spa": 110,
+      "spd": 154,
+      "spe": 90
+    }
   },
   {
     "gen3DexId": 251,
     "genderRatio": 255,
     "baseFriendship": 100,
-    "ability0": 30
+    "ability0": 30,
+    "base": {
+      "hp": 100,
+      "atk": 100,
+      "def": 100,
+      "spa": 100,
+      "spd": 100,
+      "spe": 100
+    }
+  },
+  {
+    "gen3DexId": 252,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 65,
+    "base": {
+      "hp": 40,
+      "atk": 45,
+      "def": 35,
+      "spa": 65,
+      "spd": 55,
+      "spe": 70
+    }
+  },
+  {
+    "gen3DexId": 253,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 65,
+    "base": {
+      "hp": 50,
+      "atk": 65,
+      "def": 45,
+      "spa": 85,
+      "spd": 65,
+      "spe": 95
+    }
+  },
+  {
+    "gen3DexId": 254,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 65,
+    "base": {
+      "hp": 70,
+      "atk": 85,
+      "def": 65,
+      "spa": 105,
+      "spd": 85,
+      "spe": 120
+    }
+  },
+  {
+    "gen3DexId": 255,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 66,
+    "base": {
+      "hp": 45,
+      "atk": 60,
+      "def": 40,
+      "spa": 70,
+      "spd": 50,
+      "spe": 45
+    }
+  },
+  {
+    "gen3DexId": 256,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 66,
+    "base": {
+      "hp": 60,
+      "atk": 85,
+      "def": 60,
+      "spa": 85,
+      "spd": 60,
+      "spe": 55
+    }
+  },
+  {
+    "gen3DexId": 257,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 66,
+    "base": {
+      "hp": 80,
+      "atk": 120,
+      "def": 70,
+      "spa": 110,
+      "spd": 70,
+      "spe": 80
+    }
+  },
+  {
+    "gen3DexId": 258,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 67,
+    "base": {
+      "hp": 50,
+      "atk": 70,
+      "def": 50,
+      "spa": 50,
+      "spd": 50,
+      "spe": 40
+    }
+  },
+  {
+    "gen3DexId": 259,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 67,
+    "base": {
+      "hp": 70,
+      "atk": 85,
+      "def": 70,
+      "spa": 60,
+      "spd": 70,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 260,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 67,
+    "base": {
+      "hp": 100,
+      "atk": 110,
+      "def": 90,
+      "spa": 85,
+      "spd": 90,
+      "spe": 60
+    }
+  },
+  {
+    "gen3DexId": 261,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 50,
+    "base": {
+      "hp": 35,
+      "atk": 55,
+      "def": 35,
+      "spa": 30,
+      "spd": 30,
+      "spe": 35
+    }
+  },
+  {
+    "gen3DexId": 262,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 22,
+    "base": {
+      "hp": 70,
+      "atk": 90,
+      "def": 70,
+      "spa": 60,
+      "spd": 60,
+      "spe": 70
+    }
+  },
+  {
+    "gen3DexId": 263,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 53,
+    "base": {
+      "hp": 38,
+      "atk": 30,
+      "def": 41,
+      "spa": 30,
+      "spd": 41,
+      "spe": 60
+    }
+  },
+  {
+    "gen3DexId": 264,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 53,
+    "base": {
+      "hp": 78,
+      "atk": 70,
+      "def": 61,
+      "spa": 50,
+      "spd": 61,
+      "spe": 100
+    }
+  },
+  {
+    "gen3DexId": 265,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 19,
+    "base": {
+      "hp": 45,
+      "atk": 45,
+      "def": 35,
+      "spa": 20,
+      "spd": 30,
+      "spe": 20
+    }
+  },
+  {
+    "gen3DexId": 266,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 61,
+    "base": {
+      "hp": 50,
+      "atk": 35,
+      "def": 55,
+      "spa": 25,
+      "spd": 25,
+      "spe": 15
+    }
+  },
+  {
+    "gen3DexId": 267,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 68,
+    "base": {
+      "hp": 60,
+      "atk": 70,
+      "def": 50,
+      "spa": 90,
+      "spd": 50,
+      "spe": 65
+    }
+  },
+  {
+    "gen3DexId": 268,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 61,
+    "base": {
+      "hp": 50,
+      "atk": 35,
+      "def": 55,
+      "spa": 25,
+      "spd": 25,
+      "spe": 15
+    }
+  },
+  {
+    "gen3DexId": 269,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 19,
+    "base": {
+      "hp": 60,
+      "atk": 50,
+      "def": 70,
+      "spa": 50,
+      "spd": 90,
+      "spe": 65
+    }
+  },
+  {
+    "gen3DexId": 270,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33,
+    "base": {
+      "hp": 40,
+      "atk": 30,
+      "def": 30,
+      "spa": 40,
+      "spd": 50,
+      "spe": 30
+    }
+  },
+  {
+    "gen3DexId": 271,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33,
+    "base": {
+      "hp": 60,
+      "atk": 50,
+      "def": 50,
+      "spa": 60,
+      "spd": 70,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 272,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33,
+    "base": {
+      "hp": 80,
+      "atk": 70,
+      "def": 70,
+      "spa": 90,
+      "spd": 100,
+      "spe": 70
+    }
+  },
+  {
+    "gen3DexId": 273,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34,
+    "base": {
+      "hp": 40,
+      "atk": 40,
+      "def": 50,
+      "spa": 30,
+      "spd": 30,
+      "spe": 30
+    }
+  },
+  {
+    "gen3DexId": 274,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34,
+    "base": {
+      "hp": 70,
+      "atk": 70,
+      "def": 40,
+      "spa": 60,
+      "spd": 40,
+      "spe": 60
+    }
+  },
+  {
+    "gen3DexId": 275,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34,
+    "base": {
+      "hp": 90,
+      "atk": 100,
+      "def": 60,
+      "spa": 90,
+      "spd": 60,
+      "spe": 80
+    }
+  },
+  {
+    "gen3DexId": 276,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 62,
+    "base": {
+      "hp": 40,
+      "atk": 55,
+      "def": 30,
+      "spa": 30,
+      "spd": 30,
+      "spe": 85
+    }
+  },
+  {
+    "gen3DexId": 277,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 62,
+    "base": {
+      "hp": 60,
+      "atk": 85,
+      "def": 60,
+      "spa": 50,
+      "spd": 50,
+      "spe": 125
+    }
+  },
+  {
+    "gen3DexId": 278,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 51,
+    "base": {
+      "hp": 40,
+      "atk": 30,
+      "def": 30,
+      "spa": 55,
+      "spd": 30,
+      "spe": 85
+    }
+  },
+  {
+    "gen3DexId": 279,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 51,
+    "base": {
+      "hp": 60,
+      "atk": 50,
+      "def": 100,
+      "spa": 85,
+      "spd": 70,
+      "spe": 65
+    }
+  },
+  {
+    "gen3DexId": 280,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 28,
+    "base": {
+      "hp": 28,
+      "atk": 25,
+      "def": 25,
+      "spa": 45,
+      "spd": 35,
+      "spe": 40
+    }
+  },
+  {
+    "gen3DexId": 281,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 28,
+    "base": {
+      "hp": 38,
+      "atk": 35,
+      "def": 35,
+      "spa": 65,
+      "spd": 55,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 282,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 28,
+    "base": {
+      "hp": 68,
+      "atk": 65,
+      "def": 65,
+      "spa": 125,
+      "spd": 115,
+      "spe": 80
+    }
+  },
+  {
+    "gen3DexId": 283,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33,
+    "base": {
+      "hp": 40,
+      "atk": 30,
+      "def": 32,
+      "spa": 50,
+      "spd": 52,
+      "spe": 65
+    }
+  },
+  {
+    "gen3DexId": 284,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 22,
+    "base": {
+      "hp": 70,
+      "atk": 60,
+      "def": 62,
+      "spa": 80,
+      "spd": 82,
+      "spe": 60
+    }
+  },
+  {
+    "gen3DexId": 285,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 27,
+    "base": {
+      "hp": 60,
+      "atk": 40,
+      "def": 60,
+      "spa": 40,
+      "spd": 60,
+      "spe": 35
+    }
+  },
+  {
+    "gen3DexId": 286,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 27,
+    "base": {
+      "hp": 60,
+      "atk": 130,
+      "def": 80,
+      "spa": 60,
+      "spd": 60,
+      "spe": 70
+    }
+  },
+  {
+    "gen3DexId": 287,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 54,
+    "base": {
+      "hp": 60,
+      "atk": 60,
+      "def": 60,
+      "spa": 35,
+      "spd": 35,
+      "spe": 30
+    }
+  },
+  {
+    "gen3DexId": 288,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 72,
+    "base": {
+      "hp": 80,
+      "atk": 80,
+      "def": 80,
+      "spa": 55,
+      "spd": 55,
+      "spe": 90
+    }
+  },
+  {
+    "gen3DexId": 289,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 54,
+    "base": {
+      "hp": 150,
+      "atk": 160,
+      "def": 100,
+      "spa": 95,
+      "spd": 65,
+      "spe": 100
+    }
+  },
+  {
+    "gen3DexId": 290,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 14,
+    "base": {
+      "hp": 31,
+      "atk": 45,
+      "def": 90,
+      "spa": 30,
+      "spd": 30,
+      "spe": 40
+    }
+  },
+  {
+    "gen3DexId": 291,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 3,
+    "base": {
+      "hp": 61,
+      "atk": 90,
+      "def": 45,
+      "spa": 50,
+      "spd": 50,
+      "spe": 160
+    }
+  },
+  {
+    "gen3DexId": 292,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 25,
+    "base": {
+      "hp": 1,
+      "atk": 90,
+      "def": 45,
+      "spa": 30,
+      "spd": 30,
+      "spe": 40
+    }
+  },
+  {
+    "gen3DexId": 293,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 43,
+    "base": {
+      "hp": 64,
+      "atk": 51,
+      "def": 23,
+      "spa": 51,
+      "spd": 23,
+      "spe": 28
+    }
+  },
+  {
+    "gen3DexId": 294,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 43,
+    "base": {
+      "hp": 84,
+      "atk": 71,
+      "def": 43,
+      "spa": 71,
+      "spd": 43,
+      "spe": 48
+    }
+  },
+  {
+    "gen3DexId": 295,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 43,
+    "base": {
+      "hp": 104,
+      "atk": 91,
+      "def": 63,
+      "spa": 91,
+      "spd": 63,
+      "spe": 68
+    }
+  },
+  {
+    "gen3DexId": 296,
+    "genderRatio": 63,
+    "baseFriendship": 70,
+    "ability0": 47,
+    "base": {
+      "hp": 72,
+      "atk": 60,
+      "def": 30,
+      "spa": 20,
+      "spd": 30,
+      "spe": 25
+    }
+  },
+  {
+    "gen3DexId": 297,
+    "genderRatio": 63,
+    "baseFriendship": 70,
+    "ability0": 47,
+    "base": {
+      "hp": 144,
+      "atk": 120,
+      "def": 60,
+      "spa": 40,
+      "spd": 60,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 298,
+    "genderRatio": 191,
+    "baseFriendship": 70,
+    "ability0": 47,
+    "base": {
+      "hp": 50,
+      "atk": 20,
+      "def": 40,
+      "spa": 20,
+      "spd": 40,
+      "spe": 20
+    }
+  },
+  {
+    "gen3DexId": 299,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 5,
+    "base": {
+      "hp": 30,
+      "atk": 45,
+      "def": 135,
+      "spa": 45,
+      "spd": 90,
+      "spe": 30
+    }
+  },
+  {
+    "gen3DexId": 300,
+    "genderRatio": 191,
+    "baseFriendship": 70,
+    "ability0": 56,
+    "base": {
+      "hp": 50,
+      "atk": 45,
+      "def": 45,
+      "spa": 35,
+      "spd": 35,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 301,
+    "genderRatio": 191,
+    "baseFriendship": 70,
+    "ability0": 56,
+    "base": {
+      "hp": 70,
+      "atk": 65,
+      "def": 65,
+      "spa": 55,
+      "spd": 55,
+      "spe": 70
+    }
+  },
+  {
+    "gen3DexId": 302,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 51,
+    "base": {
+      "hp": 50,
+      "atk": 75,
+      "def": 75,
+      "spa": 65,
+      "spd": 65,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 303,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 52,
+    "base": {
+      "hp": 50,
+      "atk": 85,
+      "def": 85,
+      "spa": 55,
+      "spd": 55,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 304,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 5,
+    "base": {
+      "hp": 50,
+      "atk": 70,
+      "def": 100,
+      "spa": 40,
+      "spd": 40,
+      "spe": 30
+    }
+  },
+  {
+    "gen3DexId": 305,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 5,
+    "base": {
+      "hp": 60,
+      "atk": 90,
+      "def": 140,
+      "spa": 50,
+      "spd": 50,
+      "spe": 40
+    }
+  },
+  {
+    "gen3DexId": 306,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 5,
+    "base": {
+      "hp": 70,
+      "atk": 110,
+      "def": 180,
+      "spa": 60,
+      "spd": 60,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 307,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 74,
+    "base": {
+      "hp": 30,
+      "atk": 40,
+      "def": 55,
+      "spa": 40,
+      "spd": 55,
+      "spe": 60
+    }
+  },
+  {
+    "gen3DexId": 308,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 74,
+    "base": {
+      "hp": 60,
+      "atk": 60,
+      "def": 75,
+      "spa": 60,
+      "spd": 75,
+      "spe": 80
+    }
+  },
+  {
+    "gen3DexId": 309,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 9,
+    "base": {
+      "hp": 40,
+      "atk": 45,
+      "def": 40,
+      "spa": 65,
+      "spd": 40,
+      "spe": 65
+    }
+  },
+  {
+    "gen3DexId": 310,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 9,
+    "base": {
+      "hp": 70,
+      "atk": 75,
+      "def": 60,
+      "spa": 105,
+      "spd": 60,
+      "spe": 105
+    }
+  },
+  {
+    "gen3DexId": 311,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 57,
+    "base": {
+      "hp": 60,
+      "atk": 50,
+      "def": 40,
+      "spa": 85,
+      "spd": 75,
+      "spe": 95
+    }
+  },
+  {
+    "gen3DexId": 312,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 58,
+    "base": {
+      "hp": 60,
+      "atk": 40,
+      "def": 50,
+      "spa": 75,
+      "spd": 85,
+      "spe": 95
+    }
+  },
+  {
+    "gen3DexId": 313,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 35,
+    "base": {
+      "hp": 65,
+      "atk": 73,
+      "def": 55,
+      "spa": 47,
+      "spd": 75,
+      "spe": 85
+    }
+  },
+  {
+    "gen3DexId": 314,
+    "genderRatio": 254,
+    "baseFriendship": 70,
+    "ability0": 12,
+    "base": {
+      "hp": 65,
+      "atk": 47,
+      "def": 55,
+      "spa": 73,
+      "spd": 75,
+      "spe": 85
+    }
+  },
+  {
+    "gen3DexId": 315,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 30,
+    "base": {
+      "hp": 50,
+      "atk": 60,
+      "def": 45,
+      "spa": 100,
+      "spd": 80,
+      "spe": 65
+    }
+  },
+  {
+    "gen3DexId": 316,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 64,
+    "base": {
+      "hp": 70,
+      "atk": 43,
+      "def": 53,
+      "spa": 43,
+      "spd": 53,
+      "spe": 40
+    }
+  },
+  {
+    "gen3DexId": 317,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 64,
+    "base": {
+      "hp": 100,
+      "atk": 73,
+      "def": 83,
+      "spa": 73,
+      "spd": 83,
+      "spe": 55
+    }
+  },
+  {
+    "gen3DexId": 318,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 24,
+    "base": {
+      "hp": 45,
+      "atk": 90,
+      "def": 20,
+      "spa": 65,
+      "spd": 20,
+      "spe": 65
+    }
+  },
+  {
+    "gen3DexId": 319,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 24,
+    "base": {
+      "hp": 70,
+      "atk": 120,
+      "def": 40,
+      "spa": 95,
+      "spd": 40,
+      "spe": 95
+    }
+  },
+  {
+    "gen3DexId": 320,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 41,
+    "base": {
+      "hp": 130,
+      "atk": 70,
+      "def": 35,
+      "spa": 70,
+      "spd": 35,
+      "spe": 60
+    }
+  },
+  {
+    "gen3DexId": 321,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 41,
+    "base": {
+      "hp": 170,
+      "atk": 90,
+      "def": 45,
+      "spa": 90,
+      "spd": 45,
+      "spe": 60
+    }
+  },
+  {
+    "gen3DexId": 322,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 12,
+    "base": {
+      "hp": 60,
+      "atk": 60,
+      "def": 40,
+      "spa": 65,
+      "spd": 45,
+      "spe": 35
+    }
+  },
+  {
+    "gen3DexId": 323,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 40,
+    "base": {
+      "hp": 70,
+      "atk": 100,
+      "def": 70,
+      "spa": 105,
+      "spd": 75,
+      "spe": 40
+    }
+  },
+  {
+    "gen3DexId": 324,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 73,
+    "base": {
+      "hp": 70,
+      "atk": 85,
+      "def": 140,
+      "spa": 85,
+      "spd": 70,
+      "spe": 20
+    }
+  },
+  {
+    "gen3DexId": 325,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 47,
+    "base": {
+      "hp": 60,
+      "atk": 25,
+      "def": 35,
+      "spa": 70,
+      "spd": 80,
+      "spe": 60
+    }
+  },
+  {
+    "gen3DexId": 326,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 47,
+    "base": {
+      "hp": 80,
+      "atk": 45,
+      "def": 65,
+      "spa": 90,
+      "spd": 110,
+      "spe": 80
+    }
+  },
+  {
+    "gen3DexId": 327,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 20,
+    "base": {
+      "hp": 60,
+      "atk": 60,
+      "def": 60,
+      "spa": 60,
+      "spd": 60,
+      "spe": 60
+    }
+  },
+  {
+    "gen3DexId": 328,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 52,
+    "base": {
+      "hp": 45,
+      "atk": 100,
+      "def": 45,
+      "spa": 45,
+      "spd": 45,
+      "spe": 10
+    }
+  },
+  {
+    "gen3DexId": 329,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 26,
+    "base": {
+      "hp": 50,
+      "atk": 70,
+      "def": 50,
+      "spa": 50,
+      "spd": 50,
+      "spe": 70
+    }
+  },
+  {
+    "gen3DexId": 330,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 26,
+    "base": {
+      "hp": 80,
+      "atk": 100,
+      "def": 80,
+      "spa": 80,
+      "spd": 80,
+      "spe": 100
+    }
+  },
+  {
+    "gen3DexId": 331,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 8,
+    "base": {
+      "hp": 50,
+      "atk": 85,
+      "def": 40,
+      "spa": 85,
+      "spd": 40,
+      "spe": 35
+    }
+  },
+  {
+    "gen3DexId": 332,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 8,
+    "base": {
+      "hp": 70,
+      "atk": 115,
+      "def": 60,
+      "spa": 115,
+      "spd": 60,
+      "spe": 55
+    }
+  },
+  {
+    "gen3DexId": 333,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 30,
+    "base": {
+      "hp": 45,
+      "atk": 40,
+      "def": 60,
+      "spa": 40,
+      "spd": 75,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 334,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 30,
+    "base": {
+      "hp": 75,
+      "atk": 70,
+      "def": 90,
+      "spa": 70,
+      "spd": 105,
+      "spe": 80
+    }
+  },
+  {
+    "gen3DexId": 335,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 17,
+    "base": {
+      "hp": 73,
+      "atk": 115,
+      "def": 60,
+      "spa": 60,
+      "spd": 60,
+      "spe": 90
+    }
+  },
+  {
+    "gen3DexId": 336,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 61,
+    "base": {
+      "hp": 73,
+      "atk": 100,
+      "def": 60,
+      "spa": 100,
+      "spd": 60,
+      "spe": 65
+    }
+  },
+  {
+    "gen3DexId": 337,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 26,
+    "base": {
+      "hp": 70,
+      "atk": 55,
+      "def": 65,
+      "spa": 95,
+      "spd": 85,
+      "spe": 70
+    }
+  },
+  {
+    "gen3DexId": 338,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 26,
+    "base": {
+      "hp": 70,
+      "atk": 95,
+      "def": 85,
+      "spa": 55,
+      "spd": 65,
+      "spe": 70
+    }
+  },
+  {
+    "gen3DexId": 339,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 12,
+    "base": {
+      "hp": 50,
+      "atk": 48,
+      "def": 43,
+      "spa": 46,
+      "spd": 41,
+      "spe": 60
+    }
+  },
+  {
+    "gen3DexId": 340,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 12,
+    "base": {
+      "hp": 110,
+      "atk": 78,
+      "def": 73,
+      "spa": 76,
+      "spd": 71,
+      "spe": 60
+    }
+  },
+  {
+    "gen3DexId": 341,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 52,
+    "base": {
+      "hp": 43,
+      "atk": 80,
+      "def": 65,
+      "spa": 50,
+      "spd": 35,
+      "spe": 35
+    }
+  },
+  {
+    "gen3DexId": 342,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 52,
+    "base": {
+      "hp": 63,
+      "atk": 120,
+      "def": 85,
+      "spa": 90,
+      "spd": 55,
+      "spe": 55
+    }
+  },
+  {
+    "gen3DexId": 343,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 26,
+    "base": {
+      "hp": 40,
+      "atk": 40,
+      "def": 55,
+      "spa": 40,
+      "spd": 70,
+      "spe": 55
+    }
+  },
+  {
+    "gen3DexId": 344,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 26,
+    "base": {
+      "hp": 60,
+      "atk": 70,
+      "def": 105,
+      "spa": 70,
+      "spd": 120,
+      "spe": 75
+    }
+  },
+  {
+    "gen3DexId": 345,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 21,
+    "base": {
+      "hp": 66,
+      "atk": 41,
+      "def": 77,
+      "spa": 61,
+      "spd": 87,
+      "spe": 23
+    }
+  },
+  {
+    "gen3DexId": 346,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 21,
+    "base": {
+      "hp": 86,
+      "atk": 81,
+      "def": 97,
+      "spa": 81,
+      "spd": 107,
+      "spe": 43
+    }
+  },
+  {
+    "gen3DexId": 347,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 4,
+    "base": {
+      "hp": 45,
+      "atk": 95,
+      "def": 50,
+      "spa": 40,
+      "spd": 50,
+      "spe": 75
+    }
+  },
+  {
+    "gen3DexId": 348,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 4,
+    "base": {
+      "hp": 75,
+      "atk": 125,
+      "def": 100,
+      "spa": 70,
+      "spd": 80,
+      "spe": 45
+    }
+  },
+  {
+    "gen3DexId": 349,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33,
+    "base": {
+      "hp": 20,
+      "atk": 15,
+      "def": 20,
+      "spa": 10,
+      "spd": 55,
+      "spe": 80
+    }
+  },
+  {
+    "gen3DexId": 350,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 63,
+    "base": {
+      "hp": 95,
+      "atk": 60,
+      "def": 79,
+      "spa": 100,
+      "spd": 125,
+      "spe": 81
+    }
+  },
+  {
+    "gen3DexId": 351,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 59,
+    "base": {
+      "hp": 70,
+      "atk": 70,
+      "def": 70,
+      "spa": 70,
+      "spd": 70,
+      "spe": 70
+    }
+  },
+  {
+    "gen3DexId": 352,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 16,
+    "base": {
+      "hp": 60,
+      "atk": 90,
+      "def": 70,
+      "spa": 60,
+      "spd": 120,
+      "spe": 40
+    }
+  },
+  {
+    "gen3DexId": 353,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 15,
+    "base": {
+      "hp": 44,
+      "atk": 75,
+      "def": 35,
+      "spa": 63,
+      "spd": 33,
+      "spe": 45
+    }
+  },
+  {
+    "gen3DexId": 354,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 15,
+    "base": {
+      "hp": 64,
+      "atk": 115,
+      "def": 65,
+      "spa": 83,
+      "spd": 63,
+      "spe": 65
+    }
+  },
+  {
+    "gen3DexId": 355,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 26,
+    "base": {
+      "hp": 20,
+      "atk": 40,
+      "def": 90,
+      "spa": 30,
+      "spd": 90,
+      "spe": 25
+    }
+  },
+  {
+    "gen3DexId": 356,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 46,
+    "base": {
+      "hp": 40,
+      "atk": 70,
+      "def": 130,
+      "spa": 60,
+      "spd": 130,
+      "spe": 25
+    }
+  },
+  {
+    "gen3DexId": 357,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34,
+    "base": {
+      "hp": 99,
+      "atk": 68,
+      "def": 83,
+      "spa": 72,
+      "spd": 87,
+      "spe": 51
+    }
+  },
+  {
+    "gen3DexId": 358,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 26,
+    "base": {
+      "hp": 65,
+      "atk": 50,
+      "def": 70,
+      "spa": 95,
+      "spd": 80,
+      "spe": 65
+    }
+  },
+  {
+    "gen3DexId": 359,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 46,
+    "base": {
+      "hp": 65,
+      "atk": 130,
+      "def": 60,
+      "spa": 75,
+      "spd": 60,
+      "spe": 75
+    }
+  },
+  {
+    "gen3DexId": 360,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 23,
+    "base": {
+      "hp": 95,
+      "atk": 23,
+      "def": 48,
+      "spa": 23,
+      "spd": 48,
+      "spe": 23
+    }
+  },
+  {
+    "gen3DexId": 361,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 39,
+    "base": {
+      "hp": 50,
+      "atk": 50,
+      "def": 50,
+      "spa": 50,
+      "spd": 50,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 362,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 39,
+    "base": {
+      "hp": 80,
+      "atk": 80,
+      "def": 80,
+      "spa": 80,
+      "spd": 80,
+      "spe": 80
+    }
+  },
+  {
+    "gen3DexId": 363,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 47,
+    "base": {
+      "hp": 70,
+      "atk": 40,
+      "def": 50,
+      "spa": 55,
+      "spd": 50,
+      "spe": 25
+    }
+  },
+  {
+    "gen3DexId": 364,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 47,
+    "base": {
+      "hp": 90,
+      "atk": 60,
+      "def": 70,
+      "spa": 75,
+      "spd": 70,
+      "spe": 45
+    }
+  },
+  {
+    "gen3DexId": 365,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 47,
+    "base": {
+      "hp": 110,
+      "atk": 80,
+      "def": 90,
+      "spa": 95,
+      "spd": 90,
+      "spe": 65
+    }
+  },
+  {
+    "gen3DexId": 366,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 75,
+    "base": {
+      "hp": 35,
+      "atk": 64,
+      "def": 85,
+      "spa": 74,
+      "spd": 55,
+      "spe": 32
+    }
+  },
+  {
+    "gen3DexId": 367,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33,
+    "base": {
+      "hp": 55,
+      "atk": 104,
+      "def": 105,
+      "spa": 94,
+      "spd": 75,
+      "spe": 52
+    }
+  },
+  {
+    "gen3DexId": 368,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33,
+    "base": {
+      "hp": 55,
+      "atk": 84,
+      "def": 105,
+      "spa": 114,
+      "spd": 75,
+      "spe": 52
+    }
+  },
+  {
+    "gen3DexId": 369,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 33,
+    "base": {
+      "hp": 100,
+      "atk": 90,
+      "def": 130,
+      "spa": 45,
+      "spd": 65,
+      "spe": 55
+    }
+  },
+  {
+    "gen3DexId": 370,
+    "genderRatio": 191,
+    "baseFriendship": 70,
+    "ability0": 33,
+    "base": {
+      "hp": 43,
+      "atk": 30,
+      "def": 55,
+      "spa": 40,
+      "spd": 65,
+      "spe": 97
+    }
+  },
+  {
+    "gen3DexId": 371,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 69,
+    "base": {
+      "hp": 45,
+      "atk": 75,
+      "def": 60,
+      "spa": 40,
+      "spd": 30,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 372,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 69,
+    "base": {
+      "hp": 65,
+      "atk": 95,
+      "def": 100,
+      "spa": 60,
+      "spd": 50,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 373,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 22,
+    "base": {
+      "hp": 95,
+      "atk": 135,
+      "def": 80,
+      "spa": 110,
+      "spd": 80,
+      "spe": 100
+    }
+  },
+  {
+    "gen3DexId": 374,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 29,
+    "base": {
+      "hp": 40,
+      "atk": 55,
+      "def": 80,
+      "spa": 35,
+      "spd": 60,
+      "spe": 30
+    }
+  },
+  {
+    "gen3DexId": 375,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 29,
+    "base": {
+      "hp": 60,
+      "atk": 75,
+      "def": 100,
+      "spa": 55,
+      "spd": 80,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 376,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 29,
+    "base": {
+      "hp": 80,
+      "atk": 135,
+      "def": 130,
+      "spa": 95,
+      "spd": 90,
+      "spe": 70
+    }
+  },
+  {
+    "gen3DexId": 377,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 29,
+    "base": {
+      "hp": 80,
+      "atk": 100,
+      "def": 200,
+      "spa": 50,
+      "spd": 100,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 378,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 29,
+    "base": {
+      "hp": 80,
+      "atk": 50,
+      "def": 100,
+      "spa": 100,
+      "spd": 200,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 379,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 29,
+    "base": {
+      "hp": 80,
+      "atk": 75,
+      "def": 150,
+      "spa": 75,
+      "spd": 150,
+      "spe": 50
+    }
+  },
+  {
+    "gen3DexId": 380,
+    "genderRatio": 254,
+    "baseFriendship": 90,
+    "ability0": 26,
+    "base": {
+      "hp": 80,
+      "atk": 80,
+      "def": 90,
+      "spa": 110,
+      "spd": 130,
+      "spe": 110
+    }
+  },
+  {
+    "gen3DexId": 381,
+    "genderRatio": 0,
+    "baseFriendship": 90,
+    "ability0": 26,
+    "base": {
+      "hp": 80,
+      "atk": 90,
+      "def": 80,
+      "spa": 130,
+      "spd": 110,
+      "spe": 110
+    }
+  },
+  {
+    "gen3DexId": 382,
+    "genderRatio": 255,
+    "baseFriendship": 0,
+    "ability0": 2,
+    "base": {
+      "hp": 100,
+      "atk": 100,
+      "def": 90,
+      "spa": 150,
+      "spd": 140,
+      "spe": 90
+    }
+  },
+  {
+    "gen3DexId": 383,
+    "genderRatio": 255,
+    "baseFriendship": 0,
+    "ability0": 70,
+    "base": {
+      "hp": 100,
+      "atk": 150,
+      "def": 140,
+      "spa": 100,
+      "spd": 90,
+      "spe": 90
+    }
+  },
+  {
+    "gen3DexId": 384,
+    "genderRatio": 255,
+    "baseFriendship": 0,
+    "ability0": 76,
+    "base": {
+      "hp": 105,
+      "atk": 150,
+      "def": 90,
+      "spa": 150,
+      "spd": 90,
+      "spe": 95
+    }
+  },
+  {
+    "gen3DexId": 385,
+    "genderRatio": 255,
+    "baseFriendship": 100,
+    "ability0": 32,
+    "base": {
+      "hp": 100,
+      "atk": 100,
+      "def": 100,
+      "spa": 100,
+      "spd": 100,
+      "spe": 100
+    }
+  },
+  {
+    "gen3DexId": 386,
+    "genderRatio": 255,
+    "baseFriendship": 0,
+    "ability0": 46,
+    "base": {
+      "hp": 50,
+      "atk": 150,
+      "def": 50,
+      "spa": 150,
+      "spd": 50,
+      "spe": 150
+    }
   }
 ]

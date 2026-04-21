@@ -36,13 +36,33 @@ const OFFSET_GENDER = 0x10;
 const OFFSET_FRIENDSHIP = 0x12;
 const OFFSET_ABILITY1 = 0x16;
 
-const MAX_GEN12_DEX = 251;
+// Base-stat offsets (PersonalInfo3 / personal_rs — canonical Gen 3 order):
+//   0x00 HP, 0x01 Atk, 0x02 Def, 0x03 Spe (speed BEFORE specials), 0x04 SpA, 0x05 SpD.
+const OFFSET_BASE_HP = 0x00;
+const OFFSET_BASE_ATK = 0x01;
+const OFFSET_BASE_DEF = 0x02;
+const OFFSET_BASE_SPE = 0x03;
+const OFFSET_BASE_SPA = 0x04;
+const OFFSET_BASE_SPD = 0x05;
+
+// S2 needs base stats for all species the packer can encounter. S1 only produced
+// Gen 1/2 species (dex 1..251), but S2's unpackBoxed may decode a Gen-3-only
+// species from a real cart — extend to the full Gen 3 national dex (1..386).
+const MAX_GEN3_DEX = 386;
 
 interface PersonalInfoRow {
   gen3DexId: number;
   genderRatio: number;
   baseFriendship: number;
   ability0: number;
+  base: {
+    hp: number;
+    atk: number;
+    def: number;
+    spa: number;
+    spd: number;
+    spe: number;
+  };
 }
 
 async function main(): Promise<void> {
@@ -57,20 +77,28 @@ async function main(): Promise<void> {
     );
   }
   const entryCount = buf.length / ENTRY_SIZE;
-  if (entryCount <= MAX_GEN12_DEX) {
+  if (entryCount <= MAX_GEN3_DEX) {
     throw new Error(
-      `personal_rs has only ${entryCount} entries, need at least ${MAX_GEN12_DEX + 1}`,
+      `personal_rs has only ${entryCount} entries, need at least ${MAX_GEN3_DEX + 1}`,
     );
   }
 
   const rows: PersonalInfoRow[] = [];
-  for (let dex = 1; dex <= MAX_GEN12_DEX; dex++) {
+  for (let dex = 1; dex <= MAX_GEN3_DEX; dex++) {
     const base = dex * ENTRY_SIZE;
     rows.push({
       gen3DexId: dex,
       genderRatio: buf[base + OFFSET_GENDER]!,
       baseFriendship: buf[base + OFFSET_FRIENDSHIP]!,
       ability0: buf[base + OFFSET_ABILITY1]!,
+      base: {
+        hp: buf[base + OFFSET_BASE_HP]!,
+        atk: buf[base + OFFSET_BASE_ATK]!,
+        def: buf[base + OFFSET_BASE_DEF]!,
+        spa: buf[base + OFFSET_BASE_SPA]!,
+        spd: buf[base + OFFSET_BASE_SPD]!,
+        spe: buf[base + OFFSET_BASE_SPE]!,
+      },
     });
   }
 

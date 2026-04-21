@@ -9,8 +9,18 @@ import * as publicApi from '../../core/src/index.js';
 describe('public API surface', () => {
   it('exports only the documented members', () => {
     const keys = Object.keys(publicApi).sort();
-    // Types don't appear at runtime; only values show up here.
-    expect(keys).toEqual(['convert', 'isRefusal']);
+    // Types don't appear at runtime; only values show up here. S2 added
+    // the wire-format packer/unpacker exports.
+    expect(keys).toEqual([
+      'BOXED_SIZE',
+      'PARTY_SIZE',
+      'convert',
+      'isDecodeError',
+      'isRefusal',
+      'packBoxed',
+      'packParty',
+      'unpackBoxed',
+    ]);
   });
 
   it('convert is a function', () => {

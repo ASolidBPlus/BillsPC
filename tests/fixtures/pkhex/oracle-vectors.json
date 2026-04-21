@@ -1,0 +1,42 @@
+[
+  {
+    "label": "pikachu-untrained-lv25",
+    "pid": "0x4569b630",
+    "tid": 12345,
+    "sid": 5762,
+    "species": 25,
+    "boxedHex": "30b6694539308216cad1d9d5d7dce4ffffff0202bbcdc2ffffffff00235300002886c9532a86cf53179fff5c0986eb530986eb530986eb531086eb53416eea5309c0eb530914ee7103af1d4d0986eb53"
+  },
+  {
+    "label": "feraligatr-untrained-lv55",
+    "pid": "0xd5e6fba2",
+    "tid": 12345,
+    "sid": 5762,
+    "species": 160,
+    "boxedHex": "a2fbe6d539308216cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff00c2700000bacb46c3b8cb40c385d270cc9b5961e19b897ce09bcb64c33bcb64c3d32365c39b8d64c39bcb64c39bcb64c39bcb64c3"
+  },
+  {
+    "label": "snorlax-maxtrained",
+    "pid": "0xac4f3763",
+    "tid": 12345,
+    "sid": 5762,
+    "species": 143,
+    "boxedHex": "63374fac39308216cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff0065c90000d507cdba12efccba5a41cdba0f5298ef0f52cdba5a07cdba5a95c898847822875a07cdba7b07efba7907e9ba441ed9b5"
+  },
+  {
+    "label": "alakazam-competitive",
+    "pid": "0x7f9a55bd",
+    "tid": 12345,
+    "sid": 5762,
+    "species": 65,
+    "boxedHex": "bd559a7f39308216cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff00d39f000084f71d4b5b9ae75684651869a5653a69a7653c699a7c0c66846518c32ecf186984651869c5651869cc8d196984231869"
+  },
+  {
+    "label": "partial-trained",
+    "pid": "0xab8c7d7c",
+    "tid": 12345,
+    "sid": 5762,
+    "species": 143,
+    "boxedHex": "7c7d8cab39308216cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff008d60000045df0b9f650ac4a5454d0ebd644d2cbd664d2abd5b541ab2ca4d0ebd0da50fbd450b0ebdfaf24588454d0ebd454d0ebd"
+  }
+]

@@ -17,6 +17,20 @@ export interface PersonalInfo {
   readonly baseFriendship: number;
   /** Primary ability (slot 0) — always used per HANDOFF §4.14. */
   readonly ability0: number;
+  /**
+   * Gen 3 species base stats. Field order is the canonical
+   * `hp, atk, def, spa, spd, spe` (matches `Gen3Intermediate.ivs`/`evs`),
+   * NOT the wire-stored `hp, atk, def, spe, spa, spd` order. The packer
+   * reorders when writing to bytes.
+   */
+  readonly base: {
+    readonly hp: number;
+    readonly atk: number;
+    readonly def: number;
+    readonly spa: number;
+    readonly spd: number;
+    readonly spe: number;
+  };
 }
 
 const TABLE: ReadonlyMap<number, PersonalInfo> = new Map(
