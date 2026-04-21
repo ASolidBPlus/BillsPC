@@ -1,0 +1,1257 @@
+[
+  {
+    "gen2Id": 1,
+    "primary": 10,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 2,
+    "primary": 10,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 3,
+    "primary": 10,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 4,
+    "primary": 10,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 5,
+    "primary": 10,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 6,
+    "primary": 10,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 7,
+    "primary": 10,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 8,
+    "primary": 10,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 9,
+    "primary": 10,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 10,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 11,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 12,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 13,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 14,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 15,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 16,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 17,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 18,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 19,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 20,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 21,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 22,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 23,
+    "primary": 5,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 24,
+    "primary": 5,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 25,
+    "primary": 5,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 26,
+    "primary": 5,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 27,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 28,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 29,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 30,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 31,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 32,
+    "primary": 5,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 33,
+    "primary": 5,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 34,
+    "primary": 5,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 35,
+    "primary": 6,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 36,
+    "primary": 6,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 37,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 38,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 39,
+    "primary": 6,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 40,
+    "primary": 6,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 41,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 42,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 43,
+    "primary": 6,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 44,
+    "primary": 6,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 45,
+    "primary": 6,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 46,
+    "primary": 3,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 47,
+    "primary": 3,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 48,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 49,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 50,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 51,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 52,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 53,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 54,
+    "primary": 2,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 55,
+    "primary": 2,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 56,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 57,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 58,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 59,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 60,
+    "primary": 2,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 61,
+    "primary": 2,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 62,
+    "primary": 2,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 63,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 64,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 65,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 66,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 67,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 68,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 69,
+    "primary": 7,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 70,
+    "primary": 7,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 71,
+    "primary": 7,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 72,
+    "primary": 9,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 73,
+    "primary": 9,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 74,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 75,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 76,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 77,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 78,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 79,
+    "primary": 10,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 80,
+    "primary": 10,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 81,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 82,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 83,
+    "primary": 4,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 84,
+    "primary": 4,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 85,
+    "primary": 4,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 86,
+    "primary": 2,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 87,
+    "primary": 2,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 88,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 89,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 90,
+    "primary": 9,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 91,
+    "primary": 9,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 92,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 93,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 94,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 95,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 96,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 97,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 98,
+    "primary": 2,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 99,
+    "primary": 2,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 100,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 101,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 102,
+    "primary": 7,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 103,
+    "primary": 7,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 104,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 105,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 106,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 107,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 108,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 109,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 110,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 111,
+    "primary": 10,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 112,
+    "primary": 10,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 113,
+    "primary": 6,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 114,
+    "primary": 7,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 115,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 116,
+    "primary": 2,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 117,
+    "primary": 2,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 118,
+    "primary": 12,
+    "secondary": 12
+  },
+  {
+    "gen2Id": 119,
+    "primary": 12,
+    "secondary": 12
+  },
+  {
+    "gen2Id": 120,
+    "primary": 9,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 121,
+    "primary": 9,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 122,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 123,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 124,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 125,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 126,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 127,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 128,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 129,
+    "primary": 12,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 130,
+    "primary": 12,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 131,
+    "primary": 2,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 132,
+    "primary": 13,
+    "secondary": 13
+  },
+  {
+    "gen2Id": 133,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 134,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 135,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 136,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 137,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 138,
+    "primary": 2,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 139,
+    "primary": 2,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 140,
+    "primary": 2,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 141,
+    "primary": 2,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 142,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 143,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 144,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 145,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 146,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 147,
+    "primary": 2,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 148,
+    "primary": 2,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 149,
+    "primary": 2,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 150,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 151,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 152,
+    "primary": 10,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 153,
+    "primary": 10,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 154,
+    "primary": 10,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 155,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 156,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 157,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 158,
+    "primary": 10,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 159,
+    "primary": 10,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 160,
+    "primary": 10,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 161,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 162,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 163,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 164,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 165,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 166,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 167,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 168,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 169,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 170,
+    "primary": 12,
+    "secondary": 12
+  },
+  {
+    "gen2Id": 171,
+    "primary": 12,
+    "secondary": 12
+  },
+  {
+    "gen2Id": 172,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 173,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 174,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 175,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 176,
+    "primary": 6,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 177,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 178,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 179,
+    "primary": 5,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 180,
+    "primary": 5,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 181,
+    "primary": 5,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 182,
+    "primary": 6,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 183,
+    "primary": 2,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 184,
+    "primary": 2,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 185,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 186,
+    "primary": 2,
+    "secondary": 2
+  },
+  {
+    "gen2Id": 187,
+    "primary": 6,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 188,
+    "primary": 6,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 189,
+    "primary": 6,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 190,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 191,
+    "primary": 6,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 192,
+    "primary": 6,
+    "secondary": 7
+  },
+  {
+    "gen2Id": 193,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 194,
+    "primary": 2,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 195,
+    "primary": 2,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 196,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 197,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 198,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 199,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 200,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 201,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 202,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 203,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 204,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 205,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 206,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 207,
+    "primary": 3,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 208,
+    "primary": 3,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 209,
+    "primary": 5,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 210,
+    "primary": 5,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 211,
+    "primary": 12,
+    "secondary": 12
+  },
+  {
+    "gen2Id": 212,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 213,
+    "primary": 3,
+    "secondary": 3
+  },
+  {
+    "gen2Id": 214,
+    "primary": 3,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 215,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 216,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 217,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 218,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 219,
+    "primary": 11,
+    "secondary": 11
+  },
+  {
+    "gen2Id": 220,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 221,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 222,
+    "primary": 2,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 223,
+    "primary": 2,
+    "secondary": 12
+  },
+  {
+    "gen2Id": 224,
+    "primary": 2,
+    "secondary": 12
+  },
+  {
+    "gen2Id": 225,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 226,
+    "primary": 2,
+    "secondary": 9
+  },
+  {
+    "gen2Id": 227,
+    "primary": 4,
+    "secondary": 4
+  },
+  {
+    "gen2Id": 228,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 229,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 230,
+    "primary": 2,
+    "secondary": 14
+  },
+  {
+    "gen2Id": 231,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 232,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 233,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 234,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 235,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 236,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 237,
+    "primary": 8,
+    "secondary": 8
+  },
+  {
+    "gen2Id": 238,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 239,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 240,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 241,
+    "primary": 5,
+    "secondary": 5
+  },
+  {
+    "gen2Id": 242,
+    "primary": 6,
+    "secondary": 6
+  },
+  {
+    "gen2Id": 243,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 244,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 245,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 246,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 247,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 248,
+    "primary": 10,
+    "secondary": 10
+  },
+  {
+    "gen2Id": 249,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 250,
+    "primary": 15,
+    "secondary": 15
+  },
+  {
+    "gen2Id": 251,
+    "primary": 15,
+    "secondary": 15
+  }
+]

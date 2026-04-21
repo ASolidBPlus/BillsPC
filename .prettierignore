@@ -1,0 +1,12 @@
+node_modules
+dist
+coverage
+*.tsbuildinfo
+bun.lockb
+bun.lock
+core/src/data/raw/*.json
+CLAUDE.md
+HANDOFF.md
+PLAN.md
+PLAN_EVAL.md
+orchestrator-defaults.md

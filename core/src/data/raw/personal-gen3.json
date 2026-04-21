@@ -1,0 +1,1508 @@
+[
+  {
+    "gen3DexId": 1,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 65
+  },
+  {
+    "gen3DexId": 2,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 65
+  },
+  {
+    "gen3DexId": 3,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 65
+  },
+  {
+    "gen3DexId": 4,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 66
+  },
+  {
+    "gen3DexId": 5,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 66
+  },
+  {
+    "gen3DexId": 6,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 66
+  },
+  {
+    "gen3DexId": 7,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 67
+  },
+  {
+    "gen3DexId": 8,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 67
+  },
+  {
+    "gen3DexId": 9,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 67
+  },
+  {
+    "gen3DexId": 10,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 19
+  },
+  {
+    "gen3DexId": 11,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 61
+  },
+  {
+    "gen3DexId": 12,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 14
+  },
+  {
+    "gen3DexId": 13,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 19
+  },
+  {
+    "gen3DexId": 14,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 61
+  },
+  {
+    "gen3DexId": 15,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 68
+  },
+  {
+    "gen3DexId": 16,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 51
+  },
+  {
+    "gen3DexId": 17,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 51
+  },
+  {
+    "gen3DexId": 18,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 51
+  },
+  {
+    "gen3DexId": 19,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 50
+  },
+  {
+    "gen3DexId": 20,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 50
+  },
+  {
+    "gen3DexId": 21,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 51
+  },
+  {
+    "gen3DexId": 22,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 51
+  },
+  {
+    "gen3DexId": 23,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 22
+  },
+  {
+    "gen3DexId": 24,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 22
+  },
+  {
+    "gen3DexId": 25,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 9
+  },
+  {
+    "gen3DexId": 26,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 9
+  },
+  {
+    "gen3DexId": 27,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 8
+  },
+  {
+    "gen3DexId": 28,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 8
+  },
+  {
+    "gen3DexId": 29,
+    "genderRatio": 254,
+    "baseFriendship": 70,
+    "ability0": 38
+  },
+  {
+    "gen3DexId": 30,
+    "genderRatio": 254,
+    "baseFriendship": 70,
+    "ability0": 38
+  },
+  {
+    "gen3DexId": 31,
+    "genderRatio": 254,
+    "baseFriendship": 70,
+    "ability0": 38
+  },
+  {
+    "gen3DexId": 32,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 38
+  },
+  {
+    "gen3DexId": 33,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 38
+  },
+  {
+    "gen3DexId": 34,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 38
+  },
+  {
+    "gen3DexId": 35,
+    "genderRatio": 191,
+    "baseFriendship": 140,
+    "ability0": 56
+  },
+  {
+    "gen3DexId": 36,
+    "genderRatio": 191,
+    "baseFriendship": 140,
+    "ability0": 56
+  },
+  {
+    "gen3DexId": 37,
+    "genderRatio": 191,
+    "baseFriendship": 70,
+    "ability0": 50
+  },
+  {
+    "gen3DexId": 38,
+    "genderRatio": 191,
+    "baseFriendship": 70,
+    "ability0": 18
+  },
+  {
+    "gen3DexId": 39,
+    "genderRatio": 191,
+    "baseFriendship": 70,
+    "ability0": 56
+  },
+  {
+    "gen3DexId": 40,
+    "genderRatio": 191,
+    "baseFriendship": 70,
+    "ability0": 56
+  },
+  {
+    "gen3DexId": 41,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 39
+  },
+  {
+    "gen3DexId": 42,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 39
+  },
+  {
+    "gen3DexId": 43,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 44,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 45,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 46,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 27
+  },
+  {
+    "gen3DexId": 47,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 27
+  },
+  {
+    "gen3DexId": 48,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 14
+  },
+  {
+    "gen3DexId": 49,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 19
+  },
+  {
+    "gen3DexId": 50,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 8
+  },
+  {
+    "gen3DexId": 51,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 8
+  },
+  {
+    "gen3DexId": 52,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 53
+  },
+  {
+    "gen3DexId": 53,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 7
+  },
+  {
+    "gen3DexId": 54,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 6
+  },
+  {
+    "gen3DexId": 55,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 6
+  },
+  {
+    "gen3DexId": 56,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 72
+  },
+  {
+    "gen3DexId": 57,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 72
+  },
+  {
+    "gen3DexId": 58,
+    "genderRatio": 63,
+    "baseFriendship": 70,
+    "ability0": 22
+  },
+  {
+    "gen3DexId": 59,
+    "genderRatio": 63,
+    "baseFriendship": 70,
+    "ability0": 22
+  },
+  {
+    "gen3DexId": 60,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 11
+  },
+  {
+    "gen3DexId": 61,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 11
+  },
+  {
+    "gen3DexId": 62,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 11
+  },
+  {
+    "gen3DexId": 63,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 28
+  },
+  {
+    "gen3DexId": 64,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 28
+  },
+  {
+    "gen3DexId": 65,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 28
+  },
+  {
+    "gen3DexId": 66,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 62
+  },
+  {
+    "gen3DexId": 67,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 62
+  },
+  {
+    "gen3DexId": 68,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 62
+  },
+  {
+    "gen3DexId": 69,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 70,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 71,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 72,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 29
+  },
+  {
+    "gen3DexId": 73,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 29
+  },
+  {
+    "gen3DexId": 74,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 69
+  },
+  {
+    "gen3DexId": 75,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 69
+  },
+  {
+    "gen3DexId": 76,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 69
+  },
+  {
+    "gen3DexId": 77,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 50
+  },
+  {
+    "gen3DexId": 78,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 50
+  },
+  {
+    "gen3DexId": 79,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 12
+  },
+  {
+    "gen3DexId": 80,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 12
+  },
+  {
+    "gen3DexId": 81,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 42
+  },
+  {
+    "gen3DexId": 82,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 42
+  },
+  {
+    "gen3DexId": 83,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 51
+  },
+  {
+    "gen3DexId": 84,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 50
+  },
+  {
+    "gen3DexId": 85,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 50
+  },
+  {
+    "gen3DexId": 86,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 47
+  },
+  {
+    "gen3DexId": 87,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 47
+  },
+  {
+    "gen3DexId": 88,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 1
+  },
+  {
+    "gen3DexId": 89,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 1
+  },
+  {
+    "gen3DexId": 90,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 75
+  },
+  {
+    "gen3DexId": 91,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 75
+  },
+  {
+    "gen3DexId": 92,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 26
+  },
+  {
+    "gen3DexId": 93,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 26
+  },
+  {
+    "gen3DexId": 94,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 26
+  },
+  {
+    "gen3DexId": 95,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 69
+  },
+  {
+    "gen3DexId": 96,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 15
+  },
+  {
+    "gen3DexId": 97,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 15
+  },
+  {
+    "gen3DexId": 98,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 52
+  },
+  {
+    "gen3DexId": 99,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 52
+  },
+  {
+    "gen3DexId": 100,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 43
+  },
+  {
+    "gen3DexId": 101,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 43
+  },
+  {
+    "gen3DexId": 102,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 103,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 104,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 69
+  },
+  {
+    "gen3DexId": 105,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 69
+  },
+  {
+    "gen3DexId": 106,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 7
+  },
+  {
+    "gen3DexId": 107,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 51
+  },
+  {
+    "gen3DexId": 108,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 20
+  },
+  {
+    "gen3DexId": 109,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 26
+  },
+  {
+    "gen3DexId": 110,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 26
+  },
+  {
+    "gen3DexId": 111,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 31
+  },
+  {
+    "gen3DexId": 112,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 31
+  },
+  {
+    "gen3DexId": 113,
+    "genderRatio": 254,
+    "baseFriendship": 140,
+    "ability0": 30
+  },
+  {
+    "gen3DexId": 114,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 115,
+    "genderRatio": 254,
+    "baseFriendship": 70,
+    "ability0": 48
+  },
+  {
+    "gen3DexId": 116,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33
+  },
+  {
+    "gen3DexId": 117,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33
+  },
+  {
+    "gen3DexId": 118,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33
+  },
+  {
+    "gen3DexId": 119,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33
+  },
+  {
+    "gen3DexId": 120,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 35
+  },
+  {
+    "gen3DexId": 121,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 35
+  },
+  {
+    "gen3DexId": 122,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 43
+  },
+  {
+    "gen3DexId": 123,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 68
+  },
+  {
+    "gen3DexId": 124,
+    "genderRatio": 254,
+    "baseFriendship": 70,
+    "ability0": 12
+  },
+  {
+    "gen3DexId": 125,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 9
+  },
+  {
+    "gen3DexId": 126,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 49
+  },
+  {
+    "gen3DexId": 127,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 52
+  },
+  {
+    "gen3DexId": 128,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 22
+  },
+  {
+    "gen3DexId": 129,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33
+  },
+  {
+    "gen3DexId": 130,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 22
+  },
+  {
+    "gen3DexId": 131,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 11
+  },
+  {
+    "gen3DexId": 132,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 7
+  },
+  {
+    "gen3DexId": 133,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 50
+  },
+  {
+    "gen3DexId": 134,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 11
+  },
+  {
+    "gen3DexId": 135,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 10
+  },
+  {
+    "gen3DexId": 136,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 18
+  },
+  {
+    "gen3DexId": 137,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 36
+  },
+  {
+    "gen3DexId": 138,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33
+  },
+  {
+    "gen3DexId": 139,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33
+  },
+  {
+    "gen3DexId": 140,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33
+  },
+  {
+    "gen3DexId": 141,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33
+  },
+  {
+    "gen3DexId": 142,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 69
+  },
+  {
+    "gen3DexId": 143,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 17
+  },
+  {
+    "gen3DexId": 144,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 46
+  },
+  {
+    "gen3DexId": 145,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 46
+  },
+  {
+    "gen3DexId": 146,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 46
+  },
+  {
+    "gen3DexId": 147,
+    "genderRatio": 31,
+    "baseFriendship": 35,
+    "ability0": 61
+  },
+  {
+    "gen3DexId": 148,
+    "genderRatio": 31,
+    "baseFriendship": 35,
+    "ability0": 61
+  },
+  {
+    "gen3DexId": 149,
+    "genderRatio": 31,
+    "baseFriendship": 35,
+    "ability0": 39
+  },
+  {
+    "gen3DexId": 150,
+    "genderRatio": 255,
+    "baseFriendship": 0,
+    "ability0": 46
+  },
+  {
+    "gen3DexId": 151,
+    "genderRatio": 255,
+    "baseFriendship": 100,
+    "ability0": 28
+  },
+  {
+    "gen3DexId": 152,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 65
+  },
+  {
+    "gen3DexId": 153,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 65
+  },
+  {
+    "gen3DexId": 154,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 65
+  },
+  {
+    "gen3DexId": 155,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 66
+  },
+  {
+    "gen3DexId": 156,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 66
+  },
+  {
+    "gen3DexId": 157,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 66
+  },
+  {
+    "gen3DexId": 158,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 67
+  },
+  {
+    "gen3DexId": 159,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 67
+  },
+  {
+    "gen3DexId": 160,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 67
+  },
+  {
+    "gen3DexId": 161,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 50
+  },
+  {
+    "gen3DexId": 162,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 50
+  },
+  {
+    "gen3DexId": 163,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 15
+  },
+  {
+    "gen3DexId": 164,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 15
+  },
+  {
+    "gen3DexId": 165,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 68
+  },
+  {
+    "gen3DexId": 166,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 68
+  },
+  {
+    "gen3DexId": 167,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 68
+  },
+  {
+    "gen3DexId": 168,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 68
+  },
+  {
+    "gen3DexId": 169,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 39
+  },
+  {
+    "gen3DexId": 170,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 10
+  },
+  {
+    "gen3DexId": 171,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 10
+  },
+  {
+    "gen3DexId": 172,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 9
+  },
+  {
+    "gen3DexId": 173,
+    "genderRatio": 191,
+    "baseFriendship": 140,
+    "ability0": 56
+  },
+  {
+    "gen3DexId": 174,
+    "genderRatio": 191,
+    "baseFriendship": 70,
+    "ability0": 56
+  },
+  {
+    "gen3DexId": 175,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 32
+  },
+  {
+    "gen3DexId": 176,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 32
+  },
+  {
+    "gen3DexId": 177,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 28
+  },
+  {
+    "gen3DexId": 178,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 28
+  },
+  {
+    "gen3DexId": 179,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 9
+  },
+  {
+    "gen3DexId": 180,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 9
+  },
+  {
+    "gen3DexId": 181,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 9
+  },
+  {
+    "gen3DexId": 182,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 183,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 47
+  },
+  {
+    "gen3DexId": 184,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 47
+  },
+  {
+    "gen3DexId": 185,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 5
+  },
+  {
+    "gen3DexId": 186,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 11
+  },
+  {
+    "gen3DexId": 187,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 188,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 189,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 190,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 50
+  },
+  {
+    "gen3DexId": 191,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 192,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 34
+  },
+  {
+    "gen3DexId": 193,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 3
+  },
+  {
+    "gen3DexId": 194,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 6
+  },
+  {
+    "gen3DexId": 195,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 11
+  },
+  {
+    "gen3DexId": 196,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 28
+  },
+  {
+    "gen3DexId": 197,
+    "genderRatio": 31,
+    "baseFriendship": 70,
+    "ability0": 28
+  },
+  {
+    "gen3DexId": 198,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 15
+  },
+  {
+    "gen3DexId": 199,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 20
+  },
+  {
+    "gen3DexId": 200,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 26
+  },
+  {
+    "gen3DexId": 201,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 26
+  },
+  {
+    "gen3DexId": 202,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 23
+  },
+  {
+    "gen3DexId": 203,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 39
+  },
+  {
+    "gen3DexId": 204,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 5
+  },
+  {
+    "gen3DexId": 205,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 5
+  },
+  {
+    "gen3DexId": 206,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 32
+  },
+  {
+    "gen3DexId": 207,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 52
+  },
+  {
+    "gen3DexId": 208,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 69
+  },
+  {
+    "gen3DexId": 209,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 22
+  },
+  {
+    "gen3DexId": 210,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 22
+  },
+  {
+    "gen3DexId": 211,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 38
+  },
+  {
+    "gen3DexId": 212,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 68
+  },
+  {
+    "gen3DexId": 213,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 5
+  },
+  {
+    "gen3DexId": 214,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 68
+  },
+  {
+    "gen3DexId": 215,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 39
+  },
+  {
+    "gen3DexId": 216,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 53
+  },
+  {
+    "gen3DexId": 217,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 62
+  },
+  {
+    "gen3DexId": 218,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 40
+  },
+  {
+    "gen3DexId": 219,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 40
+  },
+  {
+    "gen3DexId": 220,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 12
+  },
+  {
+    "gen3DexId": 221,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 12
+  },
+  {
+    "gen3DexId": 222,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 55
+  },
+  {
+    "gen3DexId": 223,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 55
+  },
+  {
+    "gen3DexId": 224,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 21
+  },
+  {
+    "gen3DexId": 225,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 72
+  },
+  {
+    "gen3DexId": 226,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33
+  },
+  {
+    "gen3DexId": 227,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 51
+  },
+  {
+    "gen3DexId": 228,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 48
+  },
+  {
+    "gen3DexId": 229,
+    "genderRatio": 127,
+    "baseFriendship": 35,
+    "ability0": 48
+  },
+  {
+    "gen3DexId": 230,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 33
+  },
+  {
+    "gen3DexId": 231,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 53
+  },
+  {
+    "gen3DexId": 232,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 5
+  },
+  {
+    "gen3DexId": 233,
+    "genderRatio": 255,
+    "baseFriendship": 70,
+    "ability0": 36
+  },
+  {
+    "gen3DexId": 234,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 22
+  },
+  {
+    "gen3DexId": 235,
+    "genderRatio": 127,
+    "baseFriendship": 70,
+    "ability0": 20
+  },
+  {
+    "gen3DexId": 236,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 62
+  },
+  {
+    "gen3DexId": 237,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 22
+  },
+  {
+    "gen3DexId": 238,
+    "genderRatio": 254,
+    "baseFriendship": 70,
+    "ability0": 12
+  },
+  {
+    "gen3DexId": 239,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 9
+  },
+  {
+    "gen3DexId": 240,
+    "genderRatio": 0,
+    "baseFriendship": 70,
+    "ability0": 49
+  },
+  {
+    "gen3DexId": 241,
+    "genderRatio": 254,
+    "baseFriendship": 70,
+    "ability0": 47
+  },
+  {
+    "gen3DexId": 242,
+    "genderRatio": 254,
+    "baseFriendship": 140,
+    "ability0": 30
+  },
+  {
+    "gen3DexId": 243,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 46
+  },
+  {
+    "gen3DexId": 244,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 46
+  },
+  {
+    "gen3DexId": 245,
+    "genderRatio": 255,
+    "baseFriendship": 35,
+    "ability0": 46
+  },
+  {
+    "gen3DexId": 246,
+    "genderRatio": 31,
+    "baseFriendship": 35,
+    "ability0": 62
+  },
+  {
+    "gen3DexId": 247,
+    "genderRatio": 31,
+    "baseFriendship": 35,
+    "ability0": 61
+  },
+  {
+    "gen3DexId": 248,
+    "genderRatio": 31,
+    "baseFriendship": 35,
+    "ability0": 45
+  },
+  {
+    "gen3DexId": 249,
+    "genderRatio": 255,
+    "baseFriendship": 0,
+    "ability0": 46
+  },
+  {
+    "gen3DexId": 250,
+    "genderRatio": 255,
+    "baseFriendship": 0,
+    "ability0": 46
+  },
+  {
+    "gen3DexId": 251,
+    "genderRatio": 255,
+    "baseFriendship": 100,
+    "ability0": 30
+  }
+]
