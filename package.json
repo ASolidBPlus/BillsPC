@@ -5,12 +5,13 @@
   "type": "module",
   "workspaces": [
     "core",
-    "tests"
+    "tests",
+    "web"
   ],
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run && bun run --cwd web test",
     "test:watch": "vitest",
-    "typecheck": "tsc --build",
+    "typecheck": "tsc --build && tsc --noEmit -p web/tsconfig.json",
     "lint": "eslint --max-warnings 0 .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

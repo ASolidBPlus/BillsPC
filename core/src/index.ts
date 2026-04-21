@@ -10,3 +10,14 @@ export { packBoxed, unpackBoxed, BOXED_SIZE } from './pack/boxed.js';
 export { packParty, PARTY_SIZE } from './pack/party.js';
 export type { DecodeError, DecodeErrorReason } from './pack/decodeError.js';
 export { isDecodeError } from './pack/decodeError.js';
+
+// Sprint 3a save reader.
+export { parseSave, detectFormat, isSaveError } from './sav/index.js';
+export type {
+  SaveContents,
+  SaveError,
+  SaveErrorReason,
+  SaveFormat,
+  TrainerInfo,
+  SaveSource,
+} from './types/sav.js';

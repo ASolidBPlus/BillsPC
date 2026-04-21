@@ -15,10 +15,13 @@ describe('public API surface', () => {
       'BOXED_SIZE',
       'PARTY_SIZE',
       'convert',
+      'detectFormat',
       'isDecodeError',
       'isRefusal',
+      'isSaveError',
       'packBoxed',
       'packParty',
+      'parseSave',
       'unpackBoxed',
     ]);
   });

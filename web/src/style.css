@@ -1,0 +1,193 @@
+:root {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  color-scheme: light dark;
+  background: #f7f7f8;
+  color: #1d1d1f;
+}
+
+body {
+  margin: 0;
+  padding: 1.25rem;
+  min-height: 100vh;
+}
+
+#app {
+  max-width: 880px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+}
+
+h1 {
+  font-size: 1.4rem;
+  margin: 0 0 0.25rem;
+}
+
+.subtitle {
+  color: #555;
+  font-size: 0.9rem;
+  margin: 0 0 1rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.drop-zone {
+  border: 2px dashed #aaa;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  background: #fff;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.drop-zone.drag-over {
+  background: #eef6ff;
+  border-color: #1d6ce0;
+}
+
+.drop-zone input[type='file'] {
+  display: block;
+  margin: 0.75rem auto 0;
+}
+
+.drop-zone .hint {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 0.5rem;
+}
+
+.parsing,
+.error {
+  text-align: center;
+  font-size: 1.05rem;
+  padding: 2rem;
+}
+
+.error {
+  color: #b00020;
+}
+
+.trainer-grid {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.5rem 1rem;
+  align-items: center;
+}
+
+.format-badge {
+  background: #1d6ce0;
+  color: #fff;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.warnings {
+  background: #fff8e6;
+  border: 1px solid #f4d03f;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.warnings ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.section h2 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.mon-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-top: 1px solid #eee;
+  gap: 0.5rem;
+}
+
+.mon-row:first-child {
+  border-top: none;
+}
+
+.mon-meta {
+  font-size: 0.9rem;
+}
+
+.mon-meta strong {
+  font-weight: 600;
+}
+
+.mon-meta .nick {
+  color: #555;
+}
+
+.refusal {
+  color: #b00020;
+  background: #ffeaea;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+}
+
+.box-toggle {
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  background: #1d6ce0;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+}
+
+button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  background: #f0f0f0;
+  color: #1d1d1f;
+}
+
+.toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.toolbar .summary {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.empty {
+  text-align: center;
+  padding: 1.5rem;
+  color: #555;
+}
