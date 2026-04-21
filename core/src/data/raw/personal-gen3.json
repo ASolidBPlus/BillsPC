@@ -219,7 +219,7 @@
     "gen3DexId": 37,
     "genderRatio": 191,
     "baseFriendship": 70,
-    "ability0": 50
+    "ability0": 18
   },
   {
     "gen3DexId": 38,
@@ -373,37 +373,37 @@
   },
   {
     "gen3DexId": 63,
-    "genderRatio": 127,
+    "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 28
   },
   {
     "gen3DexId": 64,
-    "genderRatio": 127,
+    "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 28
   },
   {
     "gen3DexId": 65,
-    "genderRatio": 127,
+    "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 28
   },
   {
     "gen3DexId": 66,
-    "genderRatio": 127,
+    "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 62
   },
   {
     "gen3DexId": 67,
-    "genderRatio": 127,
+    "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 62
   },
   {
     "gen3DexId": 68,
-    "genderRatio": 127,
+    "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 62
   },
@@ -699,7 +699,7 @@
     "gen3DexId": 117,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 33
+    "ability0": 38
   },
   {
     "gen3DexId": 118,
@@ -745,19 +745,19 @@
   },
   {
     "gen3DexId": 125,
-    "genderRatio": 0,
+    "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 9
   },
   {
     "gen3DexId": 126,
-    "genderRatio": 0,
+    "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 49
   },
   {
     "gen3DexId": 127,
-    "genderRatio": 0,
+    "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 52
   },
@@ -823,31 +823,31 @@
   },
   {
     "gen3DexId": 138,
-    "genderRatio": 127,
+    "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 33
   },
   {
     "gen3DexId": 139,
-    "genderRatio": 127,
+    "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 33
   },
   {
     "gen3DexId": 140,
-    "genderRatio": 127,
+    "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 33
   },
   {
     "gen3DexId": 141,
-    "genderRatio": 127,
+    "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 33
   },
   {
     "gen3DexId": 142,
-    "genderRatio": 127,
+    "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 69
   },
@@ -877,19 +877,19 @@
   },
   {
     "gen3DexId": 147,
-    "genderRatio": 31,
+    "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 61
   },
   {
     "gen3DexId": 148,
-    "genderRatio": 31,
+    "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 61
   },
   {
     "gen3DexId": 149,
-    "genderRatio": 31,
+    "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 39
   },
@@ -1045,15 +1045,15 @@
   },
   {
     "gen3DexId": 175,
-    "genderRatio": 127,
+    "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 32
+    "ability0": 55
   },
   {
     "gen3DexId": 176,
-    "genderRatio": 127,
+    "genderRatio": 31,
     "baseFriendship": 70,
-    "ability0": 32
+    "ability0": 55
   },
   {
     "gen3DexId": 177,
@@ -1167,7 +1167,7 @@
     "gen3DexId": 195,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 11
+    "ability0": 6
   },
   {
     "gen3DexId": 196,
@@ -1178,25 +1178,25 @@
   {
     "gen3DexId": 197,
     "genderRatio": 31,
-    "baseFriendship": 70,
+    "baseFriendship": 35,
     "ability0": 28
   },
   {
     "gen3DexId": 198,
     "genderRatio": 127,
-    "baseFriendship": 70,
+    "baseFriendship": 35,
     "ability0": 15
   },
   {
     "gen3DexId": 199,
     "genderRatio": 127,
     "baseFriendship": 70,
-    "ability0": 20
+    "ability0": 12
   },
   {
     "gen3DexId": 200,
     "genderRatio": 127,
-    "baseFriendship": 70,
+    "baseFriendship": 35,
     "ability0": 26
   },
   {
@@ -1249,13 +1249,13 @@
   },
   {
     "gen3DexId": 209,
-    "genderRatio": 127,
+    "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 22
   },
   {
     "gen3DexId": 210,
-    "genderRatio": 127,
+    "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 22
   },
@@ -1327,7 +1327,7 @@
   },
   {
     "gen3DexId": 222,
-    "genderRatio": 127,
+    "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 55
   },
@@ -1429,13 +1429,13 @@
   },
   {
     "gen3DexId": 239,
-    "genderRatio": 0,
+    "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 9
   },
   {
     "gen3DexId": 240,
-    "genderRatio": 0,
+    "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 49
   },
@@ -1471,19 +1471,19 @@
   },
   {
     "gen3DexId": 246,
-    "genderRatio": 31,
+    "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 62
   },
   {
     "gen3DexId": 247,
-    "genderRatio": 31,
+    "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 61
   },
   {
     "gen3DexId": 248,
-    "genderRatio": 31,
+    "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 45
   },

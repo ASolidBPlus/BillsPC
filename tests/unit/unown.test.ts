@@ -27,4 +27,24 @@ describe('Unown letter extraction and PID constraint', () => {
   it('Unown fixture count is 26 (A..Z)', () => {
     expect(UNOWN_FIXTURES.length).toBe(26);
   });
+
+  /**
+   * AMEND-7: Gen 2 never produces `!` (index 26) or `?` (index 27) — those
+   * forms were introduced in FRLG's Tanoby Ruins — so there's no fixture
+   * round-trip to exercise. But the Gen 3 extraction function
+   * `unownLetterFromPid` returns values in 0..27 per its `% 28`, and we need
+   * unit coverage of the 26 and 27 branches in case a future PID-search path
+   * emits one of those letters. These PIDs are constructed directly by
+   * choosing bit pairs that encode the target pre-mod value (raw 26 = 0b00011010,
+   * raw 27 = 0b00011011).
+   */
+  it('unownLetterFromPid extracts letter 26 (!) from a constructed PID', () => {
+    // raw = 26 = 0b00_01_10_10 → byte3=00, byte2=01, byte1=10, byte0=10
+    expect(unownLetterFromPid(0x00010202)).toBe(26);
+  });
+
+  it('unownLetterFromPid extracts letter 27 (?) from a constructed PID', () => {
+    // raw = 27 = 0b00_01_10_11 → byte3=00, byte2=01, byte1=10, byte0=11
+    expect(unownLetterFromPid(0x00010203)).toBe(27);
+  });
 });
