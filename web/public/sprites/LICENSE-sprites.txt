@@ -1,28 +1,21 @@
-# pokeportal sprite assets
+Sprite sources for PokeTimeCapsule
+===================================
 
-Pokemon front sprites in `gen1/`, `gen2/`, `gen3/` are sourced from PokeAPI/sprites
-(https://github.com/PokeAPI/sprites @ master), which extracts them from
-official ROM data.
+Front sprites (gen1, gen2, gen3):
+  Source: https://github.com/PokeAPI/sprites
+  Subpaths used:
+    gen1/  -> sprites/pokemon/versions/generation-i/yellow/<n>.png
+    gen2/  -> sprites/pokemon/versions/generation-ii/crystal/<n>.png
+    gen3/  -> sprites/pokemon/versions/generation-iii/emerald/<n>.png
 
-Per-species overworld icons in `overworld/` are sourced from pret/pokecrystal
-(https://github.com/pret/pokecrystal @ master), specifically the
-menu-icon assignments in `data/pokemon/menu_icons.asm` mapped to PNGs in
-`gfx/icons/`. The Crystal Clear ROM hack (ShockSlayer/crystal-clear) was the
-PLAN's preferred source for unique per-species overworld sprites; that repo
-was not reachable at fetch time, so we fall back to the original Crystal
-three-category icon pool (bird / fish / monster / etc.).
+Overworld follower sprites (HGSS-style, GBA-tooled):
+  Source: https://github.com/TaTaTaZJJ/pokemon-overworld-for-gba (base/ directory)
+  Each source is a 9-frame walking strip; we extract the first 32x32 frame
+  via `convert -crop 32x32+0+0` for the box-browser tile. The full 9-frame
+  strips are kept upstream and can be re-downloaded for animation if needed.
 
-All Pokemon names, sprites, and related imagery are property of Nintendo,
-Game Freak, and Creatures Inc. This project uses these assets in an offline
-conversion utility under fair-use principles; no game ROM data, save data,
-or executable code is distributed.
-
-## Placeholder substitutions
-
-The following ndex slots had no resolvable source and ship a 16x16 transparent
-placeholder PNG (the box browser displays a blank tile):
-
-- `gen1`: none
-- `gen2`: none
-- `gen3`: none
-- `overworld`: none
+License:
+  All sprites are 25-year-old Game Freak / Nintendo properties redistributed
+  via public sprite repositories under fair-use precedent (PKHeX, PokeAPI,
+  etc.). Use for non-commercial transfer-tool work; redistribution as bare
+  sprite asset packs is discouraged.
