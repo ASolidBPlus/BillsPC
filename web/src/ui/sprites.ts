@@ -20,9 +20,13 @@ import { el, img } from './dom.js';
 export type SpriteSet = 'gen1' | 'gen2' | 'gen3' | 'overworld';
 
 export const SPRITE_RENDER_SIZE: Readonly<Record<SpriteSet, number>> = {
-  gen1: 56,
-  gen2: 56,
-  gen3: 64,
+  // All Gen 1/2/3 source/destination sprites render at the same size so the
+  // two comparison panes look balanced regardless of which cart's native
+  // sprite resolution we got (Red is 40×40, Crystal 56×56, Emerald 64×64).
+  // Pixel-rendering keeps them crisp at the upscaled size.
+  gen1: 96,
+  gen2: 96,
+  gen3: 96,
   overworld: 32, // single-frame display size; source strip is 288×32 (9 frames)
 };
 
