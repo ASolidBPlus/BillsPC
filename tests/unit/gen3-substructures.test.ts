@@ -104,7 +104,7 @@ describe('Misc substructure', () => {
     const decoded = decodeMisc(bytes);
     expect(decoded.ivs).toEqual(it.ivs);
     expect(decoded.metLocation).toBe(146);
-    expect(decoded.metLevel).toBe(5);
+    expect(decoded.metLevel).toBe(0); // PKHeX-correct for hatched eggs
     expect(decoded.isEgg).toBe(false);
     expect(decoded.abilityBit).toBe(0);
     expect(decoded.ribbonsAndObedience).toBe(0);
@@ -124,11 +124,11 @@ describe('Misc substructure', () => {
     expect((word >>> 31) & 0x1).toBe(0); // abilityBit
   });
 
-  it('originsInfo packs metLevel 5, originGame FRLG (4), ball Pokeball (4)', () => {
+  it('originsInfo packs metLevel 0, originGame FRLG (4), ball Pokeball (4)', () => {
     const it = intermediate();
     const bytes = encodeMisc(it, it.sid);
     const word = readU16LE(bytes, 2);
-    expect(word & 0x7f).toBe(5); // metLevel
+    expect(word & 0x7f).toBe(0); // metLevel — 0 for hatched eggs (was wrongly 5)
     expect((word >>> 7) & 0xf).toBe(4); // origin = FRLG
     expect((word >>> 11) & 0xf).toBe(4); // ball = Pokeball
   });

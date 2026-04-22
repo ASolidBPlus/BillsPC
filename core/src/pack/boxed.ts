@@ -228,8 +228,8 @@ export function unpackBoxed(bytes: Uint8Array): Gen3Intermediate | DecodeError {
       `metLocation expected 146, got ${misc.metLocation}`,
     );
   }
-  if (misc.metLevel !== 5) {
-    return makeDecodeError('UNEXPECTED_LITERAL_FIELD', `metLevel expected 5, got ${misc.metLevel}`);
+  if (misc.metLevel !== 0) {
+    return makeDecodeError('UNEXPECTED_LITERAL_FIELD', `metLevel expected 0, got ${misc.metLevel}`);
   }
   if (misc.originGameId !== ORIGIN_GAME_FIRERED) {
     return makeDecodeError(
@@ -304,7 +304,7 @@ export function unpackBoxed(bytes: Uint8Array): Gen3Intermediate | DecodeError {
     ribbons: [] as const,
     markings: 0,
     metLocation: 146,
-    metLevel: 5,
+    metLevel: 0,
     metGame: 'FireRed',
     originGame: 'FireRed',
     fatefulEncounter: false,

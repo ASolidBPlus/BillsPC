@@ -10,7 +10,7 @@
  *   off 8..11  u32  ribbonsAndObedience (bit-packed; see below)
  *
  * **originsInfo** (u16 LE):
- *   bits  0..6  metLevel (0..127)        — HANDOFF pins 5
+ *   bits  0..6  metLevel (0..127)        — pinned 0 (PKHeX-correct for hatched eggs; HANDOFF §4.8 said 5 — wrong)
  *   bits  7..10 originGame (0..15)       — 4=FRLG mapping; see ORIGIN_GAME_ID
  *   bits 11..14 ball (0..15)             — PLAN_EVAL A11 pins 4=Poké Ball
  *   bit  15     otGender (0=male, 1=female)

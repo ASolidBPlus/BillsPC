@@ -49,7 +49,7 @@ export interface Gen3Intermediate {
   readonly ribbons: readonly [];
   readonly markings: 0;
   readonly metLocation: 146; // Four Island (0x92)
-  readonly metLevel: 5;
+  readonly metLevel: 0; // PKHeX expects 0 for hatched eggs (HANDOFF §4.8 was wrong with 5)
   readonly metGame: 'FireRed';
   readonly originGame: 'FireRed';
   readonly fatefulEncounter: false;
