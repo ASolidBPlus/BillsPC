@@ -82,25 +82,36 @@ export interface DestParseError {
   readonly error: SaveError;
 }
 
-export type AppState =
-  | { kind: 'idle' }
-  | { kind: 'parsing'; fileName: string; size: number }
-  | { kind: 'parse_error'; fileName: string; error: SaveError }
-  | {
-      kind: 'loaded';
-      fileName: string;
-      save: SaveContents;
-      results: ReadonlyMap<string, ConvertResult>;
-      // S5 fields (per PLAN §5):
-      boxIndex: number;
-      cursor: Cursor;
-      openMon: MonRef | null;
-      // S6a optional destination fields (per PLAN_EVAL §6.10):
-      destParsing?: DestParsing;
-      destParseError?: DestParseError;
-      dest?: DestState;
-      destDownload?: DestDownload;
-    };
+/**
+ * Destination-side fields. Present on EVERY top-level state — destination
+ * uploads are independent of the source flow so the user can drop either
+ * file first. Reducer transitions for `dest_*` actions don't gate on
+ * `state.kind`; only the STORE action requires both source-loaded AND
+ * dest-loaded.
+ */
+export interface DestSlot {
+  readonly destParsing?: DestParsing;
+  readonly destParseError?: DestParseError;
+  readonly dest?: DestState;
+  readonly destDownload?: DestDownload;
+}
+
+export type AppState = DestSlot &
+  (
+    | { kind: 'idle' }
+    | { kind: 'parsing'; fileName: string; size: number }
+    | { kind: 'parse_error'; fileName: string; error: SaveError }
+    | {
+        kind: 'loaded';
+        fileName: string;
+        save: SaveContents;
+        results: ReadonlyMap<string, ConvertResult>;
+        // S5 fields (per PLAN §5):
+        boxIndex: number;
+        cursor: Cursor;
+        openMon: MonRef | null;
+      }
+  );
 
 export type Action =
   | { type: 'file_selected'; file: { name: string; size: number } }
@@ -195,50 +206,50 @@ export function reducer(state: AppState, action: Action): AppState {
       if (state.openMon === null) return state;
       return { ...state, openMon: null };
     }
-    // S6a: destination flow.
+    // S6a: destination flow. Independent of source — works in ANY state.
     case 'dest_file_selected': {
-      if (state.kind !== 'loaded') return state;
-      const next = { ...state };
-      next.destParsing = { fileName: action.file.name, size: action.file.size };
-      delete next.destParseError;
-      delete next.dest;
-      delete next.destDownload;
-      return next;
+      return {
+        ...state,
+        destParsing: { fileName: action.file.name, size: action.file.size },
+        destParseError: undefined,
+        dest: undefined,
+        destDownload: undefined,
+      };
     }
     case 'dest_file_parsed': {
-      if (state.kind !== 'loaded') return state;
-      const next = { ...state };
-      delete next.destParsing;
-      delete next.destParseError;
-      next.dest = {
-        fileName: action.fileName,
-        save: action.save,
-        boxIndex: 0,
-        cursor: { row: 0, col: 0 },
+      return {
+        ...state,
+        destParsing: undefined,
+        destParseError: undefined,
+        dest: {
+          fileName: action.fileName,
+          save: action.save,
+          boxIndex: 0,
+          cursor: { row: 0, col: 0 },
+        },
+        destDownload: undefined,
       };
-      delete next.destDownload;
-      return next;
     }
     case 'dest_file_failed': {
-      if (state.kind !== 'loaded') return state;
-      const next = { ...state };
-      delete next.destParsing;
-      next.destParseError = { fileName: action.fileName, error: action.error };
-      delete next.dest;
-      delete next.destDownload;
-      return next;
+      return {
+        ...state,
+        destParsing: undefined,
+        destParseError: { fileName: action.fileName, error: action.error },
+        dest: undefined,
+        destDownload: undefined,
+      };
     }
     case 'dest_clear': {
-      if (state.kind !== 'loaded') return state;
-      const next = { ...state };
-      delete next.dest;
-      delete next.destParsing;
-      delete next.destParseError;
-      delete next.destDownload;
-      return next;
+      return {
+        ...state,
+        dest: undefined,
+        destParsing: undefined,
+        destParseError: undefined,
+        destDownload: undefined,
+      };
     }
     case 'dest_cursor_move': {
-      if (state.kind !== 'loaded' || !state.dest) return state;
+      if (!state.dest) return state;
       const row = clamp(state.dest.cursor.row + action.drow, 0, DEST_ROWS - 1);
       const col = clamp(state.dest.cursor.col + action.dcol, 0, DEST_COLS - 1);
       if (row === state.dest.cursor.row && col === state.dest.cursor.col) return state;
@@ -248,7 +259,7 @@ export function reducer(state: AppState, action: Action): AppState {
       };
     }
     case 'dest_box_change': {
-      if (state.kind !== 'loaded' || !state.dest) return state;
+      if (!state.dest) return state;
       const next = clamp(state.dest.boxIndex + action.delta, 0, DEST_BOX_COUNT - 1);
       if (next === state.dest.boxIndex) return state;
       return {
@@ -257,7 +268,7 @@ export function reducer(state: AppState, action: Action): AppState {
       };
     }
     case 'store_committed': {
-      if (state.kind !== 'loaded' || !state.dest) return state;
+      if (!state.dest) return state;
       return {
         ...state,
         dest: { ...state.dest, save: action.save },

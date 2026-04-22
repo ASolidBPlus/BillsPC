@@ -201,15 +201,17 @@ describe('S6a destination reducer transitions', () => {
     expect(s).toBe(INITIAL_STATE);
   });
 
-  it('S6a actions are no-ops outside loaded', () => {
+  it('dest_* actions work independently of source state (user can drop dest first)', () => {
     const fake = makeFakeGen3();
-    expect(
-      reducer(INITIAL_STATE, { type: 'dest_file_selected', file: { name: 'x', size: 1 } }),
-    ).toBe(INITIAL_STATE);
-    expect(reducer(INITIAL_STATE, { type: 'dest_file_parsed', save: fake, fileName: 'x' })).toBe(
-      INITIAL_STATE,
-    );
-    expect(reducer(INITIAL_STATE, { type: 'dest_clear' })).toBe(INITIAL_STATE);
+    // dest_file_parsed from idle: source still idle, dest now loaded.
+    const s1 = reducer(INITIAL_STATE, { type: 'dest_file_parsed', save: fake, fileName: 'x' });
+    expect(s1.kind).toBe('idle');
+    expect(s1.dest?.fileName).toBe('x');
+    // dest_clear unsets dest; source state still untouched.
+    const s2 = reducer(s1, { type: 'dest_clear' });
+    expect(s2.kind).toBe('idle');
+    expect(s2.dest).toBeUndefined();
+    // dest_cursor_move / dest_box_change are still no-ops without a dest.
     expect(reducer(INITIAL_STATE, { type: 'dest_cursor_move', drow: 1, dcol: 0 })).toBe(
       INITIAL_STATE,
     );

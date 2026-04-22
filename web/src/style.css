@@ -648,58 +648,52 @@ img.sprite,
   color: var(--gbc-dark-gray);
 }
 
-/* Warnings card kept for Code Evaluator visibility. */
-.loaded-grid {
+/* Symmetric source / destination panes (S6a polish — replaces the old
+   sidebar layout). Always 2 columns at desktop widths so each side reads
+   as an equal first-class slot — empty slots show the dotted upload zone,
+   loaded slots show trainer + box browser. */
+.panes-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: minmax(260px, 340px) 1fr;
+  grid-template-columns: 1fr 1fr;
   align-items: start;
 }
 
 @media (max-width: 720px) {
-  .loaded-grid {
+  .panes-grid {
     grid-template-columns: 1fr;
   }
 }
 
-.loaded-sidebar {
+.pane {
   display: grid;
-  gap: 12px;
-  min-width: 0; /* let children honor the column width instead of overflowing */
+  gap: 10px;
+  min-width: 0; /* allow children to fit the column instead of overflowing */
+  align-content: start;
 }
 
-/* S6a: destination drop zone lives inside the narrow sidebar column.
-   Override the wide `.drop-zone` defaults (designed for the main upload)
-   so it doesn't overflow into the box-browser column. */
-.dest-drop-zone {
-  padding: 0.75rem;
+.pane-label {
   font-size: 0.7rem;
-  text-align: left;
-}
-.dest-drop-zone .hint {
-  font-size: 0.65rem;
-  margin-top: 0.5rem;
-}
-.dest-drop-zone input[type='file'] {
-  margin: 0.5rem 0;
-  font-size: 0.7rem;
-}
-
-.dest-sidebar {
-  display: grid;
-  gap: 8px;
+  letter-spacing: 2px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--gbc-dark-gray);
+  padding: 2px 0;
 }
 
 .dest-summary {
   font-size: 0.75rem;
 }
 
+/* App container needs to be wider than 880 to fit both panes (each ~440px
+   max — source ~280, dest ~408). */
+#app {
+  max-width: 960px;
+}
+
 /* S6a: destination box browser has 6 cols × 5 rows = 30 slots per box.
-   Tiles match the source browser size (64 px) for visual parity. When
-   the dest is loaded it spans the full grid width below the source row
-   so the destination's wider grid doesn't squeeze the source. */
+   Tiles match the source browser size (64 px) for visual parity. */
 .dest-box-browser {
-  grid-column: 1 / -1;
   justify-self: start;
 }
 .dest-box-grid {

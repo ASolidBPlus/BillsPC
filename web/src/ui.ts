@@ -208,39 +208,180 @@ export function render(
     el(
       'p',
       { class: 'subtitle' },
-      'drop a Pokemon Red/Blue or Crystal save (.sav) — convert party + boxes to Gen 3 .pk3 entirely in your browser.',
+      'drop a Pokemon Red/Blue or Crystal save on the left, optionally drop a Gen 3 destination .sav on the right — convert + inject directly into a chosen PC slot.',
     ),
   );
   root.append(header);
 
+  // Symmetric 2-pane layout. Source on the left, destination on the right.
+  // Each side is independent — the user can drop them in either order. Empty
+  // slots show the dotted upload zone; loaded slots show trainer + box browser.
+  const grid = el('div', { class: 'panes-grid' });
+  grid.append(renderSourcePane(state, dispatch, deps));
+  grid.append(renderDestPane(state, dispatch, deps));
+  root.append(grid);
+
+  // Toolbar (reset / download-modified) only when something is loaded.
+  if (state.kind === 'loaded' || state.dest || state.destDownload) {
+    root.append(renderToolbar(state, dispatch));
+  }
+
+  // Comparison overlay — opened from clicking a source-side mon.
+  if (state.kind === 'loaded' && state.openMon) {
+    appendComparisonOverlay(root, state, dispatch, deps);
+  }
+}
+
+function renderSourcePane(
+  state: AppState,
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): HTMLElement {
+  const pane = el('div', { class: 'pane source-pane' });
+  pane.append(el('div', { class: 'pane-label' }, 'SOURCE'));
   switch (state.kind) {
     case 'idle':
-      root.append(renderDropZone(dispatch, deps, false));
+      pane.append(renderSourceDropZone(dispatch, deps, false));
       break;
     case 'parsing':
-      root.append(renderDropZone(dispatch, deps, true));
-      root.append(
+      pane.append(renderSourceDropZone(dispatch, deps, true));
+      pane.append(
         el('div', { class: 'card parsing' }, `Parsing ${state.fileName} (${state.size} bytes)…`),
       );
       break;
     case 'parse_error':
-      root.append(renderDropZone(dispatch, deps, false));
-      root.append(renderParseError(state.fileName, state.error, dispatch));
+      pane.append(renderSourceDropZone(dispatch, deps, false));
+      pane.append(renderParseError(state.fileName, state.error, dispatch));
       break;
-    case 'loaded':
-      root.append(renderLoaded(state, dispatch, deps));
+    case 'loaded': {
+      const trainerLines = [
+        `TRAINER: ${state.save.trainer.name || '(no name)'}`,
+        `ID No.  ${state.save.trainer.tid}`,
+        `FORMAT  ${state.save.format}`,
+      ];
+      pane.append(textDialog(trainerLines, { class: 'trainer-dialog' }));
+      if (state.save.warnings.length > 0) {
+        const warn = el('div', { class: 'warnings' });
+        warn.append(el('strong', {}, 'Warnings:'));
+        const ul = el('ul', {});
+        for (const w of state.save.warnings) ul.append(el('li', {}, w));
+        warn.append(ul);
+        pane.append(warn);
+      }
+      const entries = entriesForBox(state.save, state.boxIndex);
+      pane.append(
+        boxBrowser({
+          save: state.save,
+          boxIndex: state.boxIndex,
+          cursor: state.cursor,
+          entries,
+          onCursorMove: (drow, dcol) => dispatch({ type: 'cursor_move', drow, dcol }),
+          onBoxChange: (delta) => dispatch({ type: 'box_change', delta }),
+          onMonOpen: (ref) => dispatch({ type: 'mon_open', ref }),
+        }),
+      );
       break;
+    }
   }
+  return pane;
 }
 
-function renderDropZone(
+function renderDestPane(
+  state: AppState,
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): HTMLElement {
+  const pane = el('div', { class: 'pane dest-pane' });
+  pane.append(el('div', { class: 'pane-label' }, 'DESTINATION'));
+  if (state.dest) {
+    const lines = [
+      `Destination: ${state.dest.fileName}`,
+      `(${gen3GameLabel(state.dest.save.format)})`,
+    ];
+    pane.append(textDialog(lines, { class: 'trainer-dialog dest-summary' }));
+    pane.append(
+      destBoxBrowser({
+        save: state.dest.save,
+        boxIndex: state.dest.boxIndex,
+        cursor: state.dest.cursor,
+        onCursorMove: (drow, dcol) => dispatch({ type: 'dest_cursor_move', drow, dcol }),
+        onBoxChange: (delta) => dispatch({ type: 'dest_box_change', delta }),
+        onSlotClick: (slot) => {
+          const row = Math.floor(slot / 6) as 0 | 1 | 2 | 3 | 4;
+          const col = (slot % 6) as 0 | 1 | 2 | 3 | 4 | 5;
+          dispatch({
+            type: 'dest_cursor_move',
+            drow: (row - state.dest!.cursor.row) as -1 | 0 | 1,
+            dcol: (col - state.dest!.cursor.col) as -1 | 0 | 1,
+          });
+        },
+      }),
+    );
+    return pane;
+  }
+  if (state.destParsing) {
+    pane.append(renderDestDropZone(dispatch, deps, true));
+    pane.append(
+      el(
+        'div',
+        { class: 'card parsing' },
+        `Parsing ${state.destParsing.fileName} (${state.destParsing.size} bytes)…`,
+      ),
+    );
+    return pane;
+  }
+  if (state.destParseError) {
+    pane.append(
+      el(
+        'div',
+        { class: 'card error' },
+        `Could not load ${state.destParseError.fileName}: ${state.destParseError.error.reason}`,
+      ),
+    );
+  }
+  pane.append(renderDestDropZone(dispatch, deps, false));
+  return pane;
+}
+
+function renderToolbar(state: AppState, dispatch: (a: Action) => void): HTMLElement {
+  const bar = el('div', { class: 'card toolbar' });
+  const reset = el('button', { class: 'secondary' }, 'Reset') as HTMLButtonElement;
+  reset.addEventListener('click', () => dispatch({ type: 'reset' }));
+  bar.append(reset);
+  if (state.dest) {
+    const clearDest = el(
+      'button',
+      { class: 'secondary' },
+      'Clear destination',
+    ) as HTMLButtonElement;
+    clearDest.addEventListener('click', () => dispatch({ type: 'dest_clear' }));
+    bar.append(clearDest);
+  }
+  if (state.destDownload) {
+    const dl = el(
+      'button',
+      { class: 'primary download-modified' },
+      `Download ${state.destDownload.suggestedFilename}`,
+    ) as HTMLButtonElement;
+    dl.addEventListener('click', () => {
+      blobDownload(state.destDownload!.suggestedFilename, state.destDownload!.bytes);
+    });
+    bar.append(dl);
+  }
+  if (state.kind === 'loaded') {
+    bar.append(el('span', { class: 'summary' }, hint(state)));
+  }
+  return bar;
+}
+
+function renderSourceDropZone(
   dispatch: (a: Action) => void,
   deps: ControllerDeps,
   busy: boolean,
 ): HTMLElement {
-  const zone = el('div', { class: 'drop-zone' });
+  const zone = el('div', { class: 'drop-zone source-drop-zone' });
   zone.append(
-    el('div', {}, busy ? 'Reading…' : 'Drop a .sav file here, or pick one:'),
+    el('div', {}, busy ? 'Reading…' : 'Drop a Gen 1/2 .sav here, or pick one:'),
     (() => {
       const input = el('input', { type: 'file', accept: '' }) as HTMLInputElement;
       input.addEventListener('change', () => {
@@ -252,7 +393,7 @@ function renderDropZone(
     el(
       'div',
       { class: 'hint' },
-      'Supports Pokemon Red, Blue, and Crystal (English). All processing is local — nothing leaves your browser.',
+      'Pokemon Red, Blue, Yellow, Gold, Silver, Crystal (English).',
     ),
   );
   zone.addEventListener('dragover', (ev) => {
@@ -265,6 +406,46 @@ function renderDropZone(
     zone.classList.remove('drag-over');
     const f = ev.dataTransfer?.files?.[0];
     if (f) void handleFileSelected(f, dispatch, deps);
+  });
+  return zone;
+}
+
+function renderDestDropZone(
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+  busy: boolean,
+): HTMLElement {
+  const zone = el('div', { class: 'drop-zone dest-drop-zone' });
+  zone.append(
+    el('div', {}, busy ? 'Reading…' : 'Drop a Gen 3 .sav here, or pick one:'),
+    (() => {
+      const input = el('input', {
+        type: 'file',
+        accept: '',
+        class: 'dest-file-input',
+      }) as HTMLInputElement;
+      input.addEventListener('change', () => {
+        const f = input.files?.[0];
+        if (f) void handleDestFileSelected(f, dispatch, deps);
+      });
+      return input;
+    })(),
+    el(
+      'div',
+      { class: 'hint' },
+      'Ruby, Sapphire, Emerald, FireRed, LeafGreen (English, 64 KB or 128 KB).',
+    ),
+  );
+  zone.addEventListener('dragover', (ev) => {
+    ev.preventDefault();
+    zone.classList.add('drag-over');
+  });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', (ev) => {
+    ev.preventDefault();
+    zone.classList.remove('drag-over');
+    const f = ev.dataTransfer?.files?.[0];
+    if (f) void handleDestFileSelected(f, dispatch, deps);
   });
   return zone;
 }
@@ -295,224 +476,51 @@ function renderParseError(
   return card;
 }
 
-function renderLoaded(
+function appendComparisonOverlay(
+  root: HTMLElement,
   state: Extract<AppState, { kind: 'loaded' }>,
   dispatch: (a: Action) => void,
   deps: ControllerDeps,
-): DocumentFragment {
-  const frag = document.createDocumentFragment();
-
-  // Two-column layout at desktop widths: trainer card + warnings on the left,
-  // box browser on the right. Mobile/narrow stacks naturally via CSS.
-  const grid = el('div', { class: 'loaded-grid' });
-
-  const sidebar = el('div', { class: 'loaded-sidebar' });
-  const trainerLines: string[] = [
-    `TRAINER: ${state.save.trainer.name || '(no name)'}`,
-    `ID No.  ${state.save.trainer.tid}`,
-    `FORMAT  ${state.save.format}`,
-  ];
-  sidebar.append(textDialog(trainerLines, { class: 'trainer-dialog' }));
-
-  if (state.save.warnings.length > 0) {
-    const warn = el('div', { class: 'warnings' });
-    warn.append(el('strong', {}, 'Warnings:'));
-    const ul = el('ul', {});
-    for (const w of state.save.warnings) ul.append(el('li', {}, w));
-    warn.append(ul);
-    sidebar.append(warn);
+): void {
+  if (!state.openMon) return;
+  const ref = state.openMon;
+  const mon = monAt(state.save, ref);
+  if (!mon) return;
+  const speciesName = speciesNameFor(mon.speciesGen2Id);
+  const nick = decodeNickFallback(mon, speciesName);
+  const cached = state.results.get(monRefKey(ref));
+  const result = cached ?? runConvert(mon, deps);
+  let intermediate = null as Parameters<typeof comparisonView>[0]['intermediate'];
+  let refusal: { reason: string; message: string } | undefined;
+  if (result.ok) {
+    const r = deps.convert(mon);
+    if (deps.isRefusal(r)) {
+      refusal = { reason: r.reason, message: r.message };
+    } else {
+      intermediate = r;
+    }
+  } else {
+    refusal = { reason: result.reason, message: result.message };
   }
-
-  // S6a: destination drop zone / summary in the sidebar.
-  sidebar.append(renderDestSidebar(state, dispatch, deps));
-
-  grid.append(sidebar);
-
-  const entries = entriesForBox(state.save, state.boxIndex);
-  grid.append(
-    boxBrowser({
-      save: state.save,
-      boxIndex: state.boxIndex,
-      cursor: state.cursor,
-      entries,
-      onCursorMove: (drow, dcol) => dispatch({ type: 'cursor_move', drow, dcol }),
-      onBoxChange: (delta) => dispatch({ type: 'box_change', delta }),
-      onMonOpen: (ref) => dispatch({ type: 'mon_open', ref }),
+  const destStoreProp = buildDestStoreProp(state, intermediate, result, dispatch, deps);
+  root.append(
+    comparisonView({
+      mon,
+      intermediate,
+      refusal,
+      speciesName,
+      nickname: nick,
+      sourceFormat: state.save.format,
+      onConfirm: () => {
+        if (result.ok) {
+          blobDownload(result.suggestedName, result.bytes);
+        }
+        dispatch({ type: 'mon_close' });
+      },
+      onCancel: () => dispatch({ type: 'mon_close' }),
+      ...(destStoreProp ? { destStore: destStoreProp } : {}),
     }),
   );
-
-  // S6a: render the destination box browser when a dest is loaded.
-  if (state.dest) {
-    grid.append(
-      destBoxBrowser({
-        save: state.dest.save,
-        boxIndex: state.dest.boxIndex,
-        cursor: state.dest.cursor,
-        onCursorMove: (drow, dcol) => dispatch({ type: 'dest_cursor_move', drow, dcol }),
-        onBoxChange: (delta) => dispatch({ type: 'dest_box_change', delta }),
-        onSlotClick: (slot) => {
-          const row = Math.floor(slot / 6) as 0 | 1 | 2 | 3 | 4;
-          const col = (slot % 6) as 0 | 1 | 2 | 3 | 4 | 5;
-          // Move cursor to the clicked slot via clamped delta moves so
-          // the reducer's clamp logic is the single source of truth.
-          dispatch({
-            type: 'dest_cursor_move',
-            drow: (row - state.dest!.cursor.row) as -1 | 0 | 1,
-            dcol: (col - state.dest!.cursor.col) as -1 | 0 | 1,
-          });
-          // The above only supports |1| moves; for larger jumps we'd
-          // need a "set cursor" action. Keep simple for S6a: clicking an
-          // adjacent tile moves the cursor; jumping requires arrow nav.
-          // (Tests assert the click handler exists; not the multi-step jump.)
-        },
-      }),
-    );
-  }
-
-  frag.append(grid);
-
-  // Toolbar with reset + (S6a) "Download modified .sav" when ready.
-  const bar = el('div', { class: 'card toolbar' });
-  const reset = el('button', { class: 'secondary' }, 'Load another file') as HTMLButtonElement;
-  reset.addEventListener('click', () => dispatch({ type: 'reset' }));
-  bar.append(reset);
-  if (state.destDownload) {
-    const dl = el(
-      'button',
-      { class: 'primary download-modified' },
-      `Download ${state.destDownload.suggestedFilename}`,
-    ) as HTMLButtonElement;
-    dl.addEventListener('click', () => {
-      blobDownload(state.destDownload!.suggestedFilename, state.destDownload!.bytes);
-    });
-    bar.append(dl);
-  }
-  bar.append(el('span', { class: 'summary' }, hint(state)));
-  frag.append(bar);
-
-  // Comparison overlay (above the rest).
-  if (state.openMon) {
-    const ref = state.openMon;
-    const mon = monAt(state.save, ref);
-    if (mon) {
-      const speciesName = speciesNameFor(mon.speciesGen2Id);
-      const nick = decodeNickFallback(mon, speciesName);
-      const cached = state.results.get(monRefKey(ref));
-      const result = cached ?? runConvert(mon, deps);
-      // (cached ?? runConvert) is a fallback for tests / first-render
-      // races; the controller's mon_open handler already kicked the
-      // microtask. The renderer never mutates state.
-      let intermediate = null as Parameters<typeof comparisonView>[0]['intermediate'];
-      let refusal: { reason: string; message: string } | undefined;
-      if (result.ok) {
-        // We need the Gen3Intermediate, not the packed bytes. Re-run
-        // convert here — cheap because the search PID hits the seed
-        // immediately on a known-good mon. Note: we already cached
-        // .bytes for the download path; computing the intermediate
-        // again is bounded.
-        const r = deps.convert(mon);
-        if (deps.isRefusal(r)) {
-          refusal = { reason: r.reason, message: r.message };
-        } else {
-          intermediate = r;
-        }
-      } else {
-        refusal = { reason: result.reason, message: result.message };
-      }
-      // S6a: build destStore prop. Visible when comparison overlay is
-      // open even without a dest (per Q3 — visible-but-disabled with
-      // tooltip). Enabled iff dest loaded AND cursor sits on an empty
-      // slot AND we have a packed result for this mon.
-      const destStoreProp = buildDestStoreProp(state, intermediate, result, dispatch, deps);
-      frag.append(
-        comparisonView({
-          mon,
-          intermediate,
-          refusal,
-          speciesName,
-          nickname: nick,
-          sourceFormat: state.save.format,
-          onConfirm: () => {
-            if (result.ok) {
-              blobDownload(result.suggestedName, result.bytes);
-            }
-            dispatch({ type: 'mon_close' });
-          },
-          onCancel: () => dispatch({ type: 'mon_close' }),
-          ...(destStoreProp ? { destStore: destStoreProp } : {}),
-        }),
-      );
-    }
-  }
-
-  return frag;
-}
-
-function renderDestSidebar(
-  state: Extract<AppState, { kind: 'loaded' }>,
-  dispatch: (a: Action) => void,
-  deps: ControllerDeps,
-): HTMLElement {
-  const card = el('div', { class: 'dest-sidebar' });
-  if (state.dest) {
-    const lines: string[] = [
-      `Destination: ${state.dest.fileName}`,
-      `(${gen3GameLabel(state.dest.save.format)})`,
-    ];
-    card.append(textDialog(lines, { class: 'dest-summary' }));
-    const change = el('button', { class: 'secondary' }, 'Change destination') as HTMLButtonElement;
-    change.addEventListener('click', () => dispatch({ type: 'dest_clear' }));
-    card.append(change);
-    return card;
-  }
-  if (state.destParsing) {
-    card.append(el('div', { class: 'card parsing' }, `Parsing ${state.destParsing.fileName}…`));
-    return card;
-  }
-  if (state.destParseError) {
-    card.append(
-      el(
-        'div',
-        { class: 'card error' },
-        `Could not load ${state.destParseError.fileName}: ${state.destParseError.error.reason}`,
-      ),
-    );
-  }
-  // Drop zone for destination
-  const zone = el('div', { class: 'drop-zone dest-drop-zone' });
-  zone.append(
-    el('div', {}, 'Drop destination .sav (Gen 3, 64 KB or 128 KB):'),
-    (() => {
-      const input = el('input', {
-        type: 'file',
-        accept: '',
-        class: 'dest-file-input',
-      }) as HTMLInputElement;
-      input.addEventListener('change', () => {
-        const f = input.files?.[0];
-        if (f) void handleDestFileSelected(f, dispatch, deps);
-      });
-      return input;
-    })(),
-    el(
-      'div',
-      { class: 'hint' },
-      'Optional: load a Gen 3 destination save to inject converted Pokemon directly into one of its PC boxes.',
-    ),
-  );
-  zone.addEventListener('dragover', (ev) => {
-    ev.preventDefault();
-    zone.classList.add('drag-over');
-  });
-  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-  zone.addEventListener('drop', (ev) => {
-    ev.preventDefault();
-    zone.classList.remove('drag-over');
-    const f = ev.dataTransfer?.files?.[0];
-    if (f) void handleDestFileSelected(f, dispatch, deps);
-  });
-  card.append(zone);
-  return card;
 }
 
 interface DestStoreProp {
