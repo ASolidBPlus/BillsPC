@@ -78,11 +78,7 @@ describe('deleteMonGen2 — party delete', () => {
     expect(readU16LE(after, C_CHECKSUM_OFFSET)).toBe(primary);
 
     const len = C_CHECKSUM_RANGE_END_INCLUSIVE - C_CHECKSUM_RANGE_START + 1;
-    const backupSum = sumU16(
-      after,
-      C_BACKUP_MIRROR_OFFSET,
-      C_BACKUP_MIRROR_OFFSET + len - 1,
-    );
+    const backupSum = sumU16(after, C_BACKUP_MIRROR_OFFSET, C_BACKUP_MIRROR_OFFSET + len - 1);
     expect(readU16LE(after, C_BACKUP_CHECKSUM_OFFSET)).toBe(backupSum);
 
     // The backup mirror is a verbatim copy of the primary block.

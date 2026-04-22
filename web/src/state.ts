@@ -105,7 +105,44 @@ export interface DestSlot {
   readonly destDownload?: DestDownload;
 }
 
+/** S7a — global Mode toggle (per orchestrator decision Q2). */
+export type Mode = 'upload' | 'cart';
+
+/**
+ * S7a — cart-mode connection state (additive). When `mode === 'cart'`
+ * AND a cart is connected, this carries the firmware variant + a
+ * display-friendly device id (e.g. "GBxCart RW v1.4 PCB Firmware R26").
+ */
+export interface CartConnection {
+  readonly variant: 'insidegadgets' | 'lesserkuma';
+  readonly deviceId: string;
+}
+
+export interface CartReadProgress {
+  readonly bytesRead: number;
+  readonly bytesTotal: number;
+  readonly phase?: 'connecting' | 'detecting' | 'reading' | 'parsing';
+}
+
+export interface CartReadError {
+  readonly reason: string;
+  readonly message: string;
+}
+
+/**
+ * S7a — cart-side ambient state shared across all top-level kinds.
+ * Mirrors `DestSlot`'s additive shape: present on every state so the
+ * reducer doesn't have to fork on `kind` for cart actions.
+ */
+export interface CartSlot {
+  readonly mode?: Mode;
+  readonly cartConnection?: CartConnection;
+  readonly cartReadProgress?: CartReadProgress;
+  readonly cartReadError?: CartReadError;
+}
+
 export type AppState = DestSlot &
+  CartSlot &
   (
     | { kind: 'idle' }
     | { kind: 'parsing'; fileName: string; size: number }
@@ -147,6 +184,31 @@ export type Action =
   | { type: 'dest_clear' }
   | { type: 'dest_cursor_move'; drow: -1 | 0 | 1; dcol: -1 | 0 | 1 }
   | { type: 'dest_box_change'; delta: -1 | 1 }
+  // S7a cart-mode actions (additive — none break existing transitions):
+  | { type: 'mode_changed'; mode: Mode }
+  | { type: 'cart_connect_started' }
+  | {
+      type: 'cart_connect_progress';
+      bytesRead: number;
+      bytesTotal: number;
+      phase?: 'connecting' | 'detecting' | 'reading' | 'parsing';
+    }
+  | {
+      type: 'cart_connect_succeeded';
+      connection: CartConnection;
+      save: SaveContents;
+      bytes: Uint8Array;
+      fileName: string;
+    }
+  | {
+      type: 'cart_dest_connect_succeeded';
+      connection: CartConnection;
+      save: Gen3SaveContents;
+      bytes: Uint8Array;
+      fileName: string;
+    }
+  | { type: 'cart_connect_failed'; reason: string; message: string }
+  | { type: 'cart_disconnected' }
   | {
       type: 'store_committed';
       save: Gen3SaveContents;
@@ -315,6 +377,76 @@ export function reducer(state: AppState, action: Action): AppState {
         };
       }
       return next;
+    }
+    // S7a cart-mode reducer cases. All ADDITIVE — none of them touch
+    // the source/dest discriminator beyond what `dest_*` already does.
+    case 'mode_changed': {
+      if (state.mode === action.mode) return state;
+      return { ...state, mode: action.mode };
+    }
+    case 'cart_connect_started': {
+      return {
+        ...state,
+        cartReadProgress: { bytesRead: 0, bytesTotal: 0, phase: 'connecting' },
+        cartReadError: undefined,
+      };
+    }
+    case 'cart_connect_progress': {
+      const progress: CartReadProgress = {
+        bytesRead: action.bytesRead,
+        bytesTotal: action.bytesTotal,
+        ...(action.phase ? { phase: action.phase } : {}),
+      };
+      return { ...state, cartReadProgress: progress };
+    }
+    case 'cart_connect_succeeded': {
+      // Identical-shaped landing as `file_parsed`: the rest of the UI
+      // keeps treating the parsed save the same way regardless of where
+      // the bytes came from.
+      const next: AppState = {
+        ...state,
+        cartConnection: action.connection,
+        cartReadProgress: undefined,
+        cartReadError: undefined,
+        kind: 'loaded',
+        fileName: action.fileName,
+        save: action.save,
+        sourceBytes: action.bytes,
+        results: new Map(),
+        boxIndex: 0,
+        cursor: { row: 0, col: 0 },
+        openMon: null,
+      };
+      return next;
+    }
+    case 'cart_dest_connect_succeeded': {
+      return {
+        ...state,
+        cartConnection: action.connection,
+        cartReadProgress: undefined,
+        cartReadError: undefined,
+        dest: {
+          fileName: action.fileName,
+          save: action.save,
+          boxIndex: 0,
+          cursor: { row: 0, col: 0 },
+        },
+        destDownload: undefined,
+      };
+    }
+    case 'cart_connect_failed': {
+      return {
+        ...state,
+        cartReadProgress: undefined,
+        cartReadError: { reason: action.reason, message: action.message },
+      };
+    }
+    case 'cart_disconnected': {
+      return {
+        ...state,
+        cartConnection: undefined,
+        cartReadProgress: undefined,
+      };
     }
     default:
       return state;

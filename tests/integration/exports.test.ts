@@ -16,6 +16,12 @@ describe('public API surface', () => {
     // a rename or accidental drop surfaces here as a single failure.
     expect(keys).toEqual([
       'BOXED_SIZE',
+      // S7a — Web Serial cart adapter (read-only Cart Mode):
+      'CartError',
+      'FileUploadSource',
+      'FlashgbxProtocol',
+      'GbxCartSource',
+      'InsidegadgetsProtocol',
       'PARTY_SIZE',
       'PCBUFFER_BOX_COUNT',
       'PCBUFFER_SLOTS_PER_BOX',
@@ -27,18 +33,24 @@ describe('public API surface', () => {
       'deleteMonGen2',
       'detectFormat',
       'detectGen3',
+      'detectProtocol',
       'familyOf',
       'gen3GameLabel',
       'injectIntoSave',
+      'isCartDebug',
+      'isCartError',
       'isDecodeError',
       'isGen3InjectError',
       'isGen3SaveError',
       'isRefusal',
       'isSaveError',
+      'openGbxCartSource',
       'packBoxed',
       'packParty',
+      'parseCartHeader',
       'parseGen3Save',
       'parseSave',
+      'setCartDebug',
       'unpackBoxed',
     ]);
   });

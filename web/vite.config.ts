@@ -12,6 +12,11 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   base: './',
+  // Allow any host for the preview server so cloudflared / ngrok-style
+  // tunnel testing works. The preview server is only used for local
+  // testing — never deployed — so the relaxed host check is fine.
+  preview: { allowedHosts: true, host: '0.0.0.0' },
+  server: { allowedHosts: true, host: '0.0.0.0' },
   build: {
     target: 'es2022',
     modulePreload: false,

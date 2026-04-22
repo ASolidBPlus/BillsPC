@@ -31,6 +31,7 @@ import {
   deleteMonGen2,
 } from '@pokeportal/core';
 import { getSpecies } from '@pokeportal/core/internal';
+import { setCartDebug } from '@pokeportal/core';
 import type {
   Gen12Pokemon,
   Gen1DeleteRef,
@@ -48,6 +49,7 @@ import {
   type ConvertResult,
   destCursorToSlot,
   INITIAL_STATE,
+  type Mode,
   type MonRef,
   monRefKey,
   reducer,
@@ -60,6 +62,13 @@ import { boxBrowser, entriesForBox, BROWSER_COLS, BROWSER_ROWS } from './ui/boxB
 import { comparisonView, speciesNameFor } from './ui/comparisonView.js';
 import { destBoxBrowser } from './ui/destBoxBrowser.js';
 import { regionalDexWarning } from './ui/regionalDex.js';
+import { modeToggle } from './ui/modeToggle.js';
+import { cartProgress } from './ui/cartProgress.js';
+import { isWebSerialAvailable } from './cart/browserCompat.js';
+import { readCart, type CartReadDeps } from './cart/cartReader.js';
+import { requestCartPort } from './cart/serialPort.js';
+import { BackupSink, backupFilename } from './cart/backupSink.js';
+import { isCartError } from '@pokeportal/core';
 
 export interface ControllerDeps {
   readonly parseSave: typeof parseSave;
@@ -75,6 +84,12 @@ export interface ControllerDeps {
   // S6b source-side deletes for the two-save zip flow.
   readonly deleteMonGen1: typeof deleteMonGen1;
   readonly deleteMonGen2: typeof deleteMonGen2;
+  // S7a — cart mode. `cartReadDeps` is overridable so jsdom tests can
+  // inject a mock port factory; defaults to `requestCartPort` (the live
+  // navigator.serial wrapper). `cartAvailable` is computed at controller
+  // creation time from `'serial' in navigator`.
+  readonly cartReadDeps?: CartReadDeps;
+  readonly cartAvailable?: boolean;
 }
 
 export const DEFAULT_DEPS: ControllerDeps = {
@@ -89,6 +104,8 @@ export const DEFAULT_DEPS: ControllerDeps = {
   isGen3InjectError,
   deleteMonGen1,
   deleteMonGen2,
+  cartReadDeps: { requestPort: requestCartPort },
+  cartAvailable: isWebSerialAvailable(),
 };
 
 export interface Controller {
@@ -252,12 +269,40 @@ export function render(
   );
   root.append(header);
 
+  const mode: Mode = state.mode ?? 'upload';
+  const cartAvailable = deps.cartAvailable ?? isWebSerialAvailable();
+  root.append(
+    modeToggle({
+      mode,
+      cartAvailable,
+      onModeChange: (next) => dispatch({ type: 'mode_changed', mode: next }),
+      onDisabledClick: () => {
+        // First-time disabled-click → small explainer card. We append a
+        // floating card to the root rather than a modal — the toggle
+        // tooltip already carries the same message.
+        const card = el('div', { class: 'card cart-fallback-explainer' }, FALLBACK_EXPLAINER);
+        root.append(card);
+        setTimeout(() => card.remove(), 6000);
+      },
+    }),
+  );
+
+  // Debug-only "Test backup" affordance per orchestrator decision Q4.
+  if (mode === 'cart' && hasDebugFlag()) {
+    root.append(renderTestBackupButton());
+  }
+
   // Symmetric 2-pane layout. Source on the left, destination on the right.
   // Each side is independent — the user can drop them in either order. Empty
   // slots show the dotted upload zone; loaded slots show trainer + box browser.
   const grid = el('div', { class: 'panes-grid' });
-  grid.append(renderSourcePane(state, dispatch, deps));
-  grid.append(renderDestPane(state, dispatch, deps));
+  if (mode === 'cart') {
+    grid.append(renderCartSourcePane(state, dispatch, deps));
+    grid.append(renderCartDestPane(state, dispatch, deps));
+  } else {
+    grid.append(renderSourcePane(state, dispatch, deps));
+    grid.append(renderDestPane(state, dispatch, deps));
+  }
   root.append(grid);
 
   // Toolbar (reset / download-modified) only when something is loaded.
@@ -268,6 +313,67 @@ export function render(
   // Comparison overlay — opened from clicking a source-side mon.
   if (state.kind === 'loaded' && state.openMon) {
     appendComparisonOverlay(root, state, dispatch, deps);
+  }
+}
+
+const FALLBACK_EXPLAINER =
+  'Cart Mode requires a Chromium-based browser (Chrome, Edge, Opera, Brave). Use Upload Mode instead.';
+
+function hasDebugFlag(): boolean {
+  if (typeof window === 'undefined' || !window.location) return false;
+  try {
+    const v = new URLSearchParams(window.location.search).get('debug');
+    return v === 'true' || v === '1';
+  } catch {
+    return false;
+  }
+}
+
+// Wire `?debug=1` (or `?debug=true`) → enable cart wire-level debug log.
+// Idempotent — safe to call on every render.
+if (hasDebugFlag()) setCartDebug(true);
+
+function renderTestBackupButton(): HTMLElement {
+  const wrap = el('div', { class: 'card cart-debug' });
+  const btn = el(
+    'button',
+    { class: 'secondary', type: 'button' },
+    'Test backup (debug)',
+  ) as HTMLButtonElement;
+  btn.addEventListener('click', () => {
+    void runTestBackup(wrap);
+  });
+  wrap.append(btn);
+  return wrap;
+}
+
+async function runTestBackup(host: HTMLElement): Promise<void> {
+  const sample = new Uint8Array(32 * 1024);
+  for (let i = 0; i < sample.length; i++) sample[i] = (i * 7) & 0xff;
+  // No-op inner sink to prove the decorator's pre-write happens first.
+  const innerCalls: number[] = [];
+  const inner = {
+    label: 'no-op',
+    write: async (b: Uint8Array): Promise<void> => {
+      innerCalls.push(b.length);
+    },
+  };
+  const sink = new BackupSink(inner, sample, backupFilename('test-cart', 12345));
+  try {
+    await sink.write(sample);
+    const ok = el(
+      'div',
+      { class: 'cart-debug__msg' },
+      `Backup flow OK. Inner sink wrote ${innerCalls[0]} bytes.`,
+    );
+    host.append(ok);
+  } catch (e) {
+    const err = el(
+      'div',
+      { class: 'cart-debug__msg error' },
+      `Backup flow failed: ${(e as Error).message}`,
+    );
+    host.append(err);
   }
 }
 
@@ -382,6 +488,181 @@ function renderDestPane(
   return pane;
 }
 
+function renderCartSourcePane(
+  state: AppState,
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): HTMLElement {
+  const pane = el('div', { class: 'pane source-pane cart-pane' });
+  pane.append(el('div', { class: 'pane-label' }, 'SOURCE (CART)'));
+  // If a save is already loaded (read came from the cart), show the
+  // box browser identical to Upload Mode — the renderer doesn't care
+  // where bytes came from.
+  if (state.kind === 'loaded') {
+    return renderSourcePane(state, dispatch, deps);
+  }
+  if (state.cartReadProgress) {
+    pane.append(
+      cartProgress({
+        label: state.cartConnection?.deviceId ?? '',
+        bytesRead: state.cartReadProgress.bytesRead,
+        bytesTotal: state.cartReadProgress.bytesTotal,
+        ...(state.cartReadProgress.phase ? { phase: state.cartReadProgress.phase } : {}),
+      }),
+    );
+    return pane;
+  }
+  if (state.cartReadError) {
+    pane.append(
+      el(
+        'div',
+        { class: 'card error' },
+        `Cart read failed: ${state.cartReadError.reason} — ${state.cartReadError.message}`,
+      ),
+    );
+  }
+  pane.append(renderCartConnectButton('source', dispatch, deps));
+  return pane;
+}
+
+function renderCartDestPane(
+  state: AppState,
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): HTMLElement {
+  const pane = el('div', { class: 'pane dest-pane cart-pane' });
+  pane.append(el('div', { class: 'pane-label' }, 'DESTINATION (CART)'));
+  if (state.dest) {
+    return renderDestPane(state, dispatch, deps);
+  }
+  if (state.cartReadProgress) {
+    // While a cart is being read into either side, only the source pane
+    // shows the progress card by convention. Dest pane stays in its
+    // pre-connect state until the source-pane progress completes.
+  }
+  pane.append(renderCartConnectButton('dest', dispatch, deps));
+  return pane;
+}
+
+function renderCartConnectButton(
+  side: 'source' | 'dest',
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): HTMLElement {
+  const wrap = el('div', { class: 'cart-connect' });
+  const btn = el(
+    'button',
+    { class: 'primary', type: 'button' },
+    side === 'source' ? 'Connect cart (read)' : 'Connect destination cart',
+  ) as HTMLButtonElement;
+  if (!(deps.cartAvailable ?? isWebSerialAvailable())) {
+    btn.setAttribute('disabled', 'disabled');
+    btn.setAttribute('title', FALLBACK_EXPLAINER);
+  }
+  btn.addEventListener('click', () => {
+    void handleCartConnect(side, dispatch, deps);
+  });
+  wrap.append(btn);
+  wrap.append(
+    el(
+      'div',
+      { class: 'hint' },
+      side === 'source'
+        ? 'Insert a Gen 1/2 (or Gen 3) cart and click Connect.'
+        : 'Insert a Gen 3 cart and click Connect.',
+    ),
+  );
+  return wrap;
+}
+
+export async function handleCartConnect(
+  side: 'source' | 'dest',
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): Promise<void> {
+  const cartReadDeps = deps.cartReadDeps;
+  if (!cartReadDeps) {
+    dispatch({
+      type: 'cart_connect_failed',
+      reason: 'PORT_OPEN_FAILED',
+      message: 'No cart-read deps configured',
+    });
+    return;
+  }
+  dispatch({ type: 'cart_connect_started' });
+  const result = await readCart(cartReadDeps, {
+    onPhase: (phase) => {
+      dispatch({
+        type: 'cart_connect_progress',
+        bytesRead: 0,
+        bytesTotal: 0,
+        ...(phase ? { phase } : {}),
+      });
+    },
+    onProgress: (p) => {
+      dispatch({
+        type: 'cart_connect_progress',
+        bytesRead: p.bytesRead,
+        bytesTotal: p.bytesTotal,
+        phase: 'reading',
+      });
+    },
+  });
+  if (result.kind === 'error') {
+    if (isCartError(result.error)) {
+      dispatch({
+        type: 'cart_connect_failed',
+        reason: result.error.reason,
+        message: result.error.message,
+      });
+    } else {
+      dispatch({
+        type: 'cart_connect_failed',
+        reason: result.error.reason,
+        message: result.error.message,
+      });
+    }
+    return;
+  }
+  if (side === 'source' && result.kind === 'gen12') {
+    dispatch({
+      type: 'cart_connect_succeeded',
+      connection: { variant: detectVariantFromBanner(result.banner), deviceId: result.banner },
+      save: result.gen12!,
+      bytes: result.bytes,
+      fileName: result.fileName,
+    });
+    return;
+  }
+  if (side === 'dest' && result.kind === 'gen3') {
+    dispatch({
+      type: 'cart_dest_connect_succeeded',
+      connection: { variant: detectVariantFromBanner(result.banner), deviceId: result.banner },
+      save: result.gen3!,
+      bytes: result.bytes,
+      fileName: result.fileName,
+    });
+    return;
+  }
+  // Mismatch: e.g. user clicked source but inserted a Gen 3 cart, or
+  // vice versa. Surface as a friendly error.
+  dispatch({
+    type: 'cart_connect_failed',
+    reason: 'UNSUPPORTED_CART',
+    message:
+      side === 'source'
+        ? 'A Gen 3 cart was detected on the source side. Use the destination side instead.'
+        : 'A Gen 1/2 cart was detected on the destination side. Use the source side instead.',
+  });
+}
+
+function detectVariantFromBanner(banner: string): 'insidegadgets' | 'lesserkuma' {
+  // Stock-firmware banners now contain "GBxCart RW" (synthesised from the
+  // V/h single-byte replies). LK banners come straight from
+  // QUERY_FW_INFO and use a different prefix (e.g. "FlashGBX...").
+  return /GBxCart RW/i.test(banner) ? 'insidegadgets' : 'lesserkuma';
+}
+
 function renderToolbar(state: AppState, dispatch: (a: Action) => void): HTMLElement {
   const bar = el('div', { class: 'card toolbar' });
   const reset = el('button', { class: 'secondary' }, 'Reset') as HTMLButtonElement;
@@ -429,11 +710,7 @@ function renderSourceDropZone(
       });
       return input;
     })(),
-    el(
-      'div',
-      { class: 'hint' },
-      'Pokemon Red, Blue, Yellow, Gold, Silver, Crystal (English).',
-    ),
+    el('div', { class: 'hint' }, 'Pokemon Red, Blue, Yellow, Gold, Silver, Crystal (English).'),
   );
   zone.addEventListener('dragover', (ev) => {
     ev.preventDefault();

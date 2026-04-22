@@ -62,7 +62,7 @@ describe('deleteMonGen1 — party delete', () => {
     for (let i = RB_CHECKSUM_RANGE_START; i <= RB_CHECKSUM_RANGE_END_INCLUSIVE; i++) {
       sum = (sum + after[i]!) & 0xff;
     }
-    expect(((0xff - sum) & 0xff)).toBe(after[RB_CHECKSUM_OFFSET]);
+    expect((0xff - sum) & 0xff).toBe(after[RB_CHECKSUM_OFFSET]);
   });
 
   it('byte-equivalence: every byte outside the touched party regions + checksum byte is identical', () => {
@@ -112,7 +112,7 @@ describe('deleteMonGen1 — current box (PC) delete', () => {
     for (let i = RB_CHECKSUM_RANGE_START; i <= RB_CHECKSUM_RANGE_END_INCLUSIVE; i++) {
       sum = (sum + after[i]!) & 0xff;
     }
-    expect(((0xff - sum) & 0xff)).toBe(after[RB_CHECKSUM_OFFSET]);
+    expect((0xff - sum) & 0xff).toBe(after[RB_CHECKSUM_OFFSET]);
   });
 });
 

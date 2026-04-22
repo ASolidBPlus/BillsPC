@@ -777,3 +777,86 @@ button.secondary {
   background: var(--gbc-bg);
   color: var(--gbc-text);
 }
+
+/* S7a — Cart Mode UI. */
+.mode-toggle {
+  display: flex;
+  gap: 0;
+  justify-content: center;
+  margin: 0.5rem 0 1rem;
+}
+
+.mode-toggle__btn {
+  border: 2px solid var(--gbc-border-outer);
+  background: var(--gbc-bg);
+  color: var(--gbc-text);
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+}
+
+.mode-toggle__btn.is-active {
+  background: var(--pc-blue);
+  color: var(--gbc-bg);
+}
+
+.mode-toggle__btn.is-disabled,
+.mode-toggle__btn[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.cart-pane .cart-connect {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.cart-progress {
+  padding: 0.75rem;
+}
+
+.cart-progress__bar {
+  background: var(--gbc-bg);
+  border: 2px solid var(--gbc-border-outer);
+  height: 12px;
+  margin: 0.5rem 0;
+}
+
+.cart-progress__fill {
+  background: var(--pc-blue);
+  height: 100%;
+  transition: width 0.1s linear;
+}
+
+.cart-progress__phase {
+  font-weight: bold;
+}
+
+.cart-progress__meta {
+  font-size: 0.75rem;
+}
+
+.cart-progress__label {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.cart-fallback-explainer {
+  background: var(--gbc-bg);
+  border: 2px solid var(--gbc-accent-yellow);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.cart-debug {
+  font-size: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.cart-debug__msg.error {
+  color: red;
+}

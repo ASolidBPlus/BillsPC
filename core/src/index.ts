@@ -60,3 +60,36 @@ export type {
   SaveSinkOptions,
   SaveSinkProgress,
 } from './sav/gen3/index.js';
+
+// Sprint 7a — Web Serial GBxCart RW adapter (read-only Cart Mode).
+export {
+  CartError,
+  isCartError,
+  GbxCartSource,
+  openGbxCartSource,
+  FileUploadSource,
+  detectProtocol,
+  parseCartHeader,
+  InsidegadgetsProtocol,
+  FlashgbxProtocol,
+} from './cart/index.js';
+export type {
+  Port,
+  CartIdentity,
+  FirmwareInfo,
+  ProtocolVariant,
+  CartReadOptions,
+  CartWriteOptions,
+  CartErrorReason,
+  CartProtocol,
+  CartFamily,
+  CartHeader,
+} from './cart/index.js';
+export type {
+  SaveSource as CartSaveSource,
+  SaveSourceOptions as CartSaveSourceOptions,
+  SaveSourceProgress as CartSaveSourceProgress,
+  SaveSourceMetadata as CartSaveSourceMetadata,
+  SaveSourceResult as CartSaveSourceResult,
+} from './cart/index.js';
+export { setCartDebug, isCartDebug } from './cart/index.js';
