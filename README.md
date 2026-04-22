@@ -27,7 +27,7 @@ Aligned with [VGMoose's Bank-transfer-algorithm post](https://vgmoose.dev/blog/o
 4. **Defensibility.** Every mapping is "the natural thing to do."
 5. **Reversibility where format allows.** The Gen 3 record can be decoded back to the intermediate representation.
 
-The cover story for HOME-strict legality is **bred egg, hatched in FireRed at Four Island, OT preserved**. Origin/met game = FireRed, met level = 0 (PKHeX-correct for hatched eggs), met location = 146 (Four Island, the FRLG breeding daycare town), no fateful encounter, no egg flag, ability slot 0.
+Every converted Pokémon is encoded as a **hatched egg from FireRed**, with the original trainer preserved from the source cart. Origin/met game = FireRed, met level = 0 (the value PKHeX expects for a hatched egg), met location = 146 (Four Island, the FRLG breeding daycare town), no fateful encounter, no egg flag, ability slot 0. This is the only origin metadata pattern that survives forward-transfer through Bank and HOME without legality flags.
 
 Species that cannot be hatched from an egg in Gen 3 are **refused** with a typed error — Mew, all legendaries, baby pre-evos (Pichu/Cleffa/Igglybuff/Togepi/Tyrogue/Smoochum/Elekid/Magby), Ditto. 20 species refused total.
 
