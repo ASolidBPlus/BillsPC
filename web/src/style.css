@@ -499,15 +499,16 @@ img.sprite,
 
 .comparison-panes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: max-content max-content;
+  justify-content: center;
+  gap: 12px;
 }
 
 .status-screen {
   display: grid;
   grid-template-rows: auto auto auto;
   gap: 6px;
-  min-width: 220px;
+  min-width: 0;
   justify-items: center;
 }
 
@@ -518,11 +519,11 @@ img.sprite,
 }
 
 .status-screen .stat-block {
-  width: 100%;
+  width: max-content;
 }
 
 .status-screen--gen3 {
-  min-width: 240px;
+  min-width: 0;
 }
 
 .status-header {
@@ -552,7 +553,7 @@ img.sprite,
 
 .stat-row {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 80px 50px 40px;
   gap: 8px;
   align-items: baseline;
 }
