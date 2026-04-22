@@ -112,7 +112,7 @@ describe('destBoxBrowser', () => {
     expect(tiles[5]?.getAttribute('title')).toBe('occupied');
   });
 
-  it('renders Gen 3 sprite for species ≤ 251 (vendored), placeholder otherwise', () => {
+  it('renders overworld sprite for species ≤ 251 (vendored), placeholder otherwise', () => {
     const el = destBoxBrowser({
       save: fakeSave({
         0: [
@@ -127,10 +127,11 @@ describe('destBoxBrowser', () => {
       onSlotClick: () => {},
     });
     const tiles = Array.from(el.querySelectorAll('.box-tile.dest-box-tile'));
-    // Slot 0: species 7 (Squirtle) → has an <img>
-    expect(tiles[0]?.querySelector('img')).not.toBeNull();
-    // Slot 1: species 254 (Sceptile) → has a placeholder span, no <img>
-    expect(tiles[1]?.querySelector('img')).toBeNull();
+    // Slot 0: species 7 (Squirtle) → overworld sprite tile (background-image
+    // div, matches the source browser's chrome).
+    expect(tiles[0]?.querySelector('.ow-sprite')).not.toBeNull();
+    // Slot 1: species 254 (Sceptile) → placeholder span, no sprite tile.
+    expect(tiles[1]?.querySelector('.ow-sprite')).toBeNull();
     expect(tiles[1]?.querySelector('.sprite-placeholder')?.textContent).toBe('?');
   });
 

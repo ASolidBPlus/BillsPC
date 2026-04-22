@@ -665,6 +665,53 @@ img.sprite,
 .loaded-sidebar {
   display: grid;
   gap: 12px;
+  min-width: 0; /* let children honor the column width instead of overflowing */
+}
+
+/* S6a: destination drop zone lives inside the narrow sidebar column.
+   Override the wide `.drop-zone` defaults (designed for the main upload)
+   so it doesn't overflow into the box-browser column. */
+.dest-drop-zone {
+  padding: 0.75rem;
+  font-size: 0.7rem;
+  text-align: left;
+}
+.dest-drop-zone .hint {
+  font-size: 0.65rem;
+  margin-top: 0.5rem;
+}
+.dest-drop-zone input[type='file'] {
+  margin: 0.5rem 0;
+  font-size: 0.7rem;
+}
+
+.dest-sidebar {
+  display: grid;
+  gap: 8px;
+}
+
+.dest-summary {
+  font-size: 0.75rem;
+}
+
+/* S6a: destination box browser has 6 cols × 5 rows = 30 slots per box.
+   Tiles match the source browser size (64 px) for visual parity. When
+   the dest is loaded it spans the full grid width below the source row
+   so the destination's wider grid doesn't squeeze the source. */
+.dest-box-browser {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+.dest-box-grid {
+  grid-template-columns: repeat(6, 64px);
+}
+.dest-box-tile .sprite-placeholder {
+  font-size: 18px;
+  color: var(--gbc-dark-gray);
+}
+.dest-box-tile .empty-marker {
+  color: var(--gbc-light-gray);
+  font-size: 18px;
 }
 
 .warnings {

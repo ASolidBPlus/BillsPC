@@ -83,9 +83,12 @@ export function destBoxBrowser(props: DestBoxBrowserProps): HTMLElement {
       if (filled) {
         const species = slotData.species;
         if (species > 0 && species <= HIGHEST_VENDORED_GEN3_SPRITE) {
-          tile.append(spriteImg(species, 'gen3', `species ${species}`));
+          // HGSS-style overworld follower sprite — same chrome as the source
+          // box browser so the two panes read as a matched set.
+          tile.append(spriteImg(species, 'overworld', `species ${species}`));
         } else {
-          // Placeholder for un-vendored Gen 3 sprites (252..386).
+          // Placeholder for un-vendored Hoenn species (252..386); no overworld
+          // strip available in our vendored set either.
           tile.append(el('span', { class: 'sprite-placeholder' }, '?'));
         }
       } else {
