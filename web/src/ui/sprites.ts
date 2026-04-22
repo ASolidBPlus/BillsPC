@@ -14,6 +14,7 @@
  * declared in `style.css` (per A6: `-webkit-optimize-contrast`,
  * `-moz-crisp-edges`, `crisp-edges`, `pixelated`).
  */
+import type { SaveFormat } from '@pokeportal/core';
 import { el, img } from './dom.js';
 
 export type SpriteSet = 'gen1' | 'gen2' | 'gen3' | 'overworld';
@@ -24,6 +25,31 @@ export const SPRITE_RENDER_SIZE: Readonly<Record<SpriteSet, number>> = {
   gen3: 64,
   overworld: 32, // single-frame display size; source strip is 288×32 (9 frames)
 };
+
+/**
+ * Map a save's source format to the per-cart sprite subdir for the Gen 1/2
+ * source side. Returns `null` for the destination ('gen3' set) and overworld.
+ *
+ * - RBY-RED  / RBY-BLUE → red-blue/<n>.png    (shared sprites, transparent)
+ * - RBY-YELLOW          → yellow/<n>.png      (transparent)
+ * - CRYSTAL             → crystal-anim/<n>.gif (animated! native browser playback)
+ * - GS                  → crystal/<n>.png     (no GS sprite set fetched yet — fallback)
+ */
+function perCartPath(set: SpriteSet, ndex: number, format: SaveFormat | null): string | null {
+  if (set === 'gen1' && (format === 'RBY-RED' || format === 'RBY-BLUE')) {
+    return `sprites/red-blue/${ndex}.png`;
+  }
+  if (set === 'gen1' && format === 'RBY-YELLOW') {
+    return `sprites/yellow/${ndex}.png`;
+  }
+  if (set === 'gen2' && format === 'CRYSTAL') {
+    return `sprites/crystal-anim/${ndex}.gif`;
+  }
+  if (set === 'gen2' && format === 'GS') {
+    return `sprites/crystal/${ndex}.png`;
+  }
+  return null;
+}
 
 /**
  * Species that should render visibly larger in the box browser — pseudo-legendary
@@ -42,15 +68,20 @@ export function isBigSpecies(ndex: number): boolean {
   return BIG_NDEX.has(ndex);
 }
 
-export function spritePath(ndex: number, set: SpriteSet): string {
-  return `sprites/${set}/${ndex}.png`;
+export function spritePath(ndex: number, set: SpriteSet, format: SaveFormat | null = null): string {
+  return perCartPath(set, ndex, format) ?? `sprites/${set}/${ndex}.png`;
 }
 
-export function spriteImg(ndex: number, set: SpriteSet, alt: string): HTMLElement {
+export function spriteImg(
+  ndex: number,
+  set: SpriteSet,
+  alt: string,
+  format: SaveFormat | null = null,
+): HTMLElement {
   if (set === 'overworld') return overworldTile(ndex, alt);
   const size = SPRITE_RENDER_SIZE[set];
   return img({
-    src: spritePath(ndex, set),
+    src: spritePath(ndex, set, format),
     alt,
     class: 'sprite',
     loading: 'lazy',

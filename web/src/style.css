@@ -394,6 +394,18 @@ img.sprite,
   line-height: 1.45;
 }
 
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 720px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .details-header {
   font-weight: bold;
   text-align: center;

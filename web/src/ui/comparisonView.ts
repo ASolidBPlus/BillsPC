@@ -19,7 +19,7 @@
  * the FATMAN delta values directly from the formula output (per A2:
  * "derive via the formula then assert the literal").
  */
-import type { Gen12Pokemon, Gen3Intermediate } from '@pokeportal/core';
+import type { Gen12Pokemon, Gen3Intermediate, SaveFormat } from '@pokeportal/core';
 import { getPersonal, getPersonalGen2, getSpecies, gen2Shiny } from '@pokeportal/core/internal';
 import {
   computeGen12Stats,
@@ -72,6 +72,7 @@ export interface ComparisonProps {
   readonly refusal?: { reason: string; message: string };
   readonly speciesName: string;
   readonly nickname: string;
+  readonly sourceFormat: SaveFormat | null;
   readonly onConfirm: () => void;
   readonly onCancel: () => void;
 }
@@ -114,6 +115,7 @@ export function comparisonView(props: ComparisonProps): HTMLElement {
       nickname: props.nickname,
       stats: stats.source,
       shiny,
+      sourceFormat: props.sourceFormat,
     }),
     statusScreenGen3({
       species: props.intermediate.species,
@@ -146,6 +148,7 @@ interface Gen12PaneProps {
   readonly nickname: string;
   readonly stats: SixStats;
   readonly shiny: boolean;
+  readonly sourceFormat: SaveFormat | null;
 }
 
 function statusScreenGen12(p: Gen12PaneProps): HTMLElement {
@@ -153,10 +156,10 @@ function statusScreenGen12(p: Gen12PaneProps): HTMLElement {
   // No species/level header here — it's already in the overlay's top dialog.
   // Per-gen label (so user knows which side is which) + shiny star (so test
   // selectors can still find one star per pane).
-  const label = el('div', { class: 'pane-gen-label' }, 'GEN 1/2 SOURCE');
+  const label = el('div', { class: 'pane-gen-label' }, paneLabelForFormat(p.sourceFormat));
   if (p.shiny) label.append(el('span', { class: 'shiny-star' }, '★'));
   pane.append(label);
-  pane.append(spriteImg(p.mon.speciesGen2Id, 'gen2', p.speciesName));
+  pane.append(spriteImg(p.mon.speciesGen2Id, 'gen2', p.speciesName, p.sourceFormat));
   // Single SPCL line — Gen 1/2 only had one Special value. The Gen 3 pane
   // computes SpA/SpD deltas against this single displayed source value
   // (see computeComparisonStats), so what's on screen lines up arithmetically.
@@ -201,6 +204,23 @@ function statusScreenGen3(p: Gen3PaneProps): HTMLElement {
   for (const l of lines) block.append(l);
   pane.append(block);
   return pane;
+}
+
+function paneLabelForFormat(f: SaveFormat | null): string {
+  switch (f) {
+    case 'RBY-RED':
+      return 'GEN 1 RED SOURCE';
+    case 'RBY-BLUE':
+      return 'GEN 1 BLUE SOURCE';
+    case 'RBY-YELLOW':
+      return 'GEN 1 YELLOW SOURCE';
+    case 'GS':
+      return 'GEN 2 GOLD/SILVER SOURCE';
+    case 'CRYSTAL':
+      return 'GEN 2 CRYSTAL SOURCE';
+    default:
+      return 'GEN 1/2 SOURCE';
+  }
 }
 
 function statRow(label: string, value: number, delta: number | undefined): HTMLElement {

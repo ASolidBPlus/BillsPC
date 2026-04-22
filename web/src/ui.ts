@@ -313,6 +313,7 @@ function renderLoaded(
           refusal,
           speciesName,
           nickname: nick,
+          sourceFormat: state.save.format,
           onConfirm: () => {
             if (result.ok) {
               blobDownload(result.suggestedName, result.bytes);

@@ -17,6 +17,15 @@ export function conversionDetails(
 ): HTMLElement {
   const wrap = dialog({ class: 'conversion-details' });
   wrap.append(el('div', { class: 'details-header' }, 'CONVERSION DETAILS'));
+  // Two-column flow: stat tables (DV/IV + StatExp/EV) on the left, identity
+  // + carryover on the right. Reduces overlay height ~40% on wide viewports
+  // and stays readable on narrow ones (CSS collapses to one column under
+  // a media query).
+  const grid = el('div', { class: 'details-grid' });
+  const colA = el('div');
+  const colB = el('div');
+  wrap.append(grid);
+  grid.append(colA, colB);
 
   const ivBlock = el('div', { class: 'details-block' });
   ivBlock.append(el('div', { class: 'details-block-title' }, 'DV > IV'));
@@ -44,7 +53,7 @@ export function conversionDetails(
     ivTable.append(tr);
   }
   ivBlock.append(ivTable);
-  wrap.append(ivBlock);
+  colA.append(ivBlock);
 
   const evBlock = el('div', { class: 'details-block' });
   evBlock.append(el('div', { class: 'details-block-title' }, 'StatExp > EV'));
@@ -101,7 +110,7 @@ export function conversionDetails(
       ),
     );
   }
-  wrap.append(evBlock);
+  colA.append(evBlock);
 
   const metaBlock = el('div', { class: 'details-block' });
   metaBlock.append(el('div', { class: 'details-block-title' }, 'Identity'));
@@ -129,7 +138,7 @@ export function conversionDetails(
     metaTable.append(tr);
   }
   metaBlock.append(metaTable);
-  wrap.append(metaBlock);
+  colB.append(metaBlock);
 
   const carryBlock = el('div', { class: 'details-block' });
   carryBlock.append(el('div', { class: 'details-block-title' }, 'Carryover'));
@@ -146,7 +155,7 @@ export function conversionDetails(
     carryTable.append(tr);
   }
   carryBlock.append(carryTable);
-  wrap.append(carryBlock);
+  colB.append(carryBlock);
 
   if (intermediate._meta.warnings.length > 0) {
     const warnBlock = el('div', { class: 'details-block' });
@@ -154,7 +163,7 @@ export function conversionDetails(
     for (const w of intermediate._meta.warnings) {
       warnBlock.append(el('div', { class: 'details-warning' }, w));
     }
-    wrap.append(warnBlock);
+    colB.append(warnBlock);
   }
 
   return wrap;
