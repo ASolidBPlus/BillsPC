@@ -233,27 +233,30 @@ function renderLoaded(
 ): DocumentFragment {
   const frag = document.createDocumentFragment();
 
-  // Trainer dialog (Gen 2 chrome).
+  // Two-column layout at desktop widths: trainer card + warnings on the left,
+  // box browser on the right. Mobile/narrow stacks naturally via CSS.
+  const grid = el('div', { class: 'loaded-grid' });
+
+  const sidebar = el('div', { class: 'loaded-sidebar' });
   const trainerLines: string[] = [
     `TRAINER: ${state.save.trainer.name || '(no name)'}`,
     `ID No.  ${state.save.trainer.tid}`,
     `FORMAT  ${state.save.format}`,
   ];
-  frag.append(textDialog(trainerLines, { class: 'trainer-dialog' }));
+  sidebar.append(textDialog(trainerLines, { class: 'trainer-dialog' }));
 
-  // Warnings panel (kept for Code Evaluator visibility).
   if (state.save.warnings.length > 0) {
     const warn = el('div', { class: 'warnings' });
     warn.append(el('strong', {}, 'Warnings:'));
     const ul = el('ul', {});
     for (const w of state.save.warnings) ul.append(el('li', {}, w));
     warn.append(ul);
-    frag.append(warn);
+    sidebar.append(warn);
   }
+  grid.append(sidebar);
 
-  // Box browser.
   const entries = entriesForBox(state.save, state.boxIndex);
-  frag.append(
+  grid.append(
     boxBrowser({
       save: state.save,
       boxIndex: state.boxIndex,
@@ -264,6 +267,7 @@ function renderLoaded(
       onMonOpen: (ref) => dispatch({ type: 'mon_open', ref }),
     }),
   );
+  frag.append(grid);
 
   // Toolbar with reset.
   const bar = el('div', { class: 'card toolbar' });
@@ -325,7 +329,7 @@ function renderLoaded(
 }
 
 function hint(state: Extract<AppState, { kind: 'loaded' }>): string {
-  return `${total(state)} mon(s) total — use ← ↑ ↓ → + Enter; [ / ] to change box.`;
+  return `${total(state)} mon(s) total — click a tile to convert; ◀ ▶ buttons to change box.`;
 }
 
 function total(state: Extract<AppState, { kind: 'loaded' }>): number {

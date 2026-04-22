@@ -45,7 +45,9 @@ describe('box browser render (jsdom)', () => {
     expect(browser).not.toBeNull();
     const grid = root.querySelector('.box-grid');
     expect(grid).not.toBeNull();
-    expect(grid!.querySelectorAll('.box-tile')).toHaveLength(20);
+    // Box renders only enough rows to cover the highest occupied slot —
+    // 6 mons fit in 2 rows × 4 cols = 8 tiles for the PARTY view.
+    expect(grid!.querySelectorAll('.box-tile')).toHaveLength(8);
 
     // Default boxIndex=0 (PARTY): demo-crystal.sav has 6 party members.
     const occupied = root.querySelectorAll('.box-tile.is-occupied');

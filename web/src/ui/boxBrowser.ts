@@ -63,8 +63,18 @@ export function boxBrowser(props: BoxBrowserProps): HTMLElement {
   const bySlot = new Map<number, BrowserEntry>();
   for (const e of props.entries) bySlot.set(e.slotInBox, e);
 
+  // Render only enough rows to cover the highest occupied slot — keeps the
+  // box dialog tight when the box has 6 mons (party) or 13 (current Crystal
+  // box) instead of always reserving 5 rows × 4 cols of empty cells.
+  const highestSlot = props.entries.reduce((mx, e) => Math.max(mx, e.slotInBox), -1);
+  const minRowsForCursor = props.cursor.row + 1;
+  const visibleRows = Math.max(
+    1,
+    Math.min(BROWSER_ROWS, Math.max(Math.ceil((highestSlot + 1) / BROWSER_COLS), minRowsForCursor)),
+  );
+
   const grid = el('div', { class: 'box-grid' });
-  for (let row = 0; row < BROWSER_ROWS; row++) {
+  for (let row = 0; row < visibleRows; row++) {
     for (let col = 0; col < BROWSER_COLS; col++) {
       const slot = row * BROWSER_COLS + col;
       const entry = bySlot.get(slot);

@@ -545,6 +545,24 @@ img.sprite,
 }
 
 /* Warnings card kept for Code Evaluator visibility. */
+.loaded-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(260px, 340px) 1fr;
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .loaded-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.loaded-sidebar {
+  display: grid;
+  gap: 12px;
+}
+
 .warnings {
   background: var(--gbc-bg);
   border: 2px solid var(--gbc-accent-yellow);
