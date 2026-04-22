@@ -382,28 +382,28 @@ img.sprite,
 .comparison-inner {
   background: var(--gbc-bg);
   display: grid;
-  gap: 12px;
-  padding: 12px;
+  gap: 8px;
+  padding: 10px;
   max-width: 90vw;
   max-height: 92vh;
   overflow: auto;
 }
 
 .conversion-details {
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .details-header {
   font-weight: bold;
   text-align: center;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
   letter-spacing: 2px;
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .details-block {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .details-block-title {
@@ -419,24 +419,24 @@ img.sprite,
 }
 
 .details-table td {
-  padding: 3px 10px 3px 0;
+  padding: 2px 8px 2px 0;
   vertical-align: top;
 }
 
 .details-stat {
   font-weight: bold;
-  width: 80px;
+  width: 64px;
   white-space: nowrap;
 }
 
 .details-src {
   text-align: right;
-  width: 90px;
+  width: 72px;
   font-variant-numeric: tabular-nums;
 }
 
 .details-arrow {
-  width: 24px;
+  width: 20px;
   text-align: center;
   color: var(--gbc-mid-gray, #888);
   font-weight: bold;
@@ -494,12 +494,23 @@ img.sprite,
 .status-screen {
   display: grid;
   grid-template-rows: auto auto auto;
-  gap: 8px;
-  min-width: 240px;
+  gap: 6px;
+  min-width: 220px;
+  justify-items: center;
+}
+
+/* Sprite + stat block centered horizontally within the pane. */
+.status-screen img.sprite {
+  display: block;
+  margin: 0 auto;
+}
+
+.status-screen .stat-block {
+  width: 100%;
 }
 
 .status-screen--gen3 {
-  min-width: 256px;
+  min-width: 240px;
 }
 
 .status-header {
