@@ -448,10 +448,17 @@ img.sprite,
 }
 
 .details-arrow {
-  width: 20px;
+  width: 16px;
   text-align: center;
   color: var(--gbc-mid-gray, #888);
   font-weight: bold;
+}
+
+.details-raw {
+  text-align: right;
+  width: 56px;
+  font-variant-numeric: tabular-nums;
+  color: var(--gbc-mid-gray, #777);
 }
 
 .details-dst {

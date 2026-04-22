@@ -56,24 +56,37 @@ export function conversionDetails(
   colA.append(ivBlock);
 
   const evBlock = el('div', { class: 'details-block' });
-  evBlock.append(el('div', { class: 'details-block-title' }, 'StatExp > EV'));
+  evBlock.append(el('div', { class: 'details-block-title' }, 'StatExp > Raw EV > Final EV'));
   const evTable = el('table', { class: 'details-table' });
-  const evRows: [string, number, string][] = [
-    ['HP', mon.statExp.hp, String(intermediate.evs.hp)],
-    ['Atk', mon.statExp.atk, String(intermediate.evs.atk)],
-    ['Def', mon.statExp.def, String(intermediate.evs.def)],
-    ['Spe', mon.statExp.spe, String(intermediate.evs.spe)],
+  // Raw EV per HANDOFF §4.3: floor(sqrt(StatExp[i])), capped at 252.
+  // For Special: same raw value mirrored to both spa and spd.
+  const rawEv = (se: number): number => Math.min(252, Math.floor(Math.sqrt(se)));
+  const rawHp = rawEv(mon.statExp.hp);
+  const rawAtk = rawEv(mon.statExp.atk);
+  const rawDef = rawEv(mon.statExp.def);
+  const rawSpe = rawEv(mon.statExp.spe);
+  const rawSpc = rawEv(mon.statExp.special);
+  const rawTotal = rawHp + rawAtk + rawDef + rawSpe + rawSpc * 2;
+  type EvRow = readonly [string, number, string, string];
+  const evRows: readonly EvRow[] = [
+    ['HP', mon.statExp.hp, String(rawHp), String(intermediate.evs.hp)],
+    ['Atk', mon.statExp.atk, String(rawAtk), String(intermediate.evs.atk)],
+    ['Def', mon.statExp.def, String(rawDef), String(intermediate.evs.def)],
+    ['Spe', mon.statExp.spe, String(rawSpe), String(intermediate.evs.spe)],
     [
       'Spc',
       mon.statExp.special,
-      `${intermediate.evs.spa} / ${intermediate.evs.spd} (split SpA/SpD)`,
+      `${rawSpc}/${rawSpc}`,
+      `${intermediate.evs.spa}/${intermediate.evs.spd} (SpA/SpD)`,
     ],
   ];
-  for (const [label, se, ev] of evRows) {
+  for (const [label, se, raw, ev] of evRows) {
     const tr = el('tr');
     tr.append(
       el('td', { class: 'details-stat' }, label),
       el('td', { class: 'details-src' }, String(se)),
+      el('td', { class: 'details-arrow' }, '>'),
+      el('td', { class: 'details-raw' }, raw),
       el('td', { class: 'details-arrow' }, '>'),
       el('td', { class: 'details-dst' }, ev),
     );
@@ -86,27 +99,32 @@ export function conversionDetails(
     intermediate.evs.spa +
     intermediate.evs.spd +
     intermediate.evs.spe;
-  const seSum =
-    mon.statExp.hp +
-    mon.statExp.atk +
-    mon.statExp.def +
-    mon.statExp.spe +
-    mon.statExp.special * 2; // mirror split: special counts as both spa+spd
   const sumRow = el('tr', { class: 'details-sum' });
   sumRow.append(
     el('td', { class: 'details-stat' }, 'Σ'),
-    el('td', { class: 'details-src' }, String(seSum)),
-    el('td', { class: 'details-arrow' }, '→'),
+    el('td', { class: 'details-src' }, '—'),
+    el('td', { class: 'details-arrow' }, '>'),
+    el('td', { class: 'details-raw' }, String(rawTotal)),
+    el('td', { class: 'details-arrow' }, '>'),
     el('td', { class: 'details-dst' }, `${evSum} (cap 510)`),
   );
   evTable.append(sumRow);
   evBlock.append(evTable);
-  if (evSum === 510) {
+  if (rawTotal > 510) {
+    const factor = 510 / rawTotal;
     evBlock.append(
       el(
         'div',
         { class: 'details-note' },
-        'EVs proportionally scaled to the 510 cap; remainder distributed via Hamilton method.',
+        `Raw EV total ${rawTotal} > 510 cap. Scale factor 510 ÷ ${rawTotal} = ${factor.toFixed(3)}; per-stat EV = floor(raw × ${factor.toFixed(3)}); Hamilton remainder distributes the rounding shortfall to the largest fractional stats first.`,
+      ),
+    );
+  } else {
+    evBlock.append(
+      el(
+        'div',
+        { class: 'details-note' },
+        `Raw EV total ${rawTotal} ≤ 510 cap — no scaling needed; raw values pass through unchanged.`,
       ),
     );
   }
