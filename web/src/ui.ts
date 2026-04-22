@@ -12,7 +12,8 @@
  * comparison overlay is converted (the box browser shows sprites without
  * needing to convert anything).
  *
- * Per A15, the root `#app` is set to `tabindex="-1"` and focused after
+ * Keyboard navigation was removed at the user's request — the app is mouse/touch
+ * only. Historical note on A15: the root `#app` was set to `tabindex="-1"` and focused after
  * parse so keyboard input flows without an explicit click.
  */
 import { parseSave, isSaveError, convert, isRefusal, packBoxed } from '@pokeportal/core';
@@ -39,7 +40,6 @@ import {
   BROWSER_ROWS,
 } from './ui/boxBrowser.js';
 import { comparisonView, speciesNameFor } from './ui/comparisonView.js';
-import { bindKeys } from './ui/keyboard.js';
 
 export interface ControllerDeps {
   readonly parseSave: typeof parseSave;
@@ -71,14 +71,6 @@ export function createController(
   const dispatch = (action: Action): void => {
     current = reducer(current, action);
     render(root, current, dispatch, deps);
-    // After a fresh parse, focus the root so keyboard input flows.
-    if (action.type === 'file_parsed') {
-      try {
-        root.focus();
-      } catch {
-        /* ignore — happens in non-jsdom paths if root lacks tabindex */
-      }
-    }
     // Lazily convert mons on overlay-open (A17). The reducer can't
     // reach `deps.convert` so we do the work here, then dispatch
     // `convert_done` via microtask so the result lands on the next
@@ -96,25 +88,8 @@ export function createController(
     }
   };
 
-  // First render + key binding.
-  if (root.getAttribute('tabindex') === null) root.setAttribute('tabindex', '-1');
-  bindKeys(document, {
-    onArrow: (drow, dcol) => dispatch({ type: 'cursor_move', drow, dcol }),
-    onConfirm: () => {
-      if (current.kind !== 'loaded') return;
-      if (current.openMon) return; // Enter inside the overlay is the menu's "STORE"
-      const entries = entriesForBox(current.save, current.boxIndex);
-      const ent = entryAtCursor(entries, current.cursor);
-      if (ent) dispatch({ type: 'mon_open', ref: ent.ref });
-    },
-    onCancel: () => {
-      if (current.kind === 'loaded' && current.openMon) {
-        dispatch({ type: 'mon_close' });
-      }
-    },
-    onPrevBox: () => dispatch({ type: 'box_change', delta: -1 }),
-    onNextBox: () => dispatch({ type: 'box_change', delta: 1 }),
-  });
+  // First render. Keyboard navigation removed per user request — interaction is
+  // mouse/touch only via the box-tile click handlers and the menu/dialog buttons.
   render(root, current, dispatch, deps);
 
   return {

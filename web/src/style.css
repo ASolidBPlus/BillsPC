@@ -179,11 +179,43 @@ h1 {
  * unknown values so the cascade is safe.
  */
 img.sprite,
+.sprite,
 .pixel {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
+}
+
+/*
+ * Overworld follower-sprite tile. The source PNG is a 288×32 nine-frame
+ * walking strip; we render a 32×32 viewport on it and step
+ * background-position through frames 0,1,2 (down-facing pair) for an
+ * in-place walking animation.
+ */
+.ow-sprite {
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 288px 32px;
+  background-position: 0 0;
+  animation: ow-walk 0.6s steps(1) infinite;
+}
+
+@keyframes ow-walk {
+  0%   { background-position: 0 0; }       /* frame 0: down idle */
+  33%  { background-position: -32px 0; }    /* frame 1: down walk-A */
+  66%  { background-position: -64px 0; }    /* frame 2: down walk-B */
+  100% { background-position: 0 0; }
+}
+
+/* Big species (legendaries, Snorlax line, etc.) scale up so they read as bigger
+ * than rank-and-file in the box. We use transform-scale rather than enlarging
+ * the cell so the grid layout stays uniform. */
+.box-tile.is-big .ow-sprite,
+.ow-sprite.is-big {
+  transform: scale(1.4);
+  transform-origin: center bottom;
 }
 
 /* Gen 2 menu — same chrome as dialog plus per-row layout. */

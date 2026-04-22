@@ -3,19 +3,18 @@
  *
  * Per PLAN_EVAL S5 A7, every emitted `<img>` carries explicit `width` and
  * `height` HTML attributes (not CSS) so the browser reserves layout
- * space before the PNG decodes. The values match the static-asset
- * dimensions documented in PLAN §3.6 / A7.
+ * space before the PNG decodes.
+ *
+ * The overworld set ships 288×32 nine-frame walking strips (HGSS-style).
+ * We render those as a `<div>` with a `background-image` so CSS keyframes
+ * can cycle through the first two walk frames for an in-place animation.
+ * The other sets (gen1/gen2/gen3 front sprites) stay as plain `<img>`.
  *
  * The `class="sprite"` selector picks up the `image-rendering` triple
  * declared in `style.css` (per A6: `-webkit-optimize-contrast`,
  * `-moz-crisp-edges`, `crisp-edges`, `pixelated`).
- *
- * Vite serves files under `web/public/` at the relative path that
- * matches the build's `base: './'`. Sprite URLs are emitted as
- * `sprites/<set>/<ndex>.png` — relative so they resolve correctly under
- * file:// previews and base-pathed deploys (per PLAN_EVAL S5 R1/R2).
  */
-import { img } from './dom.js';
+import { el, img } from './dom.js';
 
 export type SpriteSet = 'gen1' | 'gen2' | 'gen3' | 'overworld';
 
@@ -23,16 +22,34 @@ export const SPRITE_RENDER_SIZE: Readonly<Record<SpriteSet, number>> = {
   gen1: 56,
   gen2: 56,
   gen3: 64,
-  overworld: 32, // 16x16 source rendered at 2x
+  overworld: 32, // single-frame display size; source strip is 288×32 (9 frames)
 };
+
+/**
+ * Species that should render visibly larger in the box browser — pseudo-legendary
+ * and legendary mons. Multiplier applied via CSS scale on `.box-tile.is-big`.
+ */
+const BIG_NDEX = new Set<number>([
+  // Gen 1 legendaries
+  144, 145, 146, 150, 151,
+  // Gen 2 legendaries / Lugia / Ho-Oh / Celebi
+  243, 244, 245, 249, 250, 251,
+  // Notably-large vanilla species (visual cue, not a strict tier)
+  130, 143, 149, 208, 248,
+]);
+
+export function isBigSpecies(ndex: number): boolean {
+  return BIG_NDEX.has(ndex);
+}
 
 export function spritePath(ndex: number, set: SpriteSet): string {
   return `sprites/${set}/${ndex}.png`;
 }
 
-export function spriteImg(ndex: number, set: SpriteSet, alt: string): HTMLImageElement {
+export function spriteImg(ndex: number, set: SpriteSet, alt: string): HTMLElement {
+  if (set === 'overworld') return overworldTile(ndex, alt);
   const size = SPRITE_RENDER_SIZE[set];
-  const i = img({
+  return img({
     src: spritePath(ndex, set),
     alt,
     class: 'sprite',
@@ -41,5 +58,28 @@ export function spriteImg(ndex: number, set: SpriteSet, alt: string): HTMLImageE
     width: String(size),
     height: String(size),
   });
-  return i;
+}
+
+/**
+ * 32×32 in-place walking animation tile. The source PNG is a 288×32 strip
+ * with 9 frames of 32×32 each; the strip layout is roughly:
+ *   0 = down idle, 1 = down walk-A, 2 = down walk-B,
+ *   3 = up idle,   4 = up walk-A,   5 = up walk-B,
+ *   6 = side idle, 7 = side walk-A, 8 = side walk-B (typically left-facing).
+ *
+ * For the box browser we cycle frames 0→1→2→0 (the down-facing pair).
+ * That looks like an idle-bob / walk-in-place from the player's
+ * perspective looking down at the box from above.
+ *
+ * Big species (legendaries, Snorlax, etc.) get a `is-big` class that the
+ * stylesheet scales up by ~1.4×.
+ */
+function overworldTile(ndex: number, alt: string): HTMLElement {
+  const tile = el('div', {
+    class: 'sprite ow-sprite' + (isBigSpecies(ndex) ? ' is-big' : ''),
+    role: 'img',
+    'aria-label': alt,
+    style: `background-image: url(${spritePath(ndex, 'overworld')});`,
+  });
+  return tile;
 }

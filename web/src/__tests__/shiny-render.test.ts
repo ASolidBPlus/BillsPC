@@ -53,9 +53,12 @@ describe('shiny indicator (PLAN_EVAL S5 A8)', () => {
     // Default boxIndex 0 is PARTY. SPARKY is at slot 1 → row 0 col 1.
     const tile = root.querySelector('.box-tile[data-slot="1"]')!;
     expect(tile.classList.contains('is-shiny')).toBe(true);
-    // Sanity: the species under that tile is Raichu (#26 → ndex 26).
-    const img = tile.querySelector('img.sprite');
-    expect(img!.getAttribute('src')).toBe('sprites/overworld/26.png');
+    // Sanity: the species under that tile is Raichu (#26 → ndex 26). The
+    // overworld sprite is now a div with a background-image URL (needed for
+    // walking-frame animation) rather than an <img>.
+    const ow = tile.querySelector('.ow-sprite') as HTMLElement | null;
+    expect(ow).not.toBeNull();
+    expect(ow!.style.backgroundImage).toContain('sprites/overworld/26.png');
   });
 
   it('opening SPARKY shows ★ in both Gen 1/2 and Gen 3 status headers', async () => {

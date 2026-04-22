@@ -51,14 +51,13 @@ describe('box browser render (jsdom)', () => {
     const occupied = root.querySelectorAll('.box-tile.is-occupied');
     expect(occupied.length).toBe(6);
 
-    // Each occupied tile carries an overworld sprite path.
-    const sprites = root.querySelectorAll('.box-tile.is-occupied img.sprite');
+    // Each occupied tile carries an overworld sprite (rendered as a div with a
+    // background-image so CSS keyframes can cycle the walking-frame animation).
+    const sprites = root.querySelectorAll('.box-tile.is-occupied .ow-sprite');
     expect(sprites.length).toBe(6);
     for (const s of Array.from(sprites)) {
-      const src = s.getAttribute('src');
-      expect(src).toMatch(/^sprites\/overworld\/\d+\.png$/);
-      expect(s.getAttribute('width')).toBe('32');
-      expect(s.getAttribute('height')).toBe('32');
+      const bg = (s as HTMLElement).style.backgroundImage;
+      expect(bg).toMatch(/sprites\/overworld\/\d+\.png/);
     }
   });
 
