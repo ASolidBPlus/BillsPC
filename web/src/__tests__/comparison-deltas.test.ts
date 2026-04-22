@@ -148,9 +148,12 @@ describe('zero-buff path (PLAN_EVAL A14)', () => {
     const max = Math.max(...Object.values(deltas));
     expect(min).toBeLessThanOrEqual(-30); // EV-truncation lower bound
     expect(max).toBeLessThanOrEqual(-20); // even the "best" stat is negative — no buff
-    // Spread is small (within rounding). For unchanged-base species, all
-    // deltas should land in a narrow band.
-    expect(max - min).toBeLessThanOrEqual(15);
+    // The SpD delta is measured against the displayed source SPCL (which uses
+    // the species' Gen 2 SpA base). For Pikachu (SpA 50 / SpD 40) the source
+    // SPCL displayed is ~20 stat points higher at Lv 100 perfect than the
+    // implicit SpD-side source, which inflates the SpD delta downward.
+    // Spread bound widened to absorb that base-asymmetry.
+    expect(max - min).toBeLessThanOrEqual(25);
   });
 });
 

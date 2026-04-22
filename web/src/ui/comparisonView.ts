@@ -52,10 +52,16 @@ export function computeComparisonStats(
     evs: intermediate.evs,
     level: intermediate.level,
   });
+  // Gen 1/2 only displays one Special value (we render source.spa as "SPCL").
+  // Compute Gen 3 SpA/SpD deltas against that single displayed source so the
+  // numbers on screen line up — otherwise the SpD delta uses the implicit
+  // Gen 2 SpD-base value (which the user never sees) and looks unrelated to
+  // the SPCL row.
+  const sourceForDelta: SixStats = { ...source, spd: source.spa };
   return {
     source,
     converted,
-    deltas: diffStats(converted, source),
+    deltas: diffStats(converted, sourceForDelta),
   };
 }
 
@@ -144,21 +150,15 @@ function statusScreenGen12(p: Gen12PaneProps): HTMLElement {
     headerLine(p.speciesName, p.mon.level, p.shiny),
     spriteImg(p.mon.speciesGen2Id, 'gen2', p.speciesName),
   );
-  // Gen 1/2 stored a single Special DV/StatExp, but Gen 2's display formula
-  // computes SpA and SpD independently using DIFFERENT base stats per species
-  // (e.g. Tyranitar 95 SpA / 100 SpD). So the underlying source has TWO
-  // implicit Special values that the user needs to see; otherwise the Gen 3
-  // pane's SpA/SpD deltas look mismatched ("why are they both -14 when only
-  // one number is shown?"). Render SPCL as `<spa>/<spd>` when they differ;
-  // single number when they match.
-  const speciallabel =
-    p.stats.spa === p.stats.spd ? String(p.stats.spa) : `${p.stats.spa}/${p.stats.spd}`;
+  // Single SPCL line — Gen 1/2 only had one Special value. The Gen 3 pane
+  // computes SpA/SpD deltas against this single displayed source value
+  // (see computeComparisonStats), so what's on screen lines up arithmetically.
   const lines = [
     statRow('HP', p.stats.hp, undefined),
     statRow('ATTACK', p.stats.atk, undefined),
     statRow('DEFENSE', p.stats.def, undefined),
     statRow('SPEED', p.stats.spe, undefined),
-    statRowText('SPCL', speciallabel),
+    statRow('SPCL', p.stats.spa, undefined),
   ];
   const block = el('div', { class: 'stat-block' });
   for (const l of lines) block.append(l);
@@ -205,14 +205,10 @@ function headerLine(species: string, level: number, shiny: boolean): HTMLElement
 }
 
 function statRow(label: string, value: number, delta: number | undefined): HTMLElement {
-  return statRowText(label, String(value), delta);
-}
-
-function statRowText(label: string, valueText: string, delta?: number | undefined): HTMLElement {
   const row = el('div', { class: 'stat-row' });
   row.append(
     el('span', { class: 'stat-label' }, label),
-    el('span', { class: 'stat-value' }, valueText),
+    el('span', { class: 'stat-value' }, String(value)),
   );
   if (delta !== undefined) {
     const sign = delta > 0 ? '+' : '';
