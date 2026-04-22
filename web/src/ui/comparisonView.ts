@@ -53,11 +53,11 @@ export function computeComparisonStats(
     evs: intermediate.evs,
     level: intermediate.level,
   });
-  // Gen 1/2 only displays one Special value (we render source.spa as "SPCL").
+  // Gen 1/2 only displays one Special value (we render source.spa as "SPECIAL").
   // Compute Gen 3 SpA/SpD deltas against that single displayed source so the
   // numbers on screen line up — otherwise the SpD delta uses the implicit
   // Gen 2 SpD-base value (which the user never sees) and looks unrelated to
-  // the SPCL row.
+  // the SPECIAL row.
   const sourceForDelta: SixStats = { ...source, spd: source.spa };
   return {
     source,
@@ -160,15 +160,17 @@ function statusScreenGen12(p: Gen12PaneProps): HTMLElement {
   if (p.shiny) label.append(el('span', { class: 'shiny-star' }, '★'));
   pane.append(label);
   pane.append(spriteImg(p.mon.speciesGen2Id, 'gen2', p.speciesName, p.sourceFormat));
-  // Single SPCL line — Gen 1/2 only had one Special value. The Gen 3 pane
+  // Single SPECIAL line — Gen 1/2 only had one Special value. The Gen 3 pane
   // computes SpA/SpD deltas against this single displayed source value
   // (see computeComparisonStats), so what's on screen lines up arithmetically.
+  // Order: HP/ATK/DEF/SPECIAL/SPEED so SPEED sits at the bottom of the pane,
+  // matching the Gen 3 pane's bottom row for visual alignment across panes.
   const lines = [
     statRow('HP', p.stats.hp, undefined),
     statRow('ATTACK', p.stats.atk, undefined),
     statRow('DEFENSE', p.stats.def, undefined),
+    statRow('SPECIAL', p.stats.spa, undefined),
     statRow('SPEED', p.stats.spe, undefined),
-    statRow('SPCL', p.stats.spa, undefined),
   ];
   const block = el('div', { class: 'stat-block' });
   for (const l of lines) block.append(l);
