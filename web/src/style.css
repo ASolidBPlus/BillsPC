@@ -339,24 +339,27 @@ img.sprite,
 }
 
 .conversion-details {
-  font-size: 11px;
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 .details-header {
   font-weight: bold;
   text-align: center;
-  margin-bottom: 6px;
-  letter-spacing: 1px;
+  margin-bottom: 14px;
+  letter-spacing: 2px;
+  font-size: 15px;
 }
 
 .details-block {
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 
 .details-block-title {
   font-weight: bold;
   text-decoration: underline;
-  margin-bottom: 2px;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
 }
 
 .details-table {
@@ -365,46 +368,66 @@ img.sprite,
 }
 
 .details-table td {
-  padding: 1px 4px;
+  padding: 3px 10px 3px 0;
   vertical-align: top;
 }
 
 .details-stat {
   font-weight: bold;
-  width: 48px;
+  width: 80px;
+  white-space: nowrap;
 }
 
 .details-src {
   text-align: right;
-  width: 60px;
+  width: 90px;
+  font-variant-numeric: tabular-nums;
 }
 
 .details-arrow {
-  width: 16px;
+  width: 24px;
   text-align: center;
   color: var(--gbc-mid-gray, #888);
+  font-weight: bold;
 }
 
 .details-dst {
   text-align: left;
+  font-variant-numeric: tabular-nums;
 }
 
 .details-sum td {
   border-top: 1px solid var(--gbc-border-outer);
-  padding-top: 2px;
+  padding-top: 6px;
+  padding-bottom: 3px;
   font-style: italic;
 }
 
 .details-note {
   font-style: italic;
   color: var(--gbc-mid-gray, #666);
-  margin-top: 2px;
+  margin-top: 6px;
+  padding-left: 4px;
 }
 
 .details-warning {
   color: #c44;
   font-weight: bold;
-  padding: 2px 4px;
+  padding: 3px 4px;
+}
+
+.pane-gen-label {
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 11px;
+  text-align: center;
+  padding: 2px 0 6px;
+  color: var(--gbc-mid-gray, #888);
+}
+
+.pane-gen-label .shiny-star {
+  margin-left: 8px;
+  color: var(--gbc-accent-yellow, #d4a900);
 }
 
 .comparison-header {

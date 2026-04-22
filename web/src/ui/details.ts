@@ -7,7 +7,7 @@
  * what the conversion did to each field.
  */
 import type { Gen12Pokemon, Gen3Intermediate } from '@pokeportal/core';
-import { hpDv, NATURE_NAMES } from '@pokeportal/core/internal';
+import { hpDv, NATURE_NAMES, decodeGen12 } from '@pokeportal/core/internal';
 import { dialog } from './dialog.js';
 import { el } from './dom.js';
 
@@ -19,7 +19,7 @@ export function conversionDetails(
   wrap.append(el('div', { class: 'details-header' }, 'CONVERSION DETAILS'));
 
   const ivBlock = el('div', { class: 'details-block' });
-  ivBlock.append(el('div', { class: 'details-block-title' }, 'DV → IV'));
+  ivBlock.append(el('div', { class: 'details-block-title' }, 'DV > IV'));
   const ivTable = el('table', { class: 'details-table' });
   const sourceHpDv = hpDv(mon.dvs);
   const ivRows: [string, number, string][] = [
@@ -38,7 +38,7 @@ export function conversionDetails(
     tr.append(
       el('td', { class: 'details-stat' }, label),
       el('td', { class: 'details-src' }, String(dv)),
-      el('td', { class: 'details-arrow' }, '→'),
+      el('td', { class: 'details-arrow' }, '>'),
       el('td', { class: 'details-dst' }, iv),
     );
     ivTable.append(tr);
@@ -47,7 +47,7 @@ export function conversionDetails(
   wrap.append(ivBlock);
 
   const evBlock = el('div', { class: 'details-block' });
-  evBlock.append(el('div', { class: 'details-block-title' }, 'StatExp → EV'));
+  evBlock.append(el('div', { class: 'details-block-title' }, 'StatExp > EV'));
   const evTable = el('table', { class: 'details-table' });
   const evRows: [string, number, string][] = [
     ['HP', mon.statExp.hp, String(intermediate.evs.hp)],
@@ -65,7 +65,7 @@ export function conversionDetails(
     tr.append(
       el('td', { class: 'details-stat' }, label),
       el('td', { class: 'details-src' }, String(se)),
-      el('td', { class: 'details-arrow' }, '→'),
+      el('td', { class: 'details-arrow' }, '>'),
       el('td', { class: 'details-dst' }, ev),
     );
     evTable.append(tr);
@@ -109,17 +109,14 @@ export function conversionDetails(
   const natureName = NATURE_NAMES[intermediate.nature] ?? `nature-${intermediate.nature}`;
   const natureBucket = ((mon.dvs.atk << 4) | mon.dvs.def) % 5;
   const pidIters = intermediate._meta.pidSearchIterations;
+  const otName = decodeGen12(mon.otNameBytes) || '(unknown)';
   const metaRows: [string, string][] = [
-    ['Nature', `${natureName} (#${intermediate.nature}, bucket ${natureBucket}, neutral)`],
+    ['OT', `${otName}  (TID ${intermediate.tid}, SID ${intermediate.sid})`],
+    ['Nature', `${natureName}  (#${intermediate.nature}, bucket ${natureBucket}, neutral)`],
     [
       'PID',
-      `0x${intermediate.pid.toString(16).padStart(8, '0')} (${pidIters} iter${pidIters === 1 ? '' : 's'})`,
+      `0x${intermediate.pid.toString(16).padStart(8, '0')}  (${pidIters} iter${pidIters === 1 ? '' : 's'})`,
     ],
-    [
-      'SID',
-      `${intermediate.sid} (SHA-256 of OT name + TID)`,
-    ],
-    ['TID', String(intermediate.tid)],
     [
       'Met',
       `Four Island, FRLG, met-level ${intermediate.metLevel} (hatched egg)`,

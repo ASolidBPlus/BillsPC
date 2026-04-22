@@ -150,10 +150,13 @@ interface Gen12PaneProps {
 
 function statusScreenGen12(p: Gen12PaneProps): HTMLElement {
   const pane = dialog({ class: 'status-screen status-screen--gen12' });
-  pane.append(
-    headerLine(p.speciesName, p.mon.level, p.shiny),
-    spriteImg(p.mon.speciesGen2Id, 'gen2', p.speciesName),
-  );
+  // No species/level header here — it's already in the overlay's top dialog.
+  // Per-gen label (so user knows which side is which) + shiny star (so test
+  // selectors can still find one star per pane).
+  const label = el('div', { class: 'pane-gen-label' }, 'GEN 1/2 SOURCE');
+  if (p.shiny) label.append(el('span', { class: 'shiny-star' }, '★'));
+  pane.append(label);
+  pane.append(spriteImg(p.mon.speciesGen2Id, 'gen2', p.speciesName));
   // Single SPCL line — Gen 1/2 only had one Special value. The Gen 3 pane
   // computes SpA/SpD deltas against this single displayed source value
   // (see computeComparisonStats), so what's on screen lines up arithmetically.
@@ -182,10 +185,10 @@ interface Gen3PaneProps {
 
 function statusScreenGen3(p: Gen3PaneProps): HTMLElement {
   const pane = dialog({ class: 'status-screen status-screen--gen3' });
-  pane.append(
-    headerLine(p.speciesName, p.level, p.shiny),
-    spriteImg(p.species, 'gen3', p.speciesName),
-  );
+  const label = el('div', { class: 'pane-gen-label' }, 'GEN 3 CONVERTED');
+  if (p.shiny) label.append(el('span', { class: 'shiny-star' }, '★'));
+  pane.append(label);
+  pane.append(spriteImg(p.species, 'gen3', p.speciesName));
   const lines = [
     statRow('HP', p.stats.hp, p.deltas.hp),
     statRow('ATTACK', p.stats.atk, p.deltas.atk),
@@ -198,14 +201,6 @@ function statusScreenGen3(p: Gen3PaneProps): HTMLElement {
   for (const l of lines) block.append(l);
   pane.append(block);
   return pane;
-}
-
-function headerLine(species: string, level: number, shiny: boolean): HTMLElement {
-  const h = el('div', { class: 'status-header' });
-  h.append(el('span', { class: 'status-species' }, species));
-  if (shiny) h.append(el('span', { class: 'shiny-star' }, '★'));
-  h.append(el('span', { class: 'status-level' }, `Lv ${level}`));
-  return h;
 }
 
 function statRow(label: string, value: number, delta: number | undefined): HTMLElement {
