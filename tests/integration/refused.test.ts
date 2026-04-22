@@ -12,13 +12,23 @@ describe('refusal flow', () => {
     expect(out.message).toContain('Mew');
   });
 
-  it('all 20 refused species produce a Refusal', () => {
+  it('all refused species (12: 11 legendaries + Ditto) produce a Refusal', () => {
     for (const id of REFUSED_SPECIES) {
       const out = convert({
         ...mewRefused,
         speciesGen2Id: id,
       });
       expect(isRefusal(out)).toBe(true);
+    }
+  });
+
+  it('babies (Pichu, Cleffa, etc.) are NOT refused — they hatch from breeding adult forms', () => {
+    for (const id of [172, 173, 174, 175, 236, 238, 239, 240]) {
+      const out = convert({
+        ...mewRefused,
+        speciesGen2Id: id,
+      });
+      expect(isRefusal(out), `species ${id} (baby) should NOT be refused`).toBe(false);
     }
   });
 

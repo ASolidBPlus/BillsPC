@@ -16,16 +16,21 @@ const REASONS: ReadonlyMap<number, { reason: RefusalReason; name: string }> = ne
 );
 
 /**
- * Note on Unown (201) and babies (172 Pichu, 173 Cleffa, 174 Igglybuff, 175 Togepi,
- * 236 Tyrogue, 238 Smoochum, 239 Elekid, 240 Magby):
+ * Note on Unown (201) and babies:
  *
- * Unown is intentionally NOT refused despite being Undiscovered in Gen 2 PersonalInfo.
- * HANDOFF §4.6 explicitly specifies a PID search for Unown; PLAN_EVAL A4 binds that
- * §4.6 wins over §4.0's over-inclusive Undiscovered blanket. Do not "fix" the
- * inconsistency by adding Unown to the refused set.
+ * - Unown is intentionally NOT refused despite being Undiscovered in Gen 2 PersonalInfo.
+ *   HANDOFF §4.6 explicitly specifies a PID search for Unown; §4.6 wins over §4.0's
+ *   over-inclusive Undiscovered blanket. Do not "fix" the inconsistency by adding
+ *   Unown to the refused set.
  *
- * Babies ARE refused per the literal §4.0 spec (PLAN_EVAL A11). A future sprint may
- * revisit, but S1 honours the spec as written. Do not remove babies from this set.
+ * - Babies (Pichu/Cleffa/Igglybuff/Togepi/Tyrogue/Smoochum/Elekid/Magby) are NOT
+ *   refused. HANDOFF §4.0's "unbreedable pre-evos" framing was wrong: babies CAN be
+ *   the offspring of breeding (Pikachu × Ditto → Pichu egg → Pichu, all in Gen 3
+ *   FRLG). The bred-egg origin metadata only requires the species to be a valid
+ *   egg-result, not a valid breeding parent. Do not re-add babies to this set.
+ *
+ * - Ditto IS refused (Ditto × Ditto produces no egg; no plausible "hatched egg → Ditto"
+ *   path).
  */
 export function refusalReason(gen2Id: number): { reason: RefusalReason; name: string } | null {
   return REASONS.get(gen2Id) ?? null;
