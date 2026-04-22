@@ -144,14 +144,21 @@ function statusScreenGen12(p: Gen12PaneProps): HTMLElement {
     headerLine(p.speciesName, p.mon.level, p.shiny),
     spriteImg(p.mon.speciesGen2Id, 'gen2', p.speciesName),
   );
-  // Per A11: single SPCL line. Use the source-side spa value, which the
-  // formula derived from gen1Special (Gen 1 mons) or base.spa (Gen 2).
+  // Gen 1/2 stored a single Special DV/StatExp, but Gen 2's display formula
+  // computes SpA and SpD independently using DIFFERENT base stats per species
+  // (e.g. Tyranitar 95 SpA / 100 SpD). So the underlying source has TWO
+  // implicit Special values that the user needs to see; otherwise the Gen 3
+  // pane's SpA/SpD deltas look mismatched ("why are they both -14 when only
+  // one number is shown?"). Render SPCL as `<spa>/<spd>` when they differ;
+  // single number when they match.
+  const speciallabel =
+    p.stats.spa === p.stats.spd ? String(p.stats.spa) : `${p.stats.spa}/${p.stats.spd}`;
   const lines = [
     statRow('HP', p.stats.hp, undefined),
     statRow('ATTACK', p.stats.atk, undefined),
     statRow('DEFENSE', p.stats.def, undefined),
     statRow('SPEED', p.stats.spe, undefined),
-    statRow('SPCL', p.stats.spa, undefined),
+    statRowText('SPCL', speciallabel),
   ];
   const block = el('div', { class: 'stat-block' });
   for (const l of lines) block.append(l);
@@ -198,10 +205,14 @@ function headerLine(species: string, level: number, shiny: boolean): HTMLElement
 }
 
 function statRow(label: string, value: number, delta: number | undefined): HTMLElement {
+  return statRowText(label, String(value), delta);
+}
+
+function statRowText(label: string, valueText: string, delta?: number | undefined): HTMLElement {
   const row = el('div', { class: 'stat-row' });
   row.append(
     el('span', { class: 'stat-label' }, label),
-    el('span', { class: 'stat-value' }, String(value)),
+    el('span', { class: 'stat-value' }, valueText),
   );
   if (delta !== undefined) {
     const sign = delta > 0 ? '+' : '';
