@@ -27,9 +27,21 @@ import {
   injectIntoSave,
   isGen3InjectError,
   gen3GameLabel,
+  deleteMonGen1,
+  deleteMonGen2,
 } from '@pokeportal/core';
 import { getSpecies } from '@pokeportal/core/internal';
-import type { Gen12Pokemon, SaveContents, SaveError } from '@pokeportal/core';
+import type {
+  Gen12Pokemon,
+  Gen1DeleteRef,
+  Gen1WriterFormat,
+  Gen2DeleteRef,
+  Gen2WriterFormat,
+  SaveContents,
+  SaveError,
+  SaveFormat,
+} from '@pokeportal/core';
+import { zipFiles } from './zip.js';
 import {
   type Action,
   type AppState,
@@ -60,6 +72,9 @@ export interface ControllerDeps {
   readonly isGen3SaveError: typeof isGen3SaveError;
   readonly injectIntoSave: typeof injectIntoSave;
   readonly isGen3InjectError: typeof isGen3InjectError;
+  // S6b source-side deletes for the two-save zip flow.
+  readonly deleteMonGen1: typeof deleteMonGen1;
+  readonly deleteMonGen2: typeof deleteMonGen2;
 }
 
 export const DEFAULT_DEPS: ControllerDeps = {
@@ -72,6 +87,8 @@ export const DEFAULT_DEPS: ControllerDeps = {
   isGen3SaveError,
   injectIntoSave,
   isGen3InjectError,
+  deleteMonGen1,
+  deleteMonGen2,
 };
 
 export interface Controller {
@@ -135,11 +152,12 @@ export async function handleFileSelected(
     }
   });
   const buf = await file.arrayBuffer();
-  const result = deps.parseSave(new Uint8Array(buf));
+  const bytes = new Uint8Array(buf);
+  const result = deps.parseSave(bytes);
   if (deps.isSaveError(result)) {
     dispatch({ type: 'file_failed', error: result, fileName: file.name });
   } else {
-    dispatch({ type: 'file_parsed', save: result, fileName: file.name });
+    dispatch({ type: 'file_parsed', save: result, fileName: file.name, bytes });
   }
 }
 
@@ -181,18 +199,39 @@ export async function handleDestFileSelected(
   }
 }
 
+function pad2(n: number): string {
+  return n < 10 ? `0${n}` : `${n}`;
+}
+
+function timestamp(now: Date): string {
+  return (
+    `${now.getFullYear()}${pad2(now.getMonth() + 1)}${pad2(now.getDate())}` +
+    `${pad2(now.getHours())}${pad2(now.getMinutes())}${pad2(now.getSeconds())}`
+  );
+}
+
+function stripSav(name: string): string {
+  return name.replace(/\.sav$/i, '');
+}
+
 /**
  * Build the timestamped suggested filename per orchestrator decision Q4:
  *   `${original-stem}.modified-${YYYYMMDDHHmmss}.sav`
  */
 export function suggestModifiedFilename(originalName: string, now = new Date()): string {
-  // Strip a trailing .sav (case-insensitive) if present; preserve everything else.
-  const stem = originalName.replace(/\.sav$/i, '');
-  const pad = (n: number): string => (n < 10 ? `0${n}` : `${n}`);
-  const ts =
-    `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}` +
-    `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
-  return `${stem}.modified-${ts}.sav`;
+  return `${stripSav(originalName)}.modified-${timestamp(now)}.sav`;
+}
+
+/**
+ * S6b transfer-zip filename:
+ *   `${source-stem}-to-${dest-stem}.transfer-${YYYYMMDDHHmmss}.zip`
+ */
+export function suggestTransferZipFilename(
+  sourceName: string,
+  destName: string,
+  now = new Date(),
+): string {
+  return `${stripSav(sourceName)}-to-${stripSav(destName)}.transfer-${timestamp(now)}.zip`;
 }
 
 export function render(
@@ -563,6 +602,16 @@ function buildDestStoreProp(
     };
   }
   const dexWarning = regionalDexWarning(dest.save.family, intermediate.species);
+  const sourceRef = state.openMon;
+  if (!sourceRef) {
+    // STORE button only renders inside the comparison overlay, which only
+    // opens when openMon is set — so this is a defensive bailout.
+    return {
+      enabled: false,
+      disabledReason: 'No source mon selected',
+      onStore: () => {},
+    };
+  }
   const onStore = (): void => {
     const injectResult = deps.injectIntoSave(
       dest.save,
@@ -580,12 +629,36 @@ function buildDestStoreProp(
       dispatch({ type: 'mon_close' });
       return;
     }
-    const filename = suggestModifiedFilename(dest.fileName);
+    // S6b: also delete the transferred mon from the source. Bundle both
+    // modified saves into a zip so the user gets a single download
+    // mirroring a real cart-to-cart trade.
+    const sourceDelete = applySourceDelete(state.save, state.sourceBytes, sourceRef, deps);
+    if (sourceDelete.kind === 'error') {
+      const err: SaveError = {
+        kind: 'save_error',
+        reason: 'CORRUPTED',
+        message: `source delete failed: ${sourceDelete.message}`,
+      };
+      dispatch({ type: 'file_failed', error: err, fileName: state.fileName });
+      dispatch({ type: 'mon_close' });
+      return;
+    }
+    const now = new Date();
+    const ts = timestamp(now);
+    const sourceModifiedName = `${stripSav(state.fileName)}.modified-${ts}.sav`;
+    const destModifiedName = `${stripSav(dest.fileName)}.modified-${ts}.sav`;
+    const zipBytes = zipFiles([
+      { name: sourceModifiedName, bytes: sourceDelete.bytes },
+      { name: destModifiedName, bytes: injectResult.bytes },
+    ]);
+    const zipName = suggestTransferZipFilename(state.fileName, dest.fileName, now);
     dispatch({
       type: 'store_committed',
       save: injectResult,
-      bytes: injectResult.bytes,
-      suggestedFilename: filename,
+      bytes: zipBytes,
+      suggestedFilename: zipName,
+      sourceSave: sourceDelete.reparsed,
+      sourceBytes: sourceDelete.bytes,
     });
     dispatch({ type: 'mon_close' });
   };
@@ -594,6 +667,60 @@ function buildDestStoreProp(
     onStore,
     ...(dexWarning ? { regionalDexWarning: dexWarning } : {}),
   };
+}
+
+interface SourceDeleteOk {
+  readonly kind: 'ok';
+  readonly bytes: Uint8Array;
+  readonly reparsed: SaveContents;
+}
+interface SourceDeleteErr {
+  readonly kind: 'error';
+  readonly message: string;
+}
+
+function gen1Format(format: SaveFormat): Gen1WriterFormat | null {
+  if (format === 'RBY-RED' || format === 'RBY-BLUE' || format === 'RBY-YELLOW') return format;
+  return null;
+}
+function gen2Format(format: SaveFormat): Gen2WriterFormat | null {
+  if (format === 'GS' || format === 'CRYSTAL') return format;
+  return null;
+}
+
+function applySourceDelete(
+  save: SaveContents,
+  sourceBytes: Uint8Array,
+  ref: { bucket: 'party' | 'currentBox' | 'box'; boxIndex?: number; slot: number },
+  deps: ControllerDeps,
+): SourceDeleteOk | SourceDeleteErr {
+  try {
+    const g1 = gen1Format(save.format);
+    const g2 = gen2Format(save.format);
+    let modified: Uint8Array;
+    if (g1) {
+      const delRef: Gen1DeleteRef =
+        ref.bucket === 'box'
+          ? { bucket: 'box', boxIndex: ref.boxIndex ?? 0, slot: ref.slot }
+          : { bucket: ref.bucket, slot: ref.slot };
+      modified = deps.deleteMonGen1(sourceBytes, g1, delRef);
+    } else if (g2) {
+      const delRef: Gen2DeleteRef =
+        ref.bucket === 'box'
+          ? { bucket: 'box', boxIndex: ref.boxIndex ?? 0, slot: ref.slot }
+          : { bucket: ref.bucket, slot: ref.slot };
+      modified = deps.deleteMonGen2(sourceBytes, g2, delRef);
+    } else {
+      return { kind: 'error', message: `unsupported source format ${save.format}` };
+    }
+    const reparsed = deps.parseSave(modified);
+    if (deps.isSaveError(reparsed)) {
+      return { kind: 'error', message: `${reparsed.reason}: ${reparsed.message}` };
+    }
+    return { kind: 'ok', bytes: modified, reparsed };
+  } catch (e) {
+    return { kind: 'error', message: (e as Error).message };
+  }
 }
 
 function hint(state: Extract<AppState, { kind: 'loaded' }>): string {

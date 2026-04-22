@@ -58,6 +58,7 @@ function loadedBase(): Extract<AppState, { kind: 'loaded' }> {
     kind: 'loaded',
     fileName: 'src.sav',
     save: fakeSave,
+    sourceBytes: new Uint8Array(32768),
     results: new Map(),
     boxIndex: 0,
     cursor: { row: 0, col: 0 },

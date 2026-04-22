@@ -66,7 +66,16 @@ export interface DestState {
   readonly cursor: DestCursor;
 }
 
-/** Pending download: stored after a successful inject so the user can confirm visually before clicking Download. */
+/**
+ * Pending download stored after a successful STORE.
+ *
+ * S6b: when both source AND destination saves were loaded, this holds a
+ * ZIP buffer containing both modified .sav files (source with the
+ * transferred mon deleted, destination with the mon injected). When only
+ * the destination was modified (legacy S6a path), it still holds the
+ * single modified .sav. The `suggestedFilename` extension distinguishes
+ * (`.zip` vs `.sav`).
+ */
 export interface DestDownload {
   readonly bytes: Uint8Array;
   readonly suggestedFilename: string;
@@ -105,6 +114,13 @@ export type AppState = DestSlot &
         kind: 'loaded';
         fileName: string;
         save: SaveContents;
+        /**
+         * S6b — raw SRAM bytes captured at parse time so the source-side
+         * deleter can operate on the in-memory buffer without re-reading
+         * the user's file. Updated in place after each STORE so chained
+         * STOREs delete from the post-previous-STORE state.
+         */
+        sourceBytes: Uint8Array;
         results: ReadonlyMap<string, ConvertResult>;
         // S5 fields (per PLAN §5):
         boxIndex: number;
@@ -115,7 +131,7 @@ export type AppState = DestSlot &
 
 export type Action =
   | { type: 'file_selected'; file: { name: string; size: number } }
-  | { type: 'file_parsed'; save: SaveContents; fileName: string }
+  | { type: 'file_parsed'; save: SaveContents; fileName: string; bytes: Uint8Array }
   | { type: 'file_failed'; error: SaveError; fileName: string }
   | { type: 'convert_done'; ref: MonRef; result: ConvertResult }
   | { type: 'reset' }
@@ -136,6 +152,15 @@ export type Action =
       save: Gen3SaveContents;
       bytes: Uint8Array;
       suggestedFilename: string;
+      /**
+       * S6b: optional refreshed source save (the in-memory state after the
+       * transferred mon was deleted from the source). When present the
+       * reducer swaps it into `state.save` so subsequent STOREs see fresh
+       * slot indices. When absent the source side is left untouched
+       * (legacy single-save flow).
+       */
+      sourceSave?: SaveContents;
+      sourceBytes?: Uint8Array;
     };
 
 export const INITIAL_STATE: AppState = { kind: 'idle' };
@@ -170,6 +195,7 @@ export function reducer(state: AppState, action: Action): AppState {
         kind: 'loaded',
         fileName: action.fileName,
         save: action.save,
+        sourceBytes: action.bytes,
         results: new Map(),
         boxIndex: 0,
         cursor: { row: 0, col: 0 },
@@ -269,11 +295,26 @@ export function reducer(state: AppState, action: Action): AppState {
     }
     case 'store_committed': {
       if (!state.dest) return state;
-      return {
+      const next: AppState = {
         ...state,
         dest: { ...state.dest, save: action.save },
         destDownload: { bytes: action.bytes, suggestedFilename: action.suggestedFilename },
       };
+      // S6b: if the action carries a refreshed source save (post-delete),
+      // swap it in. Reset the cursor and clear cached convert results
+      // because the slot indices we cached against are no longer valid.
+      if (action.sourceSave && action.sourceBytes && next.kind === 'loaded') {
+        return {
+          ...next,
+          save: action.sourceSave,
+          sourceBytes: action.sourceBytes,
+          boxIndex: next.boxIndex,
+          cursor: { row: 0, col: 0 },
+          openMon: null,
+          results: new Map(),
+        };
+      }
+      return next;
     }
     default:
       return state;

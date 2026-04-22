@@ -22,6 +22,12 @@ export type {
   SaveSource,
 } from './types/sav.js';
 
+// Sprint 6b — Gen 1/2 source save delete (transferred-mon eviction).
+export { deleteMonGen1 } from './sav/gen1/writer.js';
+export type { Gen1DeleteRef, Gen1WriterFormat } from './sav/gen1/writer.js';
+export { deleteMonGen2 } from './sav/gen2/writer.js';
+export type { Gen2DeleteRef, Gen2WriterFormat } from './sav/gen2/writer.js';
+
 // Sprint 6a Gen 3 destination save reader/inject.
 export {
   parseGen3Save,

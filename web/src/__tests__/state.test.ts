@@ -32,6 +32,7 @@ function makeLoaded(): Extract<AppState, { kind: 'loaded' }> {
     kind: 'loaded',
     fileName: 'x',
     save: fakeSave,
+    sourceBytes: new Uint8Array(32768),
     results: new Map(),
     boxIndex: 0,
     cursor: { row: 0, col: 0 },
@@ -51,7 +52,12 @@ describe('reducer transitions', () => {
 
   it('parsing → loaded on file_parsed populates S5 defaults', () => {
     const s1 = reducer(INITIAL_STATE, { type: 'file_selected', file: file('demo.sav') });
-    const s2 = reducer(s1, { type: 'file_parsed', save: fakeSave, fileName: 'demo.sav' });
+    const s2 = reducer(s1, {
+      type: 'file_parsed',
+      save: fakeSave,
+      fileName: 'demo.sav',
+      bytes: new Uint8Array(32768),
+    });
     expect(s2.kind).toBe('loaded');
     if (s2.kind !== 'loaded') return;
     expect(s2.boxIndex).toBe(0);
