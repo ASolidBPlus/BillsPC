@@ -14,10 +14,15 @@
  *   N+1         → live "current box" pseudo-box (Gen 1/2 only; suppressed
  *                 when `save.currentBox` is undefined)
  *
+ * S6a additively extends the `'loaded'` variant with optional `dest`
+ * fields (a parsed Gen 3 destination save + a separate cursor for its
+ * box browser). Source-side state is untouched — all S5 tests still
+ * pass with `dest === undefined`.
+ *
  * All states are immutable; reducer returns a new object on every action.
  * Render diffs by identity.
  */
-import type { SaveContents, SaveError } from '@pokeportal/core';
+import type { Gen3SaveContents, SaveContents, SaveError } from '@pokeportal/core';
 
 export interface MonRef {
   readonly bucket: 'party' | 'currentBox' | 'box';
@@ -48,6 +53,35 @@ export interface Cursor {
   readonly col: number; // 0..3
 }
 
+/** S6a destination cursor: 5 rows × 6 cols = 30 slots per box. */
+export interface DestCursor {
+  readonly row: number; // 0..4
+  readonly col: number; // 0..5
+}
+
+export interface DestState {
+  readonly fileName: string;
+  readonly save: Gen3SaveContents;
+  readonly boxIndex: number; // 0..13
+  readonly cursor: DestCursor;
+}
+
+/** Pending download: stored after a successful inject so the user can confirm visually before clicking Download. */
+export interface DestDownload {
+  readonly bytes: Uint8Array;
+  readonly suggestedFilename: string;
+}
+
+export interface DestParsing {
+  readonly fileName: string;
+  readonly size: number;
+}
+
+export interface DestParseError {
+  readonly fileName: string;
+  readonly error: SaveError;
+}
+
 export type AppState =
   | { kind: 'idle' }
   | { kind: 'parsing'; fileName: string; size: number }
@@ -61,6 +95,11 @@ export type AppState =
       boxIndex: number;
       cursor: Cursor;
       openMon: MonRef | null;
+      // S6a optional destination fields (per PLAN_EVAL §6.10):
+      destParsing?: DestParsing;
+      destParseError?: DestParseError;
+      dest?: DestState;
+      destDownload?: DestDownload;
     };
 
 export type Action =
@@ -73,12 +112,28 @@ export type Action =
   | { type: 'cursor_move'; drow: -1 | 0 | 1; dcol: -1 | 0 | 1 }
   | { type: 'box_change'; delta: -1 | 1 }
   | { type: 'mon_open'; ref: MonRef }
-  | { type: 'mon_close' };
+  | { type: 'mon_close' }
+  // S6a actions:
+  | { type: 'dest_file_selected'; file: { name: string; size: number } }
+  | { type: 'dest_file_parsed'; save: Gen3SaveContents; fileName: string }
+  | { type: 'dest_file_failed'; error: SaveError; fileName: string }
+  | { type: 'dest_clear' }
+  | { type: 'dest_cursor_move'; drow: -1 | 0 | 1; dcol: -1 | 0 | 1 }
+  | { type: 'dest_box_change'; delta: -1 | 1 }
+  | {
+      type: 'store_committed';
+      save: Gen3SaveContents;
+      bytes: Uint8Array;
+      suggestedFilename: string;
+    };
 
 export const INITIAL_STATE: AppState = { kind: 'idle' };
 
 const ROWS = 5;
 const COLS = 4;
+const DEST_ROWS = 5;
+const DEST_COLS = 6;
+const DEST_BOX_COUNT = 14;
 
 function clamp(v: number, lo: number, hi: number): number {
   if (v < lo) return lo;
@@ -140,7 +195,84 @@ export function reducer(state: AppState, action: Action): AppState {
       if (state.openMon === null) return state;
       return { ...state, openMon: null };
     }
+    // S6a: destination flow.
+    case 'dest_file_selected': {
+      if (state.kind !== 'loaded') return state;
+      const next = { ...state };
+      next.destParsing = { fileName: action.file.name, size: action.file.size };
+      delete next.destParseError;
+      delete next.dest;
+      delete next.destDownload;
+      return next;
+    }
+    case 'dest_file_parsed': {
+      if (state.kind !== 'loaded') return state;
+      const next = { ...state };
+      delete next.destParsing;
+      delete next.destParseError;
+      next.dest = {
+        fileName: action.fileName,
+        save: action.save,
+        boxIndex: 0,
+        cursor: { row: 0, col: 0 },
+      };
+      delete next.destDownload;
+      return next;
+    }
+    case 'dest_file_failed': {
+      if (state.kind !== 'loaded') return state;
+      const next = { ...state };
+      delete next.destParsing;
+      next.destParseError = { fileName: action.fileName, error: action.error };
+      delete next.dest;
+      delete next.destDownload;
+      return next;
+    }
+    case 'dest_clear': {
+      if (state.kind !== 'loaded') return state;
+      const next = { ...state };
+      delete next.dest;
+      delete next.destParsing;
+      delete next.destParseError;
+      delete next.destDownload;
+      return next;
+    }
+    case 'dest_cursor_move': {
+      if (state.kind !== 'loaded' || !state.dest) return state;
+      const row = clamp(state.dest.cursor.row + action.drow, 0, DEST_ROWS - 1);
+      const col = clamp(state.dest.cursor.col + action.dcol, 0, DEST_COLS - 1);
+      if (row === state.dest.cursor.row && col === state.dest.cursor.col) return state;
+      return {
+        ...state,
+        dest: { ...state.dest, cursor: { row, col } },
+      };
+    }
+    case 'dest_box_change': {
+      if (state.kind !== 'loaded' || !state.dest) return state;
+      const next = clamp(state.dest.boxIndex + action.delta, 0, DEST_BOX_COUNT - 1);
+      if (next === state.dest.boxIndex) return state;
+      return {
+        ...state,
+        dest: { ...state.dest, boxIndex: next, cursor: { row: 0, col: 0 } },
+      };
+    }
+    case 'store_committed': {
+      if (state.kind !== 'loaded' || !state.dest) return state;
+      return {
+        ...state,
+        dest: { ...state.dest, save: action.save },
+        destDownload: { bytes: action.bytes, suggestedFilename: action.suggestedFilename },
+      };
+    }
     default:
       return state;
   }
 }
+
+/** Cursor 0-based to (boxIndex 0..13, slotIndex 0..29). */
+export function destCursorToSlot(cursor: DestCursor): number {
+  return cursor.row * DEST_COLS + cursor.col;
+}
+
+export const DEST_BOX_ROWS = DEST_ROWS;
+export const DEST_BOX_COLS = DEST_COLS;

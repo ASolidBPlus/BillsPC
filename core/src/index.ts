@@ -21,3 +21,36 @@ export type {
   TrainerInfo,
   SaveSource,
 } from './types/sav.js';
+
+// Sprint 6a Gen 3 destination save reader/inject.
+export {
+  parseGen3Save,
+  isGen3SaveError,
+  injectIntoSave,
+  isGen3InjectError,
+  detectGen3,
+  familyOf,
+  gen3GameLabel,
+  decodeGen3BoxName,
+  decodeGen3BoxNames,
+  PCBUFFER_BOX_COUNT,
+  PCBUFFER_SLOTS_PER_BOX,
+  PCBUFFER_SLOT_BYTES,
+} from './sav/gen3/index.js';
+export type {
+  Gen3SaveContents,
+  Gen3SaveError,
+  Gen3SaveErrorReason,
+  Gen3TrainerInfo,
+  Gen3InjectError,
+  Gen3InjectErrorReason,
+  InjectTarget,
+  BoxedSlot,
+  PcBoxBlock,
+  ActiveSlot,
+  SaveFormat3,
+  Gen3Family,
+  SaveSink,
+  SaveSinkOptions,
+  SaveSinkProgress,
+} from './sav/gen3/index.js';

@@ -1,5 +1,11 @@
 import raw from './raw/charmap12.json' with { type: 'json' };
 
+// TODO(GitHub issue #1, AMEND-S5-6): bytes 0x90 and 0xF4 differ between
+// the Gen 1 (PKHeX `StringConverter1`) and Gen 2 (PKHeX `StringConverter2`)
+// charmap tables. We currently use the Gen 2 table for both gens. Splitting
+// into `decodeGen1` / `decodeGen2` is deferred per PLAN_EVAL A14 — out of
+// S6a scope. No workaround is introduced here.
+
 /** Gen 1/2 string terminator byte. */
 export const GEN12_TERMINATOR = 0x50;
 

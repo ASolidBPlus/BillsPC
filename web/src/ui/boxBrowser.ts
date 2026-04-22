@@ -107,7 +107,11 @@ export function boxBrowser(props: BoxBrowserProps): HTMLElement {
  * Hover popover with the mon's front sprite + nickname/species/level/OT.
  * Plain CSS-only hover (no JS state) so it doesn't compete with click handlers.
  */
-function monTooltip(mon: Gen12Pokemon, speciesName: string, sourceFormat: SaveFormat | null): HTMLElement {
+function monTooltip(
+  mon: Gen12Pokemon,
+  speciesName: string,
+  sourceFormat: SaveFormat | null,
+): HTMLElement {
   const tip = el('div', { class: 'box-tile-tooltip' });
   const nick = decodeGen12(mon.nicknameBytes) || speciesName;
   const ot = decodeGen12(mon.otNameBytes) || '(unknown)';

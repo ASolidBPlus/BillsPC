@@ -11,16 +11,31 @@ describe('public API surface', () => {
     const keys = Object.keys(publicApi).sort();
     // Types don't appear at runtime; only values show up here. S2 added
     // the wire-format packer/unpacker exports.
+    // S6a additions: Gen 3 save reader/inject (parseGen3Save,
+    // injectIntoSave, etc.). The snapshot is intentionally exhaustive so
+    // a rename or accidental drop surfaces here as a single failure.
     expect(keys).toEqual([
       'BOXED_SIZE',
       'PARTY_SIZE',
+      'PCBUFFER_BOX_COUNT',
+      'PCBUFFER_SLOTS_PER_BOX',
+      'PCBUFFER_SLOT_BYTES',
       'convert',
+      'decodeGen3BoxName',
+      'decodeGen3BoxNames',
       'detectFormat',
+      'detectGen3',
+      'familyOf',
+      'gen3GameLabel',
+      'injectIntoSave',
       'isDecodeError',
+      'isGen3InjectError',
+      'isGen3SaveError',
       'isRefusal',
       'isSaveError',
       'packBoxed',
       'packParty',
+      'parseGen3Save',
       'parseSave',
       'unpackBoxed',
     ]);

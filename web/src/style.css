@@ -214,8 +214,14 @@ img.sprite,
 
 @keyframes ow-walk {
   /* Strip frames are 32 px in source → 64 px scaled. Frame 0 = 0; frame 3 = -64*3 = -192. */
-  0%, 49%   { background-position: 0 0; }       /* frame 0: down idle */
-  50%, 100% { background-position: -192px 0; }  /* frame 3: down walk-A */
+  0%,
+  49% {
+    background-position: 0 0;
+  } /* frame 0: down idle */
+  50%,
+  100% {
+    background-position: -192px 0;
+  } /* frame 3: down walk-A */
 }
 
 /* Big species (legendaries, Snorlax line, etc.) scale up so they read as bigger
@@ -470,7 +476,7 @@ img.sprite,
 /* SpA / SpD share a single source value (the Gen 1/2 Special DV / StatExp);
    tint the pair so the link is visible at a glance. */
 .details-table tr.is-mirror td {
-  background: rgba(88, 120, 168, 0.10); /* --pc-blue @ 10% */
+  background: rgba(88, 120, 168, 0.1); /* --pc-blue @ 10% */
 }
 .details-table tr.is-mirror td.details-stat {
   color: var(--pc-blue);

@@ -99,11 +99,11 @@ describe('upload flow (jsdom integration)', () => {
     const occupied = root.querySelector('.box-tile.is-occupied') as HTMLElement;
     occupied.click();
     expect(root.querySelector('.comparison-overlay')).not.toBeNull();
-    // STORE button present.
-    const storeButton = Array.from(root.querySelectorAll('.gen2-menu-label')).find(
-      (e) => e.textContent === 'STORE',
+    // S6a: the .pk3 download path remains via the "Download .pk3" row.
+    const dlRow = Array.from(root.querySelectorAll('.gen2-menu-label')).find(
+      (e) => e.textContent === 'Download .pk3',
     );
-    expect(storeButton).toBeDefined();
+    expect(dlRow).toBeDefined();
   });
 
   it('clicking STORE on an open mon downloads an 80-byte .pk3', async () => {
@@ -155,12 +155,13 @@ describe('upload flow (jsdom integration)', () => {
       captured.size = undefined;
       captured.name = undefined;
 
-      // Click STORE row in the comparison-overlay menu.
-      const storeRow = Array.from(root.querySelectorAll('.gen2-menu-row')).find((r) =>
-        r.textContent?.includes('STORE'),
+      // S6a: the .pk3 download path is now under "Download .pk3"; the
+      // S5 single-mon download still works via this row.
+      const dlRow = Array.from(root.querySelectorAll('.gen2-menu-row')).find((r) =>
+        r.textContent?.includes('Download .pk3'),
       ) as HTMLElement;
-      expect(storeRow).toBeDefined();
-      storeRow.click();
+      expect(dlRow).toBeDefined();
+      dlRow.click();
 
       expect(captured.size).toBe(80);
       expect(captured.name).toMatch(/\.pk3$/);

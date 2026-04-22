@@ -110,10 +110,16 @@ describe('box browser render (jsdom)', () => {
     // Both panes present.
     expect(overlay!.querySelector('.status-screen--gen12')).not.toBeNull();
     expect(overlay!.querySelector('.status-screen--gen3')).not.toBeNull();
-    // Menu has STORE + CANCEL.
+    // S6a: menu now has STORE in destination (disabled when no dest is
+    // loaded, per orchestrator Q3) + Download .pk3 + CANCEL.
     const labels = Array.from(overlay!.querySelectorAll('.gen2-menu-label')).map(
       (e) => e.textContent,
     );
-    expect(labels).toEqual(['STORE', 'CANCEL']);
+    expect(labels).toEqual(['STORE in destination', 'Download .pk3', 'CANCEL']);
+    // The STORE-in-destination row is disabled (no dest loaded) and
+    // carries the discoverability tooltip.
+    const disabledRow = overlay!.querySelector('.gen2-menu-row.is-disabled');
+    expect(disabledRow).not.toBeNull();
+    expect(disabledRow!.getAttribute('title')).toContain('Load a destination');
   });
 });

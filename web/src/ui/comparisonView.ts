@@ -73,8 +73,21 @@ export interface ComparisonProps {
   readonly speciesName: string;
   readonly nickname: string;
   readonly sourceFormat: SaveFormat | null;
+  /** "Download .pk3" — always enabled for non-refused mons (S5 behaviour). */
   readonly onConfirm: () => void;
   readonly onCancel: () => void;
+  /**
+   * S6a STORE-in-destination action. When omitted, only the .pk3 download
+   * button renders (S5 single-flow). When present, the menu shows two
+   * actions: STORE-in-destination + Download .pk3.
+   */
+  readonly destStore?: {
+    readonly enabled: boolean;
+    readonly disabledReason?: string;
+    /** Optional regional-dex hint (per PLAN_EVAL A10); rendered as a yellow caption. */
+    readonly regionalDexWarning?: string;
+    readonly onStore: () => void;
+  };
 }
 
 export function comparisonView(props: ComparisonProps): HTMLElement {
@@ -132,11 +145,42 @@ export function comparisonView(props: ComparisonProps): HTMLElement {
   // Transparency: full conversion details (DV→IV, StatExp→EV, nature, PID, etc).
   inner.append(conversionDetails(props.mon, props.intermediate));
 
-  const items: MenuItem[] = [
-    { label: 'STORE', onSelect: props.onConfirm },
-    { label: 'CANCEL', onSelect: props.onCancel },
-  ];
-  inner.append(menu({ items, selectedIndex: 0 }));
+  // S6a regional-dex warning row (per PLAN_EVAL A10): appears between
+  // details and the action menu when present. Yellow caption, NOT
+  // silenceable (per orchestrator decision Q5).
+  if (props.destStore?.regionalDexWarning) {
+    inner.append(
+      el(
+        'div',
+        { class: 'regional-dex-warning', role: 'note' },
+        props.destStore.regionalDexWarning,
+      ),
+    );
+  }
+
+  const items: MenuItem[] = [];
+  if (props.destStore) {
+    const dest = props.destStore;
+    const item: MenuItem = dest.enabled
+      ? { label: 'STORE in destination', onSelect: dest.onStore }
+      : {
+          label: 'STORE in destination',
+          onSelect: () => {},
+          disabled: true,
+        };
+    items.push(item);
+  }
+  items.push({ label: 'Download .pk3', onSelect: props.onConfirm });
+  items.push({ label: 'CANCEL', onSelect: props.onCancel });
+  const menuEl = menu({ items, selectedIndex: 0 });
+  // Per orchestrator Q3: visible-but-disabled with hover tooltip when dest is null.
+  if (props.destStore && !props.destStore.enabled && props.destStore.disabledReason) {
+    const disabledRow = menuEl.querySelector('.gen2-menu-row.is-disabled') as HTMLElement | null;
+    if (disabledRow) {
+      disabledRow.setAttribute('title', props.destStore.disabledReason);
+    }
+  }
+  inner.append(menuEl);
 
   wrap.append(inner);
   return wrap;

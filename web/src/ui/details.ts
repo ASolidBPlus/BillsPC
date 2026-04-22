@@ -11,10 +11,7 @@ import { hpDv, NATURE_NAMES, decodeGen12 } from '@pokeportal/core/internal';
 import { dialog } from './dialog.js';
 import { el } from './dom.js';
 
-export function conversionDetails(
-  mon: Gen12Pokemon,
-  intermediate: Gen3Intermediate,
-): HTMLElement {
+export function conversionDetails(mon: Gen12Pokemon, intermediate: Gen3Intermediate): HTMLElement {
   const wrap = dialog({ class: 'conversion-details' });
   wrap.append(el('div', { class: 'details-header' }, 'CONVERSION DETAILS'));
   // Two-column flow: stat tables (DV/IV + StatExp/EV) on the left, identity
@@ -144,10 +141,7 @@ export function conversionDetails(
       'PID',
       `0x${intermediate.pid.toString(16).padStart(8, '0')}  (${pidIters} iter${pidIters === 1 ? '' : 's'})`,
     ],
-    [
-      'Met',
-      `Four Island, FRLG, met-level ${intermediate.metLevel} (hatched egg)`,
-    ],
+    ['Met', `Four Island, FRLG, met-level ${intermediate.metLevel} (hatched egg)`],
     ['Ability', `slot ${intermediate.abilitySlot}`],
   ];
   for (const [label, value] of metaRows) {

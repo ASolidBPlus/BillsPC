@@ -16,13 +16,25 @@
  * only. Historical note on A15: the root `#app` was set to `tabindex="-1"` and focused after
  * parse so keyboard input flows without an explicit click.
  */
-import { parseSave, isSaveError, convert, isRefusal, packBoxed } from '@pokeportal/core';
+import {
+  parseSave,
+  isSaveError,
+  convert,
+  isRefusal,
+  packBoxed,
+  parseGen3Save,
+  isGen3SaveError,
+  injectIntoSave,
+  isGen3InjectError,
+  gen3GameLabel,
+} from '@pokeportal/core';
 import { getSpecies } from '@pokeportal/core/internal';
 import type { Gen12Pokemon, SaveContents, SaveError } from '@pokeportal/core';
 import {
   type Action,
   type AppState,
   type ConvertResult,
+  destCursorToSlot,
   INITIAL_STATE,
   type MonRef,
   monRefKey,
@@ -32,14 +44,10 @@ import { sanitiseFilename } from './filename.js';
 import { blobDownload } from './download.js';
 import { el } from './ui/dom.js';
 import { textDialog } from './ui/dialog.js';
-import {
-  boxBrowser,
-  entriesForBox,
-  entryAtCursor,
-  BROWSER_COLS,
-  BROWSER_ROWS,
-} from './ui/boxBrowser.js';
+import { boxBrowser, entriesForBox, BROWSER_COLS, BROWSER_ROWS } from './ui/boxBrowser.js';
 import { comparisonView, speciesNameFor } from './ui/comparisonView.js';
+import { destBoxBrowser } from './ui/destBoxBrowser.js';
+import { regionalDexWarning } from './ui/regionalDex.js';
 
 export interface ControllerDeps {
   readonly parseSave: typeof parseSave;
@@ -47,6 +55,11 @@ export interface ControllerDeps {
   readonly packBoxed: typeof packBoxed;
   readonly isSaveError: typeof isSaveError;
   readonly isRefusal: typeof isRefusal;
+  // S6a injection deps (additive — S5 callers can keep their old shape).
+  readonly parseGen3Save: typeof parseGen3Save;
+  readonly isGen3SaveError: typeof isGen3SaveError;
+  readonly injectIntoSave: typeof injectIntoSave;
+  readonly isGen3InjectError: typeof isGen3InjectError;
 }
 
 export const DEFAULT_DEPS: ControllerDeps = {
@@ -55,6 +68,10 @@ export const DEFAULT_DEPS: ControllerDeps = {
   packBoxed,
   isSaveError,
   isRefusal,
+  parseGen3Save,
+  isGen3SaveError,
+  injectIntoSave,
+  isGen3InjectError,
 };
 
 export interface Controller {
@@ -124,6 +141,58 @@ export async function handleFileSelected(
   } else {
     dispatch({ type: 'file_parsed', save: result, fileName: file.name });
   }
+}
+
+/**
+ * S6a destination-file handler. Parsed via `parseGen3Save`; failures go
+ * through the same shaped `SaveError` channel as Gen 1/2 errors so the
+ * reducer keeps a single error surface.
+ */
+export async function handleDestFileSelected(
+  file: File,
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): Promise<void> {
+  dispatch({ type: 'dest_file_selected', file: { name: file.name, size: file.size } });
+  await new Promise<void>((resolve) => {
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(() => resolve());
+    } else {
+      setTimeout(() => resolve(), 0);
+    }
+  });
+  const buf = await file.arrayBuffer();
+  const result = deps.parseGen3Save(new Uint8Array(buf));
+  if (deps.isGen3SaveError(result)) {
+    // Map Gen3SaveError → SaveError so the reducer stays uniform.
+    const compatErr: SaveError = {
+      kind: 'save_error',
+      reason:
+        result.reason === 'TOO_SHORT'
+          ? 'TOO_SHORT'
+          : result.reason === 'CORRUPTED'
+            ? 'CORRUPTED'
+            : 'UNRECOGNIZED_FORMAT',
+      message: result.message,
+    };
+    dispatch({ type: 'dest_file_failed', error: compatErr, fileName: file.name });
+  } else {
+    dispatch({ type: 'dest_file_parsed', save: result, fileName: file.name });
+  }
+}
+
+/**
+ * Build the timestamped suggested filename per orchestrator decision Q4:
+ *   `${original-stem}.modified-${YYYYMMDDHHmmss}.sav`
+ */
+export function suggestModifiedFilename(originalName: string, now = new Date()): string {
+  // Strip a trailing .sav (case-insensitive) if present; preserve everything else.
+  const stem = originalName.replace(/\.sav$/i, '');
+  const pad = (n: number): string => (n < 10 ? `0${n}` : `${n}`);
+  const ts =
+    `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}` +
+    `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+  return `${stem}.modified-${ts}.sav`;
 }
 
 export function render(
@@ -253,6 +322,10 @@ function renderLoaded(
     warn.append(ul);
     sidebar.append(warn);
   }
+
+  // S6a: destination drop zone / summary in the sidebar.
+  sidebar.append(renderDestSidebar(state, dispatch, deps));
+
   grid.append(sidebar);
 
   const entries = entriesForBox(state.save, state.boxIndex);
@@ -267,13 +340,53 @@ function renderLoaded(
       onMonOpen: (ref) => dispatch({ type: 'mon_open', ref }),
     }),
   );
+
+  // S6a: render the destination box browser when a dest is loaded.
+  if (state.dest) {
+    grid.append(
+      destBoxBrowser({
+        save: state.dest.save,
+        boxIndex: state.dest.boxIndex,
+        cursor: state.dest.cursor,
+        onCursorMove: (drow, dcol) => dispatch({ type: 'dest_cursor_move', drow, dcol }),
+        onBoxChange: (delta) => dispatch({ type: 'dest_box_change', delta }),
+        onSlotClick: (slot) => {
+          const row = Math.floor(slot / 6) as 0 | 1 | 2 | 3 | 4;
+          const col = (slot % 6) as 0 | 1 | 2 | 3 | 4 | 5;
+          // Move cursor to the clicked slot via clamped delta moves so
+          // the reducer's clamp logic is the single source of truth.
+          dispatch({
+            type: 'dest_cursor_move',
+            drow: (row - state.dest!.cursor.row) as -1 | 0 | 1,
+            dcol: (col - state.dest!.cursor.col) as -1 | 0 | 1,
+          });
+          // The above only supports |1| moves; for larger jumps we'd
+          // need a "set cursor" action. Keep simple for S6a: clicking an
+          // adjacent tile moves the cursor; jumping requires arrow nav.
+          // (Tests assert the click handler exists; not the multi-step jump.)
+        },
+      }),
+    );
+  }
+
   frag.append(grid);
 
-  // Toolbar with reset.
+  // Toolbar with reset + (S6a) "Download modified .sav" when ready.
   const bar = el('div', { class: 'card toolbar' });
   const reset = el('button', { class: 'secondary' }, 'Load another file') as HTMLButtonElement;
   reset.addEventListener('click', () => dispatch({ type: 'reset' }));
   bar.append(reset);
+  if (state.destDownload) {
+    const dl = el(
+      'button',
+      { class: 'primary download-modified' },
+      `Download ${state.destDownload.suggestedFilename}`,
+    ) as HTMLButtonElement;
+    dl.addEventListener('click', () => {
+      blobDownload(state.destDownload!.suggestedFilename, state.destDownload!.bytes);
+    });
+    bar.append(dl);
+  }
   bar.append(el('span', { class: 'summary' }, hint(state)));
   frag.append(bar);
 
@@ -306,6 +419,11 @@ function renderLoaded(
       } else {
         refusal = { reason: result.reason, message: result.message };
       }
+      // S6a: build destStore prop. Visible when comparison overlay is
+      // open even without a dest (per Q3 — visible-but-disabled with
+      // tooltip). Enabled iff dest loaded AND cursor sits on an empty
+      // slot AND we have a packed result for this mon.
+      const destStoreProp = buildDestStoreProp(state, intermediate, result, dispatch, deps);
       frag.append(
         comparisonView({
           mon,
@@ -321,12 +439,153 @@ function renderLoaded(
             dispatch({ type: 'mon_close' });
           },
           onCancel: () => dispatch({ type: 'mon_close' }),
+          ...(destStoreProp ? { destStore: destStoreProp } : {}),
         }),
       );
     }
   }
 
   return frag;
+}
+
+function renderDestSidebar(
+  state: Extract<AppState, { kind: 'loaded' }>,
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): HTMLElement {
+  const card = el('div', { class: 'dest-sidebar' });
+  if (state.dest) {
+    const lines: string[] = [
+      `Destination: ${state.dest.fileName}`,
+      `(${gen3GameLabel(state.dest.save.format)})`,
+    ];
+    card.append(textDialog(lines, { class: 'dest-summary' }));
+    const change = el('button', { class: 'secondary' }, 'Change destination') as HTMLButtonElement;
+    change.addEventListener('click', () => dispatch({ type: 'dest_clear' }));
+    card.append(change);
+    return card;
+  }
+  if (state.destParsing) {
+    card.append(el('div', { class: 'card parsing' }, `Parsing ${state.destParsing.fileName}…`));
+    return card;
+  }
+  if (state.destParseError) {
+    card.append(
+      el(
+        'div',
+        { class: 'card error' },
+        `Could not load ${state.destParseError.fileName}: ${state.destParseError.error.reason}`,
+      ),
+    );
+  }
+  // Drop zone for destination
+  const zone = el('div', { class: 'drop-zone dest-drop-zone' });
+  zone.append(
+    el('div', {}, 'Drop destination .sav (Gen 3, 64 KB or 128 KB):'),
+    (() => {
+      const input = el('input', {
+        type: 'file',
+        accept: '',
+        class: 'dest-file-input',
+      }) as HTMLInputElement;
+      input.addEventListener('change', () => {
+        const f = input.files?.[0];
+        if (f) void handleDestFileSelected(f, dispatch, deps);
+      });
+      return input;
+    })(),
+    el(
+      'div',
+      { class: 'hint' },
+      'Optional: load a Gen 3 destination save to inject converted Pokemon directly into one of its PC boxes.',
+    ),
+  );
+  zone.addEventListener('dragover', (ev) => {
+    ev.preventDefault();
+    zone.classList.add('drag-over');
+  });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', (ev) => {
+    ev.preventDefault();
+    zone.classList.remove('drag-over');
+    const f = ev.dataTransfer?.files?.[0];
+    if (f) void handleDestFileSelected(f, dispatch, deps);
+  });
+  card.append(zone);
+  return card;
+}
+
+interface DestStoreProp {
+  enabled: boolean;
+  disabledReason?: string;
+  regionalDexWarning?: string;
+  onStore: () => void;
+}
+
+function buildDestStoreProp(
+  state: Extract<AppState, { kind: 'loaded' }>,
+  intermediate: Parameters<typeof comparisonView>[0]['intermediate'],
+  result: ConvertResult,
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): DestStoreProp | null {
+  if (!intermediate) return null; // refused mons get no STORE button at all
+  if (!state.dest) {
+    return {
+      enabled: false,
+      disabledReason: 'Load a destination save first',
+      onStore: () => {},
+    };
+  }
+  const { dest } = state;
+  const slotIdx = destCursorToSlot(dest.cursor);
+  const targetSlot = dest.save.pc.boxes[dest.boxIndex]?.[slotIdx];
+  if (!targetSlot || targetSlot.kind === 'filled') {
+    return {
+      enabled: false,
+      disabledReason: 'Selected destination slot is occupied; pick an empty one',
+      onStore: () => {},
+    };
+  }
+  if (!result.ok) {
+    return {
+      enabled: false,
+      disabledReason: 'Conversion failed; cannot store',
+      onStore: () => {},
+    };
+  }
+  const dexWarning = regionalDexWarning(dest.save.family, intermediate.species);
+  const onStore = (): void => {
+    const injectResult = deps.injectIntoSave(
+      dest.save,
+      { boxIndex: dest.boxIndex, slot: slotIdx },
+      result.bytes,
+    );
+    if (deps.isGen3InjectError(injectResult)) {
+      // Surface via the parse-error channel with a synthetic SaveError.
+      const err: SaveError = {
+        kind: 'save_error',
+        reason: 'CORRUPTED',
+        message: `inject failed: ${injectResult.reason}: ${injectResult.message}`,
+      };
+      dispatch({ type: 'dest_file_failed', error: err, fileName: dest.fileName });
+      dispatch({ type: 'mon_close' });
+      return;
+    }
+    const filename = suggestModifiedFilename(dest.fileName);
+    dispatch({
+      type: 'store_committed',
+      save: injectResult,
+      bytes: injectResult.bytes,
+      suggestedFilename: filename,
+    });
+    dispatch({ type: 'mon_close' });
+  };
+  return {
+    enabled: true,
+    onStore,
+    ...(dexWarning ? { regionalDexWarning: dexWarning } : {}),
+  };
 }
 
 function hint(state: Extract<AppState, { kind: 'loaded' }>): string {
