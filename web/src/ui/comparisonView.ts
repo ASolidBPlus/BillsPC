@@ -33,6 +33,7 @@ import { el } from './dom.js';
 import { spriteImg } from './sprites.js';
 import { menu, type MenuItem } from './menu.js';
 import { refusalDialog } from './refusal.js';
+import { conversionDetails } from './details.js';
 
 export interface ComparisonStats {
   readonly source: SixStats;
@@ -125,6 +126,9 @@ export function comparisonView(props: ComparisonProps): HTMLElement {
     }),
   );
   inner.append(panes);
+
+  // Transparency: full conversion details (DV→IV, StatExp→EV, nature, PID, etc).
+  inner.append(conversionDetails(props.mon, props.intermediate));
 
   const items: MenuItem[] = [
     { label: 'STORE', onSelect: props.onConfirm },

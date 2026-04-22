@@ -334,6 +334,77 @@ img.sprite,
   gap: 12px;
   padding: 12px;
   max-width: 90vw;
+  max-height: 92vh;
+  overflow: auto;
+}
+
+.conversion-details {
+  font-size: 11px;
+}
+
+.details-header {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.details-block {
+  margin-bottom: 8px;
+}
+
+.details-block-title {
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 2px;
+}
+
+.details-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.details-table td {
+  padding: 1px 4px;
+  vertical-align: top;
+}
+
+.details-stat {
+  font-weight: bold;
+  width: 48px;
+}
+
+.details-src {
+  text-align: right;
+  width: 60px;
+}
+
+.details-arrow {
+  width: 16px;
+  text-align: center;
+  color: var(--gbc-mid-gray, #888);
+}
+
+.details-dst {
+  text-align: left;
+}
+
+.details-sum td {
+  border-top: 1px solid var(--gbc-border-outer);
+  padding-top: 2px;
+  font-style: italic;
+}
+
+.details-note {
+  font-style: italic;
+  color: var(--gbc-mid-gray, #666);
+  margin-top: 2px;
+}
+
+.details-warning {
+  color: #c44;
+  font-weight: bold;
+  padding: 2px 4px;
 }
 
 .comparison-header {
