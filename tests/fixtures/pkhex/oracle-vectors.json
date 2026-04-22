@@ -3,40 +3,40 @@
     "label": "pikachu-untrained-lv25",
     "pid": "0x4569b630",
     "tid": 12345,
-    "sid": 5762,
+    "sid": 9762,
     "species": 25,
-    "boxedHex": "30b6694539308216cad1d9d5d7dce4ffffff0202bbcdc2ffffffff001e5300002886c9532a86cf53179fff5c0986eb530986eb530986eb531086eb53416eea5309c0eb530914eb7103af1d4d0986eb53"
+    "boxedHex": "30b6694539302226cad1d9d5d7dce4ffffff0202bbcdc2ffffffff001e530000288669632a866f63179f5f6c09864b6309864b6309864b6310864b63416e4a6309c04b6309144b4103afbd7d09864b63"
   },
   {
     "label": "feraligatr-untrained-lv55",
     "pid": "0xd5e6fba2",
     "tid": 12345,
-    "sid": 5762,
+    "sid": 9762,
     "species": 160,
-    "boxedHex": "a2fbe6d539308216cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff00bd700000bacb46c3b8cb40c385d270cc9b5964e19b897ce09bcb64c33bcb64c3d32365c39b8d64c39bcb64c39bcb64c39bcb64c3"
+    "boxedHex": "a2fbe6d539302226cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff00bd700000bacbe6f3b8cbe0f385d2d0fc9b59c4d19b89dcd09bcbc4f33bcbc4f3d323c5f39b8dc4f39bcbc4f39bcbc4f39bcbc4f3"
   },
   {
     "label": "snorlax-maxtrained",
     "pid": "0xac4f3763",
     "tid": 12345,
-    "sid": 5762,
+    "sid": 9762,
     "species": 143,
-    "boxedHex": "63374fac39308216cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff0060c90000d507cdba12efccba5a41cdba0f5298ef0f52cdba5a07cdba5a95cd98847822875a07cdba7b07efba7907e9ba441ed9b5"
+    "boxedHex": "63374fac39302226cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff0060c90000d5076d8a12ef6c8a5a416d8a0f5238df0f526d8a5a076d8a5a956da8847882b75a076d8a7b074f8a7907498a441e7985"
   },
   {
     "label": "alakazam-competitive",
     "pid": "0x7f9a55bd",
     "tid": 12345,
-    "sid": 5762,
+    "sid": 9762,
     "species": 65,
-    "boxedHex": "bd559a7f39308216cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff00ce9f000084f7184b5b9ae75684651869a5653a69a7653c699a7c0c66846518c32ecf186984651869c5651869cc8d196984231869"
+    "boxedHex": "bd559a7f39302226cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff00ce9f000084f7b87b5b9a47668465b859a5659a59a7659c599a7cac568465b8f32ecfb8598465b859c565b859cc8db9598423b859"
   },
   {
     "label": "partial-trained",
     "pid": "0xab8c7d7c",
     "tid": 12345,
-    "sid": 5762,
+    "sid": 9762,
     "species": 143,
-    "boxedHex": "7c7d8cab39308216cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff008860000045df0e9f650ac4a5454d0ebd644d2cbd664d2abd5b541ab2ca4d0ebd0da50fbd450b0ebdfaf24588454d0ebd454d0ebd"
+    "boxedHex": "7c7d8cab39302226cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff008860000045dfaeaf650a6495454dae8d644d8c8d664d8a8d5b54ba82ca4dae8d0da5af8d450bae8dfaf2e5b8454dae8d454dae8d"
   }
 ]
