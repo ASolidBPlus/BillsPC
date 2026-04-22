@@ -200,20 +200,21 @@ img.sprite,
   background-size: 288px 32px;
   background-position: 0 0;
   /*
-   * Source strip is 9 frames laid out as 3 directions x 3 poses each:
-   *   0 = down idle, 1 = down walk-A, 2 = side
-   *   3 = side walk, 4 = up,  5 = up walk
-   *   6..8 = mirrored / extras
-   * Cycling 0,1,2 produces a "spinning" effect because frame 2 swings
-   * to a new direction. Cycle frames 0 and 1 only (down idle + down
-   * walk-A) for a clean walking-in-place down-facing animation.
+   * Source strip is 9 frames INTERLEAVED by direction (verified by
+   * extracting frames from Bulbasaur):
+   *   col 0 = down  (frames 0, 3, 6 — idle, walk-A, walk-B)
+   *   col 1 = up    (frames 1, 4, 7 — idle, walk-A, walk-B)
+   *   col 2 = side  (frames 2, 5, 8 — idle, walk-A, walk-B)
+   * To get a clean down-facing walking-in-place loop, cycle the down
+   * column (frames 0 and 3 — idle + walk-A). Going through (0,1,2) was
+   * spinning between directions; (0,1) was alternating down/up.
    */
   animation: ow-walk 0.5s steps(1) infinite;
 }
 
 @keyframes ow-walk {
   0%, 49%   { background-position: 0 0; }       /* frame 0: down idle */
-  50%, 100% { background-position: -32px 0; }   /* frame 1: down walk-A */
+  50%, 100% { background-position: -96px 0; }   /* frame 3: down walk-A */
 }
 
 /* Big species (legendaries, Snorlax line, etc.) scale up so they read as bigger
