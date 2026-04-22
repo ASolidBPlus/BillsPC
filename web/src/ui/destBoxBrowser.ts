@@ -15,7 +15,7 @@
  * actual STORE action lives on the comparison overlay's STORE button,
  * which uses `state.dest.cursor` as the target).
  */
-import type { Gen3SaveContents, BoxedSlot } from '@pokeportal/core';
+import type { Gen3SaveContents, BoxedSlot, SaveFormat3 } from '@pokeportal/core';
 import { dialog } from './dialog.js';
 import { el } from './dom.js';
 import { spriteImg } from './sprites.js';
@@ -30,6 +30,36 @@ export const DEST_SLOTS_PER_BOX = DEST_ROWS * DEST_COLS; // 30
 // that range render a "?" placeholder. This is a pure asset-vendoring
 // task — no code changes required once the PNGs land.
 const HIGHEST_VENDORED_GEN3_SPRITE = 251;
+
+/**
+ * Map (game family, in-save wallpaper id) → vendored PNG path.
+ *
+ * Wallpaper IDs in the save are 0-indexed (0..15 for stock RSE, plus the
+ * FRLG-only 12..15 overrides at the same numeric range). PKHeX names the
+ * files 1-indexed (`box_wp01rs.png`..`box_wp16rs.png`), which we vendored
+ * as `01.png`..`16.png` under `web/public/sprites/wallpapers/{rs,e,frlg}/`.
+ *
+ * For FRLG saves: PKHeX only ships overrides for 13..16 (1-indexed). Any
+ * lower ID falls back to the RS art — the underlying tile data is shared.
+ */
+function wallpaperPath(format: SaveFormat3, id: number): string {
+  const oneIndexed = String(id + 1).padStart(2, '0');
+  switch (format) {
+    case 'EMERALD':
+      return `sprites/wallpapers/e/${oneIndexed}.png`;
+    case 'FIRERED':
+    case 'LEAFGREEN':
+      // Only 13..16 (0-indexed 12..15) are vendored under frlg/; lower IDs
+      // share the RS asset.
+      return id >= 12
+        ? `sprites/wallpapers/frlg/${oneIndexed}.png`
+        : `sprites/wallpapers/rs/${oneIndexed}.png`;
+    case 'RUBY':
+    case 'SAPPHIRE':
+    default:
+      return `sprites/wallpapers/rs/${oneIndexed}.png`;
+  }
+}
 
 export interface DestBoxBrowserProps {
   readonly save: Gen3SaveContents;
@@ -63,7 +93,14 @@ export function destBoxBrowser(props: DestBoxBrowserProps): HTMLElement {
 
   const box = props.save.pc.boxes[props.boxIndex] ?? [];
 
-  const grid = el('div', { class: 'box-grid dest-box-grid' });
+  // Apply the in-game wallpaper for this box as the grid background.
+  // Wallpaper bytes live in the parsed PC block (already read from disk).
+  const wpId = props.save.pc.wallpapersRaw[props.boxIndex] ?? 0;
+  const wpUrl = wallpaperPath(props.save.format, wpId);
+  const grid = el('div', {
+    class: 'box-grid dest-box-grid',
+    style: `background-image: url(${wpUrl});`,
+  });
   for (let row = 0; row < DEST_ROWS; row++) {
     for (let col = 0; col < DEST_COLS; col++) {
       const slot = row * DEST_COLS + col;

@@ -704,14 +704,32 @@ img.sprite,
 }
 .dest-box-grid {
   grid-template-columns: repeat(6, 64px);
+  /* In-game Gen 3 wallpaper background. PKHeX assets are 156×116 native
+     (low-res tile art); we let the browser stretch via background-size to
+     fill the grid, which matches how the game itself rescales. */
+  background-image: none; /* set inline per-box via the dest browser */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center;
+  padding: 8px;
+  /* Tiles need to read against the wallpaper — give them a faint frame so
+     the sprite has separation without losing the wallpaper colour. */
+  border: 2px solid var(--gbc-border-outer);
+}
+.dest-box-tile {
+  background: rgba(248, 248, 248, 0.55); /* --gbc-bg @ 55% so wallpaper bleeds through */
+}
+.dest-box-tile.is-cursor {
+  background: rgba(248, 248, 248, 0.85);
 }
 .dest-box-tile .sprite-placeholder {
   font-size: 18px;
   color: var(--gbc-dark-gray);
 }
 .dest-box-tile .empty-marker {
-  color: var(--gbc-light-gray);
+  color: var(--gbc-text);
   font-size: 18px;
+  opacity: 0.45;
 }
 
 .warnings {
