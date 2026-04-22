@@ -94,12 +94,13 @@ export function destBoxBrowser(props: DestBoxBrowserProps): HTMLElement {
   const box = props.save.pc.boxes[props.boxIndex] ?? [];
 
   // Apply the in-game wallpaper for this box as the grid background.
-  // Wallpaper bytes live in the parsed PC block (already read from disk).
+  // Layered with a 55%-white wash on top so the wallpaper reads as faint
+  // texture rather than dominant chrome — matches the muted GBA palette.
   const wpId = props.save.pc.wallpapersRaw[props.boxIndex] ?? 0;
   const wpUrl = wallpaperPath(props.save.format, wpId);
   const grid = el('div', {
     class: 'box-grid dest-box-grid',
-    style: `background-image: url(${wpUrl});`,
+    style: `background-image: linear-gradient(rgba(248,248,248,0.55), rgba(248,248,248,0.55)), url(${wpUrl});`,
   });
   for (let row = 0; row < DEST_ROWS; row++) {
     for (let col = 0; col < DEST_COLS; col++) {

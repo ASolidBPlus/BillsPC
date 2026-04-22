@@ -704,32 +704,38 @@ img.sprite,
 }
 .dest-box-grid {
   grid-template-columns: repeat(6, 64px);
-  /* In-game Gen 3 wallpaper background. PKHeX assets are 156×116 native
-     (low-res tile art); we let the browser stretch via background-size to
-     fill the grid, which matches how the game itself rescales. */
-  background-image: none; /* set inline per-box via the dest browser */
+  gap: 0; /* in-game PC has no inter-tile gutter — wallpaper reads as one surface */
+  /* In-game Gen 3 wallpaper. PKHeX assets are 156×116; we stretch them
+     to fit the grid (the game itself rescales similarly). The wallpaper
+     is set inline per-box. A linear-gradient wash on top desaturates
+     it ~60 % so it reads as faint texture rather than dominant chrome —
+     matches the muted GBA palette where the wallpaper sits behind the
+     sprites, not in front. */
+  background-image: linear-gradient(
+    rgba(248, 248, 248, 0.55),
+    rgba(248, 248, 248, 0.55)
+  ); /* fallback wash; per-box wallpaper layered via inline style */
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-position: center;
-  padding: 8px;
-  /* Tiles need to read against the wallpaper — give them a faint frame so
-     the sprite has separation without losing the wallpaper colour. */
+  padding: 6px;
   border: 2px solid var(--gbc-border-outer);
+  image-rendering: pixelated; /* keep wallpaper tile art crisp at upscaled size */
 }
+/* Per-tile chrome stays transparent — wallpaper bleeds through every cell so
+   the box reads as a continuous surface, matching the in-game PC. */
 .dest-box-tile {
-  background: rgba(248, 248, 248, 0.55); /* --gbc-bg @ 55% so wallpaper bleeds through */
-}
-.dest-box-tile.is-cursor {
-  background: rgba(248, 248, 248, 0.85);
+  background: transparent;
 }
 .dest-box-tile .sprite-placeholder {
   font-size: 18px;
   color: var(--gbc-dark-gray);
+  text-shadow: 0 0 2px var(--gbc-bg);
 }
 .dest-box-tile .empty-marker {
   color: var(--gbc-text);
-  font-size: 18px;
-  opacity: 0.45;
+  font-size: 12px;
+  opacity: 0.25;
 }
 
 .warnings {
