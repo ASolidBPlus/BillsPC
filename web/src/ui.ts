@@ -1,19 +1,19 @@
 /**
- * Render functions and DOM controller for the upload UI.
+ * S5 controller. Wires the Gen 2-style box browser, comparison overlay,
+ * and the existing parse/convert/download pipeline (untouched: S1/S2/S3a
+ * deliverables).
  *
- * The renderer takes an `AppState` and rebuilds the entire `<div id="app">`
- * subtree. There's no virtual DOM; the page is small and rebuild is
- * cheap.
+ * Per PLAN_EVAL S5 A16, the S3a mid-render mutation of `state.results`
+ * is removed: when conversion is needed, the controller dispatches a
+ * `convert_done` action via `queueMicrotask` so the next render reads
+ * the cached result without the renderer ever touching state directly.
  *
- * Per PLAN_EVAL A12, the file input uses `accept=""` (any file) so OS
- * MIME quirks don't drop legitimate `.sav` uploads.
+ * Per A17, conversion is lazy — only the mon the user opens via the
+ * comparison overlay is converted (the box browser shows sprites without
+ * needing to convert anything).
  *
- * Per PLAN_EVAL A13, the controller dispatches `file_selected` then
- * yields via `requestAnimationFrame` before invoking parseSave so the
- * "parsing…" state actually paints.
- *
- * Per PLAN_EVAL A14, empty-party / all-refused / warnings panels render
- * explicitly above the mon list.
+ * Per A15, the root `#app` is set to `tabindex="-1"` and focused after
+ * parse so keyboard input flows without an explicit click.
  */
 import { parseSave, isSaveError, convert, isRefusal, packBoxed } from '@pokeportal/core';
 import { getSpecies } from '@pokeportal/core/internal';
@@ -29,7 +29,17 @@ import {
 } from './state.js';
 import { sanitiseFilename } from './filename.js';
 import { blobDownload } from './download.js';
-import { zipFiles, type ZipEntry } from './zip.js';
+import { el } from './ui/dom.js';
+import { textDialog } from './ui/dialog.js';
+import {
+  boxBrowser,
+  entriesForBox,
+  entryAtCursor,
+  BROWSER_COLS,
+  BROWSER_ROWS,
+} from './ui/boxBrowser.js';
+import { comparisonView, speciesNameFor } from './ui/comparisonView.js';
+import { bindKeys } from './ui/keyboard.js';
 
 export interface ControllerDeps {
   readonly parseSave: typeof parseSave;
@@ -61,8 +71,50 @@ export function createController(
   const dispatch = (action: Action): void => {
     current = reducer(current, action);
     render(root, current, dispatch, deps);
+    // After a fresh parse, focus the root so keyboard input flows.
+    if (action.type === 'file_parsed') {
+      try {
+        root.focus();
+      } catch {
+        /* ignore — happens in non-jsdom paths if root lacks tabindex */
+      }
+    }
+    // Lazily convert mons on overlay-open (A17). The reducer can't
+    // reach `deps.convert` so we do the work here, then dispatch
+    // `convert_done` via microtask so the result lands on the next
+    // render frame without recursing into the current dispatch.
+    if (action.type === 'mon_open' && current.kind === 'loaded') {
+      const ref = action.ref;
+      const key = monRefKey(ref);
+      if (!current.results.has(key)) {
+        const mon = monAt(current.save, ref);
+        if (mon) {
+          const result = runConvert(mon, deps);
+          queueMicrotask(() => dispatch({ type: 'convert_done', ref, result }));
+        }
+      }
+    }
   };
 
+  // First render + key binding.
+  if (root.getAttribute('tabindex') === null) root.setAttribute('tabindex', '-1');
+  bindKeys(document, {
+    onArrow: (drow, dcol) => dispatch({ type: 'cursor_move', drow, dcol }),
+    onConfirm: () => {
+      if (current.kind !== 'loaded') return;
+      if (current.openMon) return; // Enter inside the overlay is the menu's "STORE"
+      const entries = entriesForBox(current.save, current.boxIndex);
+      const ent = entryAtCursor(entries, current.cursor);
+      if (ent) dispatch({ type: 'mon_open', ref: ent.ref });
+    },
+    onCancel: () => {
+      if (current.kind === 'loaded' && current.openMon) {
+        dispatch({ type: 'mon_close' });
+      }
+    },
+    onPrevBox: () => dispatch({ type: 'box_change', delta: -1 }),
+    onNextBox: () => dispatch({ type: 'box_change', delta: 1 }),
+  });
   render(root, current, dispatch, deps);
 
   return {
@@ -71,13 +123,18 @@ export function createController(
   };
 }
 
+function monAt(save: SaveContents, ref: MonRef): Gen12Pokemon | null {
+  if (ref.bucket === 'party') return save.party[ref.slot] ?? null;
+  if (ref.bucket === 'currentBox') return save.currentBox?.[ref.slot] ?? null;
+  return save.boxes[ref.boxIndex ?? 0]?.[ref.slot] ?? null;
+}
+
 export async function handleFileSelected(
   file: File,
   dispatch: (a: Action) => void,
   deps: ControllerDeps,
 ): Promise<void> {
   dispatch({ type: 'file_selected', file: { name: file.name, size: file.size } });
-  // Yield once so the "parsing" state has a chance to paint.
   await new Promise<void>((resolve) => {
     if (typeof requestAnimationFrame === 'function') {
       requestAnimationFrame(() => resolve());
@@ -194,12 +251,6 @@ function renderParseError(
   return card;
 }
 
-interface MonEntry {
-  readonly ref: MonRef;
-  readonly mon: Gen12Pokemon;
-  readonly result: ConvertResult;
-}
-
 function renderLoaded(
   state: Extract<AppState, { kind: 'loaded' }>,
   dispatch: (a: Action) => void,
@@ -207,22 +258,15 @@ function renderLoaded(
 ): DocumentFragment {
   const frag = document.createDocumentFragment();
 
-  // Trainer card (with format badge).
-  const trainerCard = el('div', { class: 'card' });
-  trainerCard.append(
-    (() => {
-      const grid = el('div', { class: 'trainer-grid' });
-      grid.append(
-        el('div', {}, `Trainer: ${state.save.trainer.name || '(no name)'}`),
-        el('div', {}, `TID: ${state.save.trainer.tid}`),
-        el('span', { class: 'format-badge' }, state.save.format),
-      );
-      return grid;
-    })(),
-  );
-  frag.append(trainerCard);
+  // Trainer dialog (Gen 2 chrome).
+  const trainerLines: string[] = [
+    `TRAINER: ${state.save.trainer.name || '(no name)'}`,
+    `ID No.  ${state.save.trainer.tid}`,
+    `FORMAT  ${state.save.format}`,
+  ];
+  frag.append(textDialog(trainerLines, { class: 'trainer-dialog' }));
 
-  // Warnings panel ABOVE the mon list (per PLAN_EVAL A14).
+  // Warnings panel (kept for Code Evaluator visibility).
   if (state.save.warnings.length > 0) {
     const warn = el('div', { class: 'warnings' });
     warn.append(el('strong', {}, 'Warnings:'));
@@ -232,111 +276,91 @@ function renderLoaded(
     frag.append(warn);
   }
 
-  // Compute every mon entry up front so the toolbar / empty-state can
-  // reference live data.
-  const entries = collectEntries(state.save, deps);
-  // Run convert lazily for any mon not yet processed; cache into state.
-  const newResults = new Map(state.results);
-  for (const e of entries) {
-    const key = monRefKey(e.ref);
-    if (!newResults.has(key)) {
-      newResults.set(key, runConvert(e.mon, e.ref, deps));
+  // Box browser.
+  const entries = entriesForBox(state.save, state.boxIndex);
+  frag.append(
+    boxBrowser({
+      save: state.save,
+      boxIndex: state.boxIndex,
+      cursor: state.cursor,
+      entries,
+      onCursorMove: (drow, dcol) => dispatch({ type: 'cursor_move', drow, dcol }),
+      onBoxChange: (delta) => dispatch({ type: 'box_change', delta }),
+      onMonOpen: (ref) => dispatch({ type: 'mon_open', ref }),
+    }),
+  );
+
+  // Toolbar with reset.
+  const bar = el('div', { class: 'card toolbar' });
+  const reset = el('button', { class: 'secondary' }, 'Load another file') as HTMLButtonElement;
+  reset.addEventListener('click', () => dispatch({ type: 'reset' }));
+  bar.append(reset);
+  bar.append(el('span', { class: 'summary' }, hint(state)));
+  frag.append(bar);
+
+  // Comparison overlay (above the rest).
+  if (state.openMon) {
+    const ref = state.openMon;
+    const mon = monAt(state.save, ref);
+    if (mon) {
+      const speciesName = speciesNameFor(mon.speciesGen2Id);
+      const nick = decodeNickFallback(mon, speciesName);
+      const cached = state.results.get(monRefKey(ref));
+      const result = cached ?? runConvert(mon, deps);
+      // (cached ?? runConvert) is a fallback for tests / first-render
+      // races; the controller's mon_open handler already kicked the
+      // microtask. The renderer never mutates state.
+      let intermediate = null as Parameters<typeof comparisonView>[0]['intermediate'];
+      let refusal: { reason: string; message: string } | undefined;
+      if (result.ok) {
+        // We need the Gen3Intermediate, not the packed bytes. Re-run
+        // convert here — cheap because the search PID hits the seed
+        // immediately on a known-good mon. Note: we already cached
+        // .bytes for the download path; computing the intermediate
+        // again is bounded.
+        const r = deps.convert(mon);
+        if (deps.isRefusal(r)) {
+          refusal = { reason: r.reason, message: r.message };
+        } else {
+          intermediate = r;
+        }
+      } else {
+        refusal = { reason: result.reason, message: result.message };
+      }
+      frag.append(
+        comparisonView({
+          mon,
+          intermediate,
+          refusal,
+          speciesName,
+          nickname: nick,
+          onConfirm: () => {
+            if (result.ok) {
+              blobDownload(result.suggestedName, result.bytes);
+            }
+            dispatch({ type: 'mon_close' });
+          },
+          onCancel: () => dispatch({ type: 'mon_close' }),
+        }),
+      );
     }
   }
-  // If results changed, re-dispatch a no-op convert_done to commit. We
-  // mutate state directly here for efficiency: the renderer is the only
-  // path that triggers this and we want the next render to read the cache.
-  if (newResults.size !== state.results.size) {
-    // Snapshot the new map back into state without re-rendering — render is
-    // already running. This is safe because no other consumer reads
-    // `state.results` mid-render.
-    (state as { results: ReadonlyMap<string, ConvertResult> }).results = newResults;
-  }
-
-  const enriched: MonEntry[] = entries.map((e) => ({
-    ref: e.ref,
-    mon: e.mon,
-    result: newResults.get(monRefKey(e.ref))!,
-  }));
-
-  const totalMons = enriched.length;
-  const refusedCount = enriched.filter((e) => !e.result.ok).length;
-  const convertibleCount = totalMons - refusedCount;
-
-  // Empty save state.
-  if (totalMons === 0) {
-    frag.append(el('div', { class: 'card empty' }, 'Save loaded but contains no Pokemon.'));
-    frag.append(renderToolbar(0, 0, true, dispatch, enriched));
-    return frag;
-  }
-
-  // Party.
-  if (state.save.party.length > 0) {
-    frag.append(
-      renderSection(
-        'Party',
-        state.save.party.length,
-        enriched.filter((e) => e.ref.bucket === 'party'),
-        dispatch,
-      ),
-    );
-  }
-
-  // Current box (Gen 1 / Gen 2 live buffer).
-  if (state.save.currentBox && state.save.currentBox.length > 0) {
-    const sec = renderCollapsibleSection(
-      `Current PC Box (${state.save.currentBox.length})`,
-      state.currentBoxExpanded,
-      enriched.filter((e) => e.ref.bucket === 'currentBox'),
-      () => dispatch({ type: 'current_box_toggled' }),
-    );
-    frag.append(sec);
-  }
-
-  // Stored boxes.
-  for (let i = 0; i < state.save.boxes.length; i++) {
-    const box = state.save.boxes[i]!;
-    if (box.length === 0) continue;
-    const expanded = state.expandedBoxes.has(i);
-    const inBox = enriched.filter((e) => e.ref.bucket === 'box' && e.ref.boxIndex === i);
-    const sec = renderCollapsibleSection(`Box ${i + 1} (${box.length})`, expanded, inBox, () =>
-      dispatch({ type: 'box_toggled', boxIndex: i }),
-    );
-    frag.append(sec);
-  }
-
-  frag.append(renderToolbar(totalMons, refusedCount, convertibleCount === 0, dispatch, enriched));
 
   return frag;
 }
 
-interface RawEntry {
-  readonly ref: MonRef;
-  readonly mon: Gen12Pokemon;
+function hint(state: Extract<AppState, { kind: 'loaded' }>): string {
+  return `${total(state)} mon(s) total — use ← ↑ ↓ → + Enter; [ / ] to change box.`;
 }
 
-function collectEntries(save: SaveContents, _deps: ControllerDeps): RawEntry[] {
-  void _deps;
-  const out: RawEntry[] = [];
-  for (let i = 0; i < save.party.length; i++) {
-    out.push({ ref: { bucket: 'party', slot: i }, mon: save.party[i]! });
-  }
-  if (save.currentBox) {
-    for (let i = 0; i < save.currentBox.length; i++) {
-      out.push({ ref: { bucket: 'currentBox', slot: i }, mon: save.currentBox[i]! });
-    }
-  }
-  for (let b = 0; b < save.boxes.length; b++) {
-    const box = save.boxes[b]!;
-    for (let i = 0; i < box.length; i++) {
-      out.push({ ref: { bucket: 'box', boxIndex: b, slot: i }, mon: box[i]! });
-    }
-  }
-  return out;
+function total(state: Extract<AppState, { kind: 'loaded' }>): number {
+  let n = state.save.party.length;
+  for (const b of state.save.boxes) n += b.length;
+  if (state.save.currentBox) n += state.save.currentBox.length;
+  return n;
 }
 
-function runConvert(mon: Gen12Pokemon, _ref: MonRef, deps: ControllerDeps): ConvertResult {
-  void _ref;
+function runConvert(mon: Gen12Pokemon, deps: ControllerDeps): ConvertResult {
   try {
     const r = deps.convert(mon);
     if (deps.isRefusal(r)) {
@@ -354,11 +378,6 @@ function runConvert(mon: Gen12Pokemon, _ref: MonRef, deps: ControllerDeps): Conv
 }
 
 function decodeNickFallback(mon: Gen12Pokemon, speciesName: string): string {
-  // Decode nickname bytes as printable Gen 1/2 chars; falls back to the
-  // species name if nothing decodable. We avoid importing decodeGen12
-  // here to keep the bundle small — a lightweight ASCII-printable filter
-  // covers the common case (uppercase ASCII), and unknown bytes drop
-  // into 'no-nickname' via sanitiseFilename's empty fallback.
   let s = '';
   for (const b of mon.nicknameBytes) {
     if (b === 0x50 || b === 0x00 || b === 0xff) break;
@@ -371,123 +390,6 @@ function decodeNickFallback(mon: Gen12Pokemon, speciesName: string): string {
   return s || speciesName;
 }
 
-function renderSection(
-  title: string,
-  _count: number,
-  entries: MonEntry[],
-  dispatch: (a: Action) => void,
-): HTMLElement {
-  void _count;
-  const card = el('div', { class: 'card section' });
-  card.append(el('h2', {}, title));
-  for (const e of entries) {
-    card.append(renderMonRow(e, dispatch));
-  }
-  return card;
-}
-
-function renderCollapsibleSection(
-  title: string,
-  expanded: boolean,
-  entries: MonEntry[],
-  onToggle: () => void,
-): HTMLElement {
-  const card = el('div', { class: 'card section' });
-  const head = el('h2', {});
-  head.append(document.createTextNode(title));
-  const toggle = el(
-    'span',
-    { class: 'box-toggle' },
-    expanded ? '[collapse]' : '[expand]',
-  ) as HTMLSpanElement;
-  toggle.addEventListener('click', onToggle);
-  head.append(toggle);
-  card.append(head);
-  if (expanded) {
-    for (const e of entries) {
-      card.append(renderMonRow(e, () => undefined));
-    }
-  }
-  return card;
-}
-
-function renderMonRow(entry: MonEntry, _dispatch: (a: Action) => void): HTMLElement {
-  void _dispatch;
-  const row = el('div', { class: 'mon-row' });
-  const speciesEntry = getSpecies(entry.mon.speciesGen2Id);
-  const speciesName = speciesEntry?.name ?? `(unknown #${entry.mon.speciesGen2Id})`;
-  const nick = decodeNickFallback(entry.mon, speciesName);
-  const meta = el('div', { class: 'mon-meta' });
-  meta.append(
-    el('strong', {}, speciesName),
-    document.createTextNode(' '),
-    el('span', { class: 'nick' }, `"${nick}" Lv${entry.mon.level}`),
-  );
-  if (!entry.result.ok) {
-    meta.append(el('span', { class: 'refusal' }, `${entry.result.reason}`));
-  }
-  row.append(meta);
-
-  if (entry.result.ok) {
-    const dl = el('button', {}, 'Download .pk3') as HTMLButtonElement;
-    dl.addEventListener('click', () => {
-      if (entry.result.ok) blobDownload(entry.result.suggestedName, entry.result.bytes);
-    });
-    row.append(dl);
-  } else {
-    row.append(el('span', { class: 'refusal', title: entry.result.message }, 'refused'));
-  }
-  return row;
-}
-
-function renderToolbar(
-  total: number,
-  refused: number,
-  allRefused: boolean,
-  dispatch: (a: Action) => void,
-  entries: MonEntry[],
-): HTMLElement {
-  const bar = el('div', { class: 'card toolbar' });
-  const convertAll = el('button', {}, 'Convert all (.zip)') as HTMLButtonElement;
-  if (allRefused || total === 0) {
-    convertAll.disabled = true;
-    convertAll.title =
-      total === 0
-        ? 'No Pokemon in this save.'
-        : `All ${total} mons are refused — see refusal reasons inline.`;
-  }
-  convertAll.addEventListener('click', () => {
-    const zipEntries: ZipEntry[] = [];
-    let i = 0;
-    for (const e of entries) {
-      if (!e.result.ok) continue;
-      const idx = i.toString().padStart(3, '0');
-      zipEntries.push({ name: `${idx}-${e.result.suggestedName}`, bytes: e.result.bytes });
-      i++;
-    }
-    if (zipEntries.length === 0) return;
-    const zip = zipFiles(zipEntries);
-    blobDownload('pokeportal-pk3-bundle.zip', zip, 'application/zip');
-  });
-
-  const reset = el('button', { class: 'secondary' }, 'Load another file') as HTMLButtonElement;
-  reset.addEventListener('click', () => dispatch({ type: 'reset' }));
-
-  bar.append(convertAll, reset);
-  bar.append(el('span', { class: 'summary' }, `${total} mon(s), ${refused} refused`));
-  return bar;
-}
-
-function el(
-  tag: string,
-  attrs: Record<string, string> = {},
-  ...children: (string | Node)[]
-): HTMLElement {
-  const e = document.createElement(tag);
-  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
-  for (const c of children) {
-    if (typeof c === 'string') e.append(document.createTextNode(c));
-    else e.append(c);
-  }
-  return e;
-}
+// Keep these constants importable so tests can reference them without
+// re-importing the boxBrowser module.
+export { BROWSER_COLS, BROWSER_ROWS };

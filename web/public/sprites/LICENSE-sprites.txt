@@ -1,0 +1,28 @@
+# pokeportal sprite assets
+
+Pokemon front sprites in `gen1/`, `gen2/`, `gen3/` are sourced from PokeAPI/sprites
+(https://github.com/PokeAPI/sprites @ master), which extracts them from
+official ROM data.
+
+Per-species overworld icons in `overworld/` are sourced from pret/pokecrystal
+(https://github.com/pret/pokecrystal @ master), specifically the
+menu-icon assignments in `data/pokemon/menu_icons.asm` mapped to PNGs in
+`gfx/icons/`. The Crystal Clear ROM hack (ShockSlayer/crystal-clear) was the
+PLAN's preferred source for unique per-species overworld sprites; that repo
+was not reachable at fetch time, so we fall back to the original Crystal
+three-category icon pool (bird / fish / monster / etc.).
+
+All Pokemon names, sprites, and related imagery are property of Nintendo,
+Game Freak, and Creatures Inc. This project uses these assets in an offline
+conversion utility under fair-use principles; no game ROM data, save data,
+or executable code is distributed.
+
+## Placeholder substitutions
+
+The following ndex slots had no resolvable source and ship a 16x16 transparent
+placeholder PNG (the box browser displays a blank tile):
+
+- `gen1`: none
+- `gen2`: none
+- `gen3`: none
+- `overworld`: none

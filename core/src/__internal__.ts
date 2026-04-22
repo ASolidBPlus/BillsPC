@@ -36,6 +36,8 @@ export type { SpeciesEntry } from './data/species.js';
 export { EggGroup, getEggGroups } from './data/eggGroups.js';
 export { getPersonal } from './data/personalInfo.js';
 export type { PersonalInfo } from './data/personalInfo.js';
+export { getPersonalGen2 } from './data/personalInfoGen2.js';
+export type { PersonalInfoGen2 } from './data/personalInfoGen2.js';
 export { GEN12_TERMINATOR, CHARMAP12_TO_UNICODE, decodeGen12 } from './data/charmap12.js';
 export {
   GEN3_TERMINATOR,

@@ -1,8 +1,11 @@
 /**
  * Pure reducer transitions. No DOM access — runs identically under
- * jsdom or node. Ordered as the user-visible flow:
- *   idle → parsing → loaded
- *                 ↘ parse_error → idle
+ * jsdom or node.
+ *
+ * Per PLAN_EVAL S5 A9, the dead `expandedBoxes`, `currentBoxExpanded`
+ * fields and `box_toggled` / `current_box_toggled` actions are removed
+ * outright. The new S5 actions are `cursor_move`, `box_change`,
+ * `mon_open`, `mon_close`.
  */
 import { describe, it, expect } from 'vitest';
 import {
@@ -24,6 +27,18 @@ const fakeSave: SaveContents = {
   warnings: [],
 };
 
+function makeLoaded(): Extract<AppState, { kind: 'loaded' }> {
+  return {
+    kind: 'loaded',
+    fileName: 'x',
+    save: fakeSave,
+    results: new Map(),
+    boxIndex: 0,
+    cursor: { row: 0, col: 0 },
+    openMon: null,
+  };
+}
+
 function file(name: string, size = 32768): { name: string; size: number } {
   return { name, size };
 }
@@ -34,10 +49,14 @@ describe('reducer transitions', () => {
     expect(next.kind).toBe('parsing');
   });
 
-  it('parsing → loaded on file_parsed', () => {
+  it('parsing → loaded on file_parsed populates S5 defaults', () => {
     const s1 = reducer(INITIAL_STATE, { type: 'file_selected', file: file('demo.sav') });
     const s2 = reducer(s1, { type: 'file_parsed', save: fakeSave, fileName: 'demo.sav' });
     expect(s2.kind).toBe('loaded');
+    if (s2.kind !== 'loaded') return;
+    expect(s2.boxIndex).toBe(0);
+    expect(s2.cursor).toEqual({ row: 0, col: 0 });
+    expect(s2.openMon).toBeNull();
   });
 
   it('parsing → parse_error on file_failed', () => {
@@ -48,15 +67,7 @@ describe('reducer transitions', () => {
   });
 
   it('reset returns to idle from any state', () => {
-    const loaded: AppState = {
-      kind: 'loaded',
-      fileName: 'x',
-      save: fakeSave,
-      results: new Map(),
-      expandedBoxes: new Set(),
-      currentBoxExpanded: false,
-    };
-    expect(reducer(loaded, { type: 'reset' }).kind).toBe('idle');
+    expect(reducer(makeLoaded(), { type: 'reset' }).kind).toBe('idle');
     expect(reducer(INITIAL_STATE, { type: 'reset' }).kind).toBe('idle');
   });
 
@@ -68,14 +79,7 @@ describe('reducer transitions', () => {
   });
 
   it('convert_done overwrites previous result for same ref', () => {
-    const loaded: AppState = {
-      kind: 'loaded',
-      fileName: 'x',
-      save: fakeSave,
-      results: new Map(),
-      expandedBoxes: new Set(),
-      currentBoxExpanded: false,
-    };
+    const loaded = makeLoaded();
     const ref: MonRef = { bucket: 'party', slot: 0 };
     const r1: ConvertResult = { ok: false, reason: 'A', message: 'a' };
     const r2: ConvertResult = { ok: false, reason: 'B', message: 'b' };
@@ -86,46 +90,72 @@ describe('reducer transitions', () => {
     expect(s2.results.size).toBe(1);
   });
 
-  it('box_toggled toggles a box index', () => {
-    const loaded: AppState = {
-      kind: 'loaded',
-      fileName: 'x',
-      save: fakeSave,
-      results: new Map(),
-      expandedBoxes: new Set(),
-      currentBoxExpanded: false,
-    };
-    const s1 = reducer(loaded, { type: 'box_toggled', boxIndex: 3 });
-    if (s1.kind !== 'loaded') throw new Error('expected loaded');
-    expect(s1.expandedBoxes.has(3)).toBe(true);
-    const s2 = reducer(s1, { type: 'box_toggled', boxIndex: 3 });
-    if (s2.kind !== 'loaded') throw new Error('expected loaded');
-    expect(s2.expandedBoxes.has(3)).toBe(false);
+  it('cursor_move clamps within the 5×4 grid', () => {
+    const loaded = makeLoaded();
+    let s: AppState = loaded;
+    s = reducer(s, { type: 'cursor_move', drow: -1, dcol: -1 });
+    if (s.kind !== 'loaded') throw new Error('expected loaded');
+    expect(s.cursor).toEqual({ row: 0, col: 0 }); // clamped
+    s = reducer(s, { type: 'cursor_move', drow: 1, dcol: 1 });
+    if (s.kind !== 'loaded') throw new Error('expected loaded');
+    expect(s.cursor).toEqual({ row: 1, col: 1 });
+    // 4 more right moves — clamps at col=3.
+    for (let i = 0; i < 5; i++) s = reducer(s, { type: 'cursor_move', drow: 0, dcol: 1 });
+    if (s.kind !== 'loaded') throw new Error('expected loaded');
+    expect(s.cursor.col).toBe(3);
   });
 
-  it('current_box_toggled flips currentBoxExpanded', () => {
-    const loaded: AppState = {
-      kind: 'loaded',
-      fileName: 'x',
-      save: fakeSave,
-      results: new Map(),
-      expandedBoxes: new Set(),
-      currentBoxExpanded: false,
-    };
-    const s1 = reducer(loaded, { type: 'current_box_toggled' });
+  it('cursor_move returns the same state on a no-op move', () => {
+    const loaded = makeLoaded();
+    const s = reducer(loaded, { type: 'cursor_move', drow: -1, dcol: -1 });
+    expect(s).toBe(loaded);
+  });
+
+  it('box_change increments boxIndex and resets cursor', () => {
+    let s: AppState = makeLoaded();
+    s = reducer(s, { type: 'cursor_move', drow: 1, dcol: 1 });
+    s = reducer(s, { type: 'cursor_move', drow: 1, dcol: 1 });
+    s = reducer(s, { type: 'box_change', delta: 1 });
+    if (s.kind !== 'loaded') throw new Error('expected loaded');
+    expect(s.boxIndex).toBe(1);
+    expect(s.cursor).toEqual({ row: 0, col: 0 });
+  });
+
+  it('box_change clamps at 0 on the low end', () => {
+    const loaded = makeLoaded();
+    const s = reducer(loaded, { type: 'box_change', delta: -1 });
+    expect(s).toBe(loaded);
+  });
+
+  it('box_change clamps at the upper bound', () => {
+    let s: AppState = makeLoaded();
+    // 0 (party) + 14 (boxes) = max valid index 14, no current box.
+    for (let i = 0; i < 25; i++) s = reducer(s, { type: 'box_change', delta: 1 });
+    if (s.kind !== 'loaded') throw new Error('expected loaded');
+    expect(s.boxIndex).toBe(14);
+  });
+
+  it('mon_open / mon_close set and clear openMon', () => {
+    const loaded = makeLoaded();
+    const ref: MonRef = { bucket: 'party', slot: 0 };
+    const s1 = reducer(loaded, { type: 'mon_open', ref });
     if (s1.kind !== 'loaded') throw new Error('expected loaded');
-    expect(s1.currentBoxExpanded).toBe(true);
+    expect(s1.openMon).toEqual(ref);
+    const s2 = reducer(s1, { type: 'mon_close' });
+    if (s2.kind !== 'loaded') throw new Error('expected loaded');
+    expect(s2.openMon).toBeNull();
+  });
+
+  it('S5 actions are no-ops outside loaded', () => {
+    const ref: MonRef = { bucket: 'party', slot: 0 };
+    expect(reducer(INITIAL_STATE, { type: 'cursor_move', drow: 1, dcol: 0 })).toBe(INITIAL_STATE);
+    expect(reducer(INITIAL_STATE, { type: 'box_change', delta: 1 })).toBe(INITIAL_STATE);
+    expect(reducer(INITIAL_STATE, { type: 'mon_open', ref })).toBe(INITIAL_STATE);
+    expect(reducer(INITIAL_STATE, { type: 'mon_close' })).toBe(INITIAL_STATE);
   });
 
   it('reducer is pure: same input → equal-shaped output, no aliasing of nested maps', () => {
-    const loaded: AppState = {
-      kind: 'loaded',
-      fileName: 'x',
-      save: fakeSave,
-      results: new Map(),
-      expandedBoxes: new Set(),
-      currentBoxExpanded: false,
-    };
+    const loaded = makeLoaded();
     const ref: MonRef = { bucket: 'box', boxIndex: 0, slot: 1 };
     const r: ConvertResult = { ok: false, reason: 'X', message: 'x' };
     const action: Action = { type: 'convert_done', ref, result: r };

@@ -1,18 +1,63 @@
+/*
+ * pokeportal Sprint 5 stylesheet — Gen 2-faithful chrome.
+ *
+ * GBC palette (PLAN_EVAL S5 A5):
+ *   GBC palette anchored to pret/pokecrystal data/sgb_pals/data:
+ *     The "menu" palette pal_d is RGB555 (0x7FFF = white, 0x39CE = lt gray,
+ *     0x294A = dk gray, 0x0000 = black). Converted to sRGB the values are:
+ *       white   #F8F8F8   (0x1F,0x1F,0x1F → 0xF8 with bit-replication)
+ *       lt-gry  #C8C8C8   (PLAN rounded to #C0C0C0 — both within perceptual
+ *                          JND on a modern LCD; we accept #C0C0C0)
+ *       dk-gry  #989898   (PLAN rounded to #888888 — same rationale)
+ *       black   #303030   (true black hurts contrast against modern SDR
+ *                          backlights; the GBC's perceived black is
+ *                          ~#202020-#303030 depending on backlight; #303030
+ *                          is what PokeAPI's screenshot pipeline uses)
+ *     accents (refusal red, +delta green) are NOT in the SGB pal — they
+ *     are derived from RBY's "PALRED" / "PALGREEN" sgb pals at #D83018 /
+ *     #58A058 which match the in-game battle effect colors. Shiny gold
+ *     #D8A838 is from the Gen 2 shiny aura GBC pal.
+ */
 :root {
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    sans-serif;
-  color-scheme: light dark;
-  background: #f7f7f8;
-  color: #1d1d1f;
+  --gbc-bg: #f8f8f8;
+  --gbc-light-gray: #c0c0c0;
+  --gbc-dark-gray: #888888;
+  --gbc-border-outer: #303030;
+  --gbc-border-inner: #f8f8f8;
+  --gbc-text: #303030;
+  --gbc-accent-red: #d83018;
+  --gbc-accent-green: #58a058;
+  --gbc-accent-yellow: #d8a838;
+  --pc-blue: #5878a8;
+  background: var(--gbc-bg);
+  color: var(--gbc-text);
+  color-scheme: light;
+}
+
+/*
+ * Pokemon GB pixel font (PLAN §3.5 / PLAN_EVAL A13).
+ * `font-display: optional` over `swap`: pixel-precise UIs and font swaps
+ * don't mix — `swap` causes visible text-shift on every first paint.
+ * `optional` uses the system fallback if the font isn't cached, which is
+ * fine for first visit; the woff2 caches for subsequent visits. The
+ * preload link in index.html maximises the chance of a hit on first load.
+ */
+@font-face {
+  font-family: 'PokemonGB';
+  src: url('../public/fonts/pokemon-gb.woff2') format('woff2');
+  font-display: optional;
+  font-weight: 400;
 }
 
 body {
   margin: 0;
   padding: 1.25rem;
   min-height: 100vh;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  font-size: 16px;
+  line-height: 1.5;
+  background: var(--gbc-bg);
+  color: var(--gbc-text);
 }
 
 #app {
@@ -20,6 +65,7 @@ body {
   margin: 0 auto;
   display: grid;
   gap: 1rem;
+  outline: none;
 }
 
 h1 {
@@ -28,79 +74,348 @@ h1 {
 }
 
 .subtitle {
-  color: #555;
-  font-size: 0.9rem;
+  color: var(--gbc-dark-gray);
+  font-size: 0.7rem;
   margin: 0 0 1rem;
 }
 
 .card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 1rem 1.25rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: var(--gbc-bg);
+  border: 4px solid var(--gbc-border-outer);
+  padding: 12px 16px;
 }
 
 .drop-zone {
-  border: 2px dashed #aaa;
-  border-radius: 12px;
+  border: 4px dashed var(--gbc-border-outer);
   padding: 2rem;
   text-align: center;
-  background: #fff;
+  background: var(--gbc-bg);
   cursor: pointer;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease;
 }
 
 .drop-zone.drag-over {
-  background: #eef6ff;
-  border-color: #1d6ce0;
+  background: var(--gbc-light-gray);
+  border-color: var(--pc-blue);
 }
 
 .drop-zone input[type='file'] {
   display: block;
   margin: 0.75rem auto 0;
+  font: inherit;
 }
 
 .drop-zone .hint {
-  font-size: 0.85rem;
-  color: #555;
+  font-size: 0.7rem;
+  color: var(--gbc-dark-gray);
   margin-top: 0.5rem;
 }
 
-.parsing,
-.error {
+.parsing {
   text-align: center;
-  font-size: 1.05rem;
+  font-size: 0.9rem;
   padding: 2rem;
 }
 
 .error {
-  color: #b00020;
+  color: var(--gbc-accent-red);
+  text-align: center;
+  font-size: 0.9rem;
+  padding: 2rem;
 }
 
-.trainer-grid {
+/*
+ * Gen 2 dialog frame (PLAN §3.2). 4 px outer black border + 2 px inner
+ * white shadow + 2 px inner black shadow. The triple-inset shadow
+ * collapses the second inner-black layer into the parent border.
+ */
+.gen2-dialog {
+  background: var(--gbc-bg);
+  border: 4px solid var(--gbc-border-outer);
+  box-shadow:
+    inset 0 0 0 2px var(--gbc-bg),
+    inset 0 0 0 4px var(--gbc-border-outer),
+    inset 0 0 0 6px var(--gbc-bg);
+  padding: 12px 16px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  font-size: 16px;
+  line-height: 1.25;
+  color: var(--gbc-text);
+}
+
+.gen2-line {
+  margin: 0;
+}
+
+.gen2-dialog--refusal {
+  border-color: var(--gbc-accent-red);
+  box-shadow:
+    inset 0 0 0 2px var(--gbc-bg),
+    inset 0 0 0 4px var(--gbc-accent-red),
+    inset 0 0 0 6px var(--gbc-bg);
+}
+
+/*
+ * Cursor (PLAN §3.3). Reserved 8-px column on the left of every
+ * selectable row. Selected row sets `▶`; others stay blank. ~30 Hz blink
+ * approximated via 0.6 s steps(2).
+ */
+.cursor-arrow {
+  display: inline-block;
+  min-width: 16px;
+  text-align: center;
+  color: var(--gbc-text);
+  animation: cursor-blink 0.6s steps(2, start) infinite;
+}
+
+@keyframes cursor-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/*
+ * Pixel rendering rule (PLAN_EVAL A6). Vendor-prefix triplet so older
+ * Safari and pre-96 Firefox land on the right keyword. Browsers ignore
+ * unknown values so the cascade is safe.
+ */
+img.sprite,
+.pixel {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+/* Gen 2 menu — same chrome as dialog plus per-row layout. */
+.gen2-menu {
+  display: inline-block;
+  min-width: 140px;
+}
+
+.gen2-menu-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.gen2-menu-row.is-disabled {
+  color: var(--gbc-dark-gray);
+  cursor: default;
+}
+
+/* Box browser. */
+.box-browser {
+  display: inline-block;
+}
+
+.box-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  justify-content: space-between;
+}
+
+.box-name {
+  font-weight: bold;
+  text-align: center;
+  flex: 1;
+}
+
+.box-nav {
+  font: inherit;
+  background: var(--gbc-bg);
+  color: var(--gbc-text);
+  border: 2px solid var(--gbc-border-outer);
+  cursor: pointer;
+  padding: 0 6px;
+}
+
+.box-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 32px);
+  grid-template-rows: repeat(5, 32px);
+  gap: 8px;
+}
+
+.box-tile {
+  width: 32px;
+  height: 32px;
+  background: var(--gbc-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  position: relative;
+}
+
+.box-tile.is-occupied {
+  cursor: pointer;
+}
+
+.box-tile.is-cursor {
+  outline: 2px solid var(--pc-blue);
+  outline-offset: -2px;
+}
+
+.box-tile.is-shiny {
+  outline: 1px solid var(--gbc-accent-yellow);
+  outline-offset: -1px;
+}
+
+.box-tile.is-shiny.is-cursor {
+  /* When a shiny tile is also the cursor, layer the cursor outline on top. */
+  box-shadow: 0 0 0 1px var(--gbc-accent-yellow) inset;
+  outline: 2px solid var(--pc-blue);
+  outline-offset: -2px;
+}
+
+/* Trainer dialog spans wider than a regular dialog. */
+.trainer-dialog {
+  display: block;
+}
+
+/* Comparison overlay. */
+.comparison-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.comparison-inner {
+  background: var(--gbc-bg);
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  max-width: 90vw;
+}
+
+.comparison-header {
+  text-align: center;
+}
+
+.comparison-panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.status-screen {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 8px;
+  min-width: 240px;
+}
+
+.status-screen--gen3 {
+  min-width: 256px;
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  gap: 8px;
+}
+
+.status-species {
+  flex: 1;
+}
+
+.shiny-star {
+  color: var(--gbc-accent-yellow);
+  /* The Latin subset of Press Start 2P does not include U+2605 — the
+   * browser falls back to system monospace for this glyph, which is
+   * intentional (a yellow-tinted star is more important than font
+   * uniformity here). */
+  font-family: 'PokemonGB', 'Apple Color Emoji', 'Segoe UI Symbol', monospace;
+}
+
+.stat-block {
+  display: grid;
+  gap: 2px;
+}
+
+.stat-row {
   display: grid;
   grid-template-columns: 1fr auto auto;
-  gap: 0.5rem 1rem;
-  align-items: center;
+  gap: 8px;
+  align-items: baseline;
 }
 
-.format-badge {
-  background: #1d6ce0;
-  color: #fff;
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
+.stat-label {
+  text-align: left;
 }
 
+.stat-value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-delta {
+  min-width: 36px;
+  text-align: right;
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-delta--pos {
+  color: var(--gbc-accent-green);
+}
+
+.stat-delta--neg {
+  color: var(--gbc-accent-red);
+}
+
+.stat-delta--zero {
+  color: var(--gbc-dark-gray);
+}
+
+/* Refusal dialog (A10). */
+.refusal-dialog {
+  min-width: 260px;
+  text-align: left;
+}
+
+.refusal-title {
+  text-align: center;
+  color: var(--gbc-accent-red);
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.refusal-spacer {
+  height: 8px;
+}
+
+.refusal-reason {
+  color: var(--gbc-text);
+  font-size: 0.9em;
+}
+
+.refusal-prompt {
+  margin-top: 8px;
+  text-align: right;
+  color: var(--gbc-dark-gray);
+  font-size: 0.85em;
+}
+
+.refusal-arrow {
+  color: var(--gbc-dark-gray);
+}
+
+/* Warnings card kept for Code Evaluator visibility. */
 .warnings {
-  background: #fff8e6;
-  border: 1px solid #f4d03f;
-  border-radius: 6px;
+  background: var(--gbc-bg);
+  border: 2px solid var(--gbc-accent-yellow);
   padding: 0.5rem 0.75rem;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
 }
 
 .warnings ul {
@@ -108,71 +423,7 @@ h1 {
   padding-left: 1.25rem;
 }
 
-.section h2 {
-  font-size: 1rem;
-  margin: 0 0 0.5rem;
-}
-
-.mon-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  padding: 0.4rem 0;
-  border-top: 1px solid #eee;
-  gap: 0.5rem;
-}
-
-.mon-row:first-child {
-  border-top: none;
-}
-
-.mon-meta {
-  font-size: 0.9rem;
-}
-
-.mon-meta strong {
-  font-weight: 600;
-}
-
-.mon-meta .nick {
-  color: #555;
-}
-
-.refusal {
-  color: #b00020;
-  background: #ffeaea;
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  margin-left: 0.5rem;
-}
-
-.box-toggle {
-  cursor: pointer;
-  font-size: 0.8rem;
-  margin-left: 0.5rem;
-}
-
-button {
-  font: inherit;
-  cursor: pointer;
-  background: #1d6ce0;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 0.3rem 0.6rem;
-}
-
-button:disabled {
-  background: #aaa;
-  cursor: not-allowed;
-}
-
-button.secondary {
-  background: #f0f0f0;
-  color: #1d1d1f;
-}
-
+/* Toolbar. */
 .toolbar {
   display: flex;
   gap: 0.5rem;
@@ -182,12 +433,26 @@ button.secondary {
 
 .toolbar .summary {
   margin-left: auto;
-  font-size: 0.85rem;
-  color: #555;
+  font-size: 0.7rem;
+  color: var(--gbc-dark-gray);
 }
 
-.empty {
-  text-align: center;
-  padding: 1.5rem;
-  color: #555;
+button {
+  font: inherit;
+  cursor: pointer;
+  background: var(--pc-blue);
+  color: var(--gbc-bg);
+  border: 2px solid var(--gbc-border-outer);
+  padding: 0.3rem 0.6rem;
+}
+
+button:disabled {
+  background: var(--gbc-light-gray);
+  color: var(--gbc-dark-gray);
+  cursor: not-allowed;
+}
+
+button.secondary {
+  background: var(--gbc-bg);
+  color: var(--gbc-text);
 }

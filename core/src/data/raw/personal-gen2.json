@@ -1,0 +1,2914 @@
+[
+  {
+    "ndex": 1,
+    "base": {
+      "hp": 45,
+      "atk": 49,
+      "def": 49,
+      "spe": 45,
+      "spa": 65,
+      "spd": 65
+    },
+    "gen1Special": 65
+  },
+  {
+    "ndex": 2,
+    "base": {
+      "hp": 60,
+      "atk": 62,
+      "def": 63,
+      "spe": 60,
+      "spa": 80,
+      "spd": 80
+    },
+    "gen1Special": 80
+  },
+  {
+    "ndex": 3,
+    "base": {
+      "hp": 80,
+      "atk": 82,
+      "def": 83,
+      "spe": 80,
+      "spa": 100,
+      "spd": 100
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 4,
+    "base": {
+      "hp": 39,
+      "atk": 52,
+      "def": 43,
+      "spe": 65,
+      "spa": 60,
+      "spd": 50
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 5,
+    "base": {
+      "hp": 58,
+      "atk": 64,
+      "def": 58,
+      "spe": 80,
+      "spa": 80,
+      "spd": 65
+    },
+    "gen1Special": 65
+  },
+  {
+    "ndex": 6,
+    "base": {
+      "hp": 78,
+      "atk": 84,
+      "def": 78,
+      "spe": 100,
+      "spa": 109,
+      "spd": 85
+    },
+    "gen1Special": 85
+  },
+  {
+    "ndex": 7,
+    "base": {
+      "hp": 44,
+      "atk": 48,
+      "def": 65,
+      "spe": 43,
+      "spa": 50,
+      "spd": 64
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 8,
+    "base": {
+      "hp": 59,
+      "atk": 63,
+      "def": 80,
+      "spe": 58,
+      "spa": 65,
+      "spd": 80
+    },
+    "gen1Special": 65
+  },
+  {
+    "ndex": 9,
+    "base": {
+      "hp": 79,
+      "atk": 83,
+      "def": 100,
+      "spe": 78,
+      "spa": 85,
+      "spd": 105
+    },
+    "gen1Special": 85
+  },
+  {
+    "ndex": 10,
+    "base": {
+      "hp": 45,
+      "atk": 30,
+      "def": 35,
+      "spe": 45,
+      "spa": 20,
+      "spd": 20
+    },
+    "gen1Special": 20
+  },
+  {
+    "ndex": 11,
+    "base": {
+      "hp": 50,
+      "atk": 20,
+      "def": 55,
+      "spe": 30,
+      "spa": 25,
+      "spd": 25
+    },
+    "gen1Special": 25
+  },
+  {
+    "ndex": 12,
+    "base": {
+      "hp": 60,
+      "atk": 45,
+      "def": 50,
+      "spe": 70,
+      "spa": 80,
+      "spd": 80
+    },
+    "gen1Special": 80
+  },
+  {
+    "ndex": 13,
+    "base": {
+      "hp": 40,
+      "atk": 35,
+      "def": 30,
+      "spe": 50,
+      "spa": 20,
+      "spd": 20
+    },
+    "gen1Special": 20
+  },
+  {
+    "ndex": 14,
+    "base": {
+      "hp": 45,
+      "atk": 25,
+      "def": 50,
+      "spe": 35,
+      "spa": 25,
+      "spd": 25
+    },
+    "gen1Special": 25
+  },
+  {
+    "ndex": 15,
+    "base": {
+      "hp": 65,
+      "atk": 80,
+      "def": 40,
+      "spe": 75,
+      "spa": 45,
+      "spd": 80
+    },
+    "gen1Special": 45
+  },
+  {
+    "ndex": 16,
+    "base": {
+      "hp": 40,
+      "atk": 45,
+      "def": 40,
+      "spe": 56,
+      "spa": 35,
+      "spd": 35
+    },
+    "gen1Special": 35
+  },
+  {
+    "ndex": 17,
+    "base": {
+      "hp": 63,
+      "atk": 60,
+      "def": 55,
+      "spe": 71,
+      "spa": 50,
+      "spd": 50
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 18,
+    "base": {
+      "hp": 83,
+      "atk": 80,
+      "def": 75,
+      "spe": 91,
+      "spa": 70,
+      "spd": 70
+    },
+    "gen1Special": 70
+  },
+  {
+    "ndex": 19,
+    "base": {
+      "hp": 30,
+      "atk": 56,
+      "def": 35,
+      "spe": 72,
+      "spa": 25,
+      "spd": 35
+    },
+    "gen1Special": 25
+  },
+  {
+    "ndex": 20,
+    "base": {
+      "hp": 55,
+      "atk": 81,
+      "def": 60,
+      "spe": 97,
+      "spa": 50,
+      "spd": 70
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 21,
+    "base": {
+      "hp": 40,
+      "atk": 60,
+      "def": 30,
+      "spe": 70,
+      "spa": 31,
+      "spd": 31
+    },
+    "gen1Special": 31
+  },
+  {
+    "ndex": 22,
+    "base": {
+      "hp": 65,
+      "atk": 90,
+      "def": 65,
+      "spe": 100,
+      "spa": 61,
+      "spd": 61
+    },
+    "gen1Special": 61
+  },
+  {
+    "ndex": 23,
+    "base": {
+      "hp": 35,
+      "atk": 60,
+      "def": 44,
+      "spe": 55,
+      "spa": 40,
+      "spd": 54
+    },
+    "gen1Special": 40
+  },
+  {
+    "ndex": 24,
+    "base": {
+      "hp": 60,
+      "atk": 85,
+      "def": 69,
+      "spe": 80,
+      "spa": 65,
+      "spd": 79
+    },
+    "gen1Special": 65
+  },
+  {
+    "ndex": 25,
+    "base": {
+      "hp": 35,
+      "atk": 55,
+      "def": 30,
+      "spe": 90,
+      "spa": 50,
+      "spd": 40
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 26,
+    "base": {
+      "hp": 60,
+      "atk": 90,
+      "def": 55,
+      "spe": 100,
+      "spa": 90,
+      "spd": 80
+    },
+    "gen1Special": 90
+  },
+  {
+    "ndex": 27,
+    "base": {
+      "hp": 50,
+      "atk": 75,
+      "def": 85,
+      "spe": 40,
+      "spa": 20,
+      "spd": 30
+    },
+    "gen1Special": 30
+  },
+  {
+    "ndex": 28,
+    "base": {
+      "hp": 75,
+      "atk": 100,
+      "def": 110,
+      "spe": 65,
+      "spa": 45,
+      "spd": 55
+    },
+    "gen1Special": 55
+  },
+  {
+    "ndex": 29,
+    "base": {
+      "hp": 55,
+      "atk": 47,
+      "def": 52,
+      "spe": 41,
+      "spa": 40,
+      "spd": 40
+    },
+    "gen1Special": 40
+  },
+  {
+    "ndex": 30,
+    "base": {
+      "hp": 70,
+      "atk": 62,
+      "def": 67,
+      "spe": 56,
+      "spa": 55,
+      "spd": 55
+    },
+    "gen1Special": 55
+  },
+  {
+    "ndex": 31,
+    "base": {
+      "hp": 90,
+      "atk": 82,
+      "def": 87,
+      "spe": 76,
+      "spa": 75,
+      "spd": 85
+    },
+    "gen1Special": 75
+  },
+  {
+    "ndex": 32,
+    "base": {
+      "hp": 46,
+      "atk": 57,
+      "def": 40,
+      "spe": 50,
+      "spa": 40,
+      "spd": 40
+    },
+    "gen1Special": 40
+  },
+  {
+    "ndex": 33,
+    "base": {
+      "hp": 61,
+      "atk": 72,
+      "def": 57,
+      "spe": 65,
+      "spa": 55,
+      "spd": 55
+    },
+    "gen1Special": 55
+  },
+  {
+    "ndex": 34,
+    "base": {
+      "hp": 81,
+      "atk": 92,
+      "def": 77,
+      "spe": 85,
+      "spa": 85,
+      "spd": 75
+    },
+    "gen1Special": 75
+  },
+  {
+    "ndex": 35,
+    "base": {
+      "hp": 70,
+      "atk": 45,
+      "def": 48,
+      "spe": 35,
+      "spa": 60,
+      "spd": 65
+    },
+    "gen1Special": 60
+  },
+  {
+    "ndex": 36,
+    "base": {
+      "hp": 95,
+      "atk": 70,
+      "def": 73,
+      "spe": 60,
+      "spa": 85,
+      "spd": 90
+    },
+    "gen1Special": 85
+  },
+  {
+    "ndex": 37,
+    "base": {
+      "hp": 38,
+      "atk": 41,
+      "def": 40,
+      "spe": 65,
+      "spa": 50,
+      "spd": 65
+    },
+    "gen1Special": 65
+  },
+  {
+    "ndex": 38,
+    "base": {
+      "hp": 73,
+      "atk": 76,
+      "def": 75,
+      "spe": 100,
+      "spa": 81,
+      "spd": 100
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 39,
+    "base": {
+      "hp": 115,
+      "atk": 45,
+      "def": 20,
+      "spe": 20,
+      "spa": 45,
+      "spd": 25
+    },
+    "gen1Special": 25
+  },
+  {
+    "ndex": 40,
+    "base": {
+      "hp": 140,
+      "atk": 70,
+      "def": 45,
+      "spe": 45,
+      "spa": 75,
+      "spd": 50
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 41,
+    "base": {
+      "hp": 40,
+      "atk": 45,
+      "def": 35,
+      "spe": 55,
+      "spa": 30,
+      "spd": 40
+    },
+    "gen1Special": 40
+  },
+  {
+    "ndex": 42,
+    "base": {
+      "hp": 75,
+      "atk": 80,
+      "def": 70,
+      "spe": 90,
+      "spa": 65,
+      "spd": 75
+    },
+    "gen1Special": 75
+  },
+  {
+    "ndex": 43,
+    "base": {
+      "hp": 45,
+      "atk": 50,
+      "def": 55,
+      "spe": 30,
+      "spa": 75,
+      "spd": 65
+    },
+    "gen1Special": 75
+  },
+  {
+    "ndex": 44,
+    "base": {
+      "hp": 60,
+      "atk": 65,
+      "def": 70,
+      "spe": 40,
+      "spa": 85,
+      "spd": 75
+    },
+    "gen1Special": 85
+  },
+  {
+    "ndex": 45,
+    "base": {
+      "hp": 75,
+      "atk": 80,
+      "def": 85,
+      "spe": 50,
+      "spa": 100,
+      "spd": 90
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 46,
+    "base": {
+      "hp": 35,
+      "atk": 70,
+      "def": 55,
+      "spe": 25,
+      "spa": 45,
+      "spd": 55
+    },
+    "gen1Special": 55
+  },
+  {
+    "ndex": 47,
+    "base": {
+      "hp": 60,
+      "atk": 95,
+      "def": 80,
+      "spe": 30,
+      "spa": 60,
+      "spd": 80
+    },
+    "gen1Special": 80
+  },
+  {
+    "ndex": 48,
+    "base": {
+      "hp": 60,
+      "atk": 55,
+      "def": 50,
+      "spe": 45,
+      "spa": 40,
+      "spd": 55
+    },
+    "gen1Special": 40
+  },
+  {
+    "ndex": 49,
+    "base": {
+      "hp": 70,
+      "atk": 65,
+      "def": 60,
+      "spe": 90,
+      "spa": 90,
+      "spd": 75
+    },
+    "gen1Special": 90
+  },
+  {
+    "ndex": 50,
+    "base": {
+      "hp": 10,
+      "atk": 55,
+      "def": 25,
+      "spe": 95,
+      "spa": 35,
+      "spd": 45
+    },
+    "gen1Special": 45
+  },
+  {
+    "ndex": 51,
+    "base": {
+      "hp": 35,
+      "atk": 80,
+      "def": 50,
+      "spe": 120,
+      "spa": 50,
+      "spd": 70
+    },
+    "gen1Special": 70
+  },
+  {
+    "ndex": 52,
+    "base": {
+      "hp": 40,
+      "atk": 45,
+      "def": 35,
+      "spe": 90,
+      "spa": 40,
+      "spd": 40
+    },
+    "gen1Special": 40
+  },
+  {
+    "ndex": 53,
+    "base": {
+      "hp": 65,
+      "atk": 70,
+      "def": 60,
+      "spe": 115,
+      "spa": 65,
+      "spd": 65
+    },
+    "gen1Special": 65
+  },
+  {
+    "ndex": 54,
+    "base": {
+      "hp": 50,
+      "atk": 52,
+      "def": 48,
+      "spe": 55,
+      "spa": 65,
+      "spd": 50
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 55,
+    "base": {
+      "hp": 80,
+      "atk": 82,
+      "def": 78,
+      "spe": 85,
+      "spa": 95,
+      "spd": 80
+    },
+    "gen1Special": 80
+  },
+  {
+    "ndex": 56,
+    "base": {
+      "hp": 40,
+      "atk": 80,
+      "def": 35,
+      "spe": 70,
+      "spa": 35,
+      "spd": 45
+    },
+    "gen1Special": 35
+  },
+  {
+    "ndex": 57,
+    "base": {
+      "hp": 65,
+      "atk": 105,
+      "def": 60,
+      "spe": 95,
+      "spa": 60,
+      "spd": 70
+    },
+    "gen1Special": 60
+  },
+  {
+    "ndex": 58,
+    "base": {
+      "hp": 55,
+      "atk": 70,
+      "def": 45,
+      "spe": 60,
+      "spa": 70,
+      "spd": 50
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 59,
+    "base": {
+      "hp": 90,
+      "atk": 110,
+      "def": 80,
+      "spe": 95,
+      "spa": 100,
+      "spd": 80
+    },
+    "gen1Special": 80
+  },
+  {
+    "ndex": 60,
+    "base": {
+      "hp": 40,
+      "atk": 50,
+      "def": 40,
+      "spe": 90,
+      "spa": 40,
+      "spd": 40
+    },
+    "gen1Special": 40
+  },
+  {
+    "ndex": 61,
+    "base": {
+      "hp": 65,
+      "atk": 65,
+      "def": 65,
+      "spe": 90,
+      "spa": 50,
+      "spd": 50
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 62,
+    "base": {
+      "hp": 90,
+      "atk": 85,
+      "def": 95,
+      "spe": 70,
+      "spa": 70,
+      "spd": 90
+    },
+    "gen1Special": 70
+  },
+  {
+    "ndex": 63,
+    "base": {
+      "hp": 25,
+      "atk": 20,
+      "def": 15,
+      "spe": 90,
+      "spa": 105,
+      "spd": 55
+    },
+    "gen1Special": 105
+  },
+  {
+    "ndex": 64,
+    "base": {
+      "hp": 40,
+      "atk": 35,
+      "def": 30,
+      "spe": 105,
+      "spa": 120,
+      "spd": 70
+    },
+    "gen1Special": 120
+  },
+  {
+    "ndex": 65,
+    "base": {
+      "hp": 55,
+      "atk": 50,
+      "def": 45,
+      "spe": 120,
+      "spa": 135,
+      "spd": 85
+    },
+    "gen1Special": 135
+  },
+  {
+    "ndex": 66,
+    "base": {
+      "hp": 70,
+      "atk": 80,
+      "def": 50,
+      "spe": 35,
+      "spa": 35,
+      "spd": 35
+    },
+    "gen1Special": 35
+  },
+  {
+    "ndex": 67,
+    "base": {
+      "hp": 80,
+      "atk": 100,
+      "def": 70,
+      "spe": 45,
+      "spa": 50,
+      "spd": 60
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 68,
+    "base": {
+      "hp": 90,
+      "atk": 130,
+      "def": 80,
+      "spe": 55,
+      "spa": 65,
+      "spd": 85
+    },
+    "gen1Special": 65
+  },
+  {
+    "ndex": 69,
+    "base": {
+      "hp": 50,
+      "atk": 75,
+      "def": 35,
+      "spe": 40,
+      "spa": 70,
+      "spd": 30
+    },
+    "gen1Special": 70
+  },
+  {
+    "ndex": 70,
+    "base": {
+      "hp": 65,
+      "atk": 90,
+      "def": 50,
+      "spe": 55,
+      "spa": 85,
+      "spd": 45
+    },
+    "gen1Special": 85
+  },
+  {
+    "ndex": 71,
+    "base": {
+      "hp": 80,
+      "atk": 105,
+      "def": 65,
+      "spe": 70,
+      "spa": 100,
+      "spd": 60
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 72,
+    "base": {
+      "hp": 40,
+      "atk": 40,
+      "def": 35,
+      "spe": 70,
+      "spa": 50,
+      "spd": 100
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 73,
+    "base": {
+      "hp": 80,
+      "atk": 70,
+      "def": 65,
+      "spe": 100,
+      "spa": 80,
+      "spd": 120
+    },
+    "gen1Special": 120
+  },
+  {
+    "ndex": 74,
+    "base": {
+      "hp": 40,
+      "atk": 80,
+      "def": 100,
+      "spe": 20,
+      "spa": 30,
+      "spd": 30
+    },
+    "gen1Special": 30
+  },
+  {
+    "ndex": 75,
+    "base": {
+      "hp": 55,
+      "atk": 95,
+      "def": 115,
+      "spe": 35,
+      "spa": 45,
+      "spd": 45
+    },
+    "gen1Special": 45
+  },
+  {
+    "ndex": 76,
+    "base": {
+      "hp": 80,
+      "atk": 110,
+      "def": 130,
+      "spe": 45,
+      "spa": 55,
+      "spd": 65
+    },
+    "gen1Special": 55
+  },
+  {
+    "ndex": 77,
+    "base": {
+      "hp": 50,
+      "atk": 85,
+      "def": 55,
+      "spe": 90,
+      "spa": 65,
+      "spd": 65
+    },
+    "gen1Special": 65
+  },
+  {
+    "ndex": 78,
+    "base": {
+      "hp": 65,
+      "atk": 100,
+      "def": 70,
+      "spe": 105,
+      "spa": 80,
+      "spd": 80
+    },
+    "gen1Special": 80
+  },
+  {
+    "ndex": 79,
+    "base": {
+      "hp": 90,
+      "atk": 65,
+      "def": 65,
+      "spe": 15,
+      "spa": 40,
+      "spd": 40
+    },
+    "gen1Special": 40
+  },
+  {
+    "ndex": 80,
+    "base": {
+      "hp": 95,
+      "atk": 75,
+      "def": 110,
+      "spe": 30,
+      "spa": 100,
+      "spd": 80
+    },
+    "gen1Special": 80
+  },
+  {
+    "ndex": 81,
+    "base": {
+      "hp": 25,
+      "atk": 35,
+      "def": 70,
+      "spe": 45,
+      "spa": 95,
+      "spd": 55
+    },
+    "gen1Special": 95
+  },
+  {
+    "ndex": 82,
+    "base": {
+      "hp": 50,
+      "atk": 60,
+      "def": 95,
+      "spe": 70,
+      "spa": 120,
+      "spd": 70
+    },
+    "gen1Special": 120
+  },
+  {
+    "ndex": 83,
+    "base": {
+      "hp": 52,
+      "atk": 65,
+      "def": 55,
+      "spe": 60,
+      "spa": 58,
+      "spd": 62
+    },
+    "gen1Special": 58
+  },
+  {
+    "ndex": 84,
+    "base": {
+      "hp": 35,
+      "atk": 85,
+      "def": 45,
+      "spe": 75,
+      "spa": 35,
+      "spd": 35
+    },
+    "gen1Special": 35
+  },
+  {
+    "ndex": 85,
+    "base": {
+      "hp": 60,
+      "atk": 110,
+      "def": 70,
+      "spe": 100,
+      "spa": 60,
+      "spd": 60
+    },
+    "gen1Special": 60
+  },
+  {
+    "ndex": 86,
+    "base": {
+      "hp": 65,
+      "atk": 45,
+      "def": 55,
+      "spe": 45,
+      "spa": 45,
+      "spd": 70
+    },
+    "gen1Special": 70
+  },
+  {
+    "ndex": 87,
+    "base": {
+      "hp": 90,
+      "atk": 70,
+      "def": 80,
+      "spe": 70,
+      "spa": 70,
+      "spd": 95
+    },
+    "gen1Special": 95
+  },
+  {
+    "ndex": 88,
+    "base": {
+      "hp": 80,
+      "atk": 80,
+      "def": 50,
+      "spe": 25,
+      "spa": 40,
+      "spd": 50
+    },
+    "gen1Special": 40
+  },
+  {
+    "ndex": 89,
+    "base": {
+      "hp": 105,
+      "atk": 105,
+      "def": 75,
+      "spe": 50,
+      "spa": 65,
+      "spd": 100
+    },
+    "gen1Special": 65
+  },
+  {
+    "ndex": 90,
+    "base": {
+      "hp": 30,
+      "atk": 65,
+      "def": 100,
+      "spe": 40,
+      "spa": 45,
+      "spd": 25
+    },
+    "gen1Special": 45
+  },
+  {
+    "ndex": 91,
+    "base": {
+      "hp": 50,
+      "atk": 95,
+      "def": 180,
+      "spe": 70,
+      "spa": 85,
+      "spd": 45
+    },
+    "gen1Special": 85
+  },
+  {
+    "ndex": 92,
+    "base": {
+      "hp": 30,
+      "atk": 35,
+      "def": 30,
+      "spe": 80,
+      "spa": 100,
+      "spd": 35
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 93,
+    "base": {
+      "hp": 45,
+      "atk": 50,
+      "def": 45,
+      "spe": 95,
+      "spa": 115,
+      "spd": 55
+    },
+    "gen1Special": 115
+  },
+  {
+    "ndex": 94,
+    "base": {
+      "hp": 60,
+      "atk": 65,
+      "def": 60,
+      "spe": 110,
+      "spa": 130,
+      "spd": 75
+    },
+    "gen1Special": 130
+  },
+  {
+    "ndex": 95,
+    "base": {
+      "hp": 35,
+      "atk": 45,
+      "def": 160,
+      "spe": 70,
+      "spa": 30,
+      "spd": 45
+    },
+    "gen1Special": 30
+  },
+  {
+    "ndex": 96,
+    "base": {
+      "hp": 60,
+      "atk": 48,
+      "def": 45,
+      "spe": 42,
+      "spa": 43,
+      "spd": 90
+    },
+    "gen1Special": 90
+  },
+  {
+    "ndex": 97,
+    "base": {
+      "hp": 85,
+      "atk": 73,
+      "def": 70,
+      "spe": 67,
+      "spa": 73,
+      "spd": 115
+    },
+    "gen1Special": 115
+  },
+  {
+    "ndex": 98,
+    "base": {
+      "hp": 30,
+      "atk": 105,
+      "def": 90,
+      "spe": 50,
+      "spa": 25,
+      "spd": 25
+    },
+    "gen1Special": 25
+  },
+  {
+    "ndex": 99,
+    "base": {
+      "hp": 55,
+      "atk": 130,
+      "def": 115,
+      "spe": 75,
+      "spa": 50,
+      "spd": 50
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 100,
+    "base": {
+      "hp": 40,
+      "atk": 30,
+      "def": 50,
+      "spe": 100,
+      "spa": 55,
+      "spd": 55
+    },
+    "gen1Special": 55
+  },
+  {
+    "ndex": 101,
+    "base": {
+      "hp": 60,
+      "atk": 50,
+      "def": 70,
+      "spe": 140,
+      "spa": 80,
+      "spd": 80
+    },
+    "gen1Special": 80
+  },
+  {
+    "ndex": 102,
+    "base": {
+      "hp": 60,
+      "atk": 40,
+      "def": 80,
+      "spe": 40,
+      "spa": 60,
+      "spd": 45
+    },
+    "gen1Special": 60
+  },
+  {
+    "ndex": 103,
+    "base": {
+      "hp": 95,
+      "atk": 95,
+      "def": 85,
+      "spe": 55,
+      "spa": 125,
+      "spd": 65
+    },
+    "gen1Special": 125
+  },
+  {
+    "ndex": 104,
+    "base": {
+      "hp": 50,
+      "atk": 50,
+      "def": 95,
+      "spe": 35,
+      "spa": 40,
+      "spd": 50
+    },
+    "gen1Special": 40
+  },
+  {
+    "ndex": 105,
+    "base": {
+      "hp": 60,
+      "atk": 80,
+      "def": 110,
+      "spe": 45,
+      "spa": 50,
+      "spd": 80
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 106,
+    "base": {
+      "hp": 50,
+      "atk": 120,
+      "def": 53,
+      "spe": 87,
+      "spa": 35,
+      "spd": 110
+    },
+    "gen1Special": 35
+  },
+  {
+    "ndex": 107,
+    "base": {
+      "hp": 50,
+      "atk": 105,
+      "def": 79,
+      "spe": 76,
+      "spa": 35,
+      "spd": 110
+    },
+    "gen1Special": 35
+  },
+  {
+    "ndex": 108,
+    "base": {
+      "hp": 90,
+      "atk": 55,
+      "def": 75,
+      "spe": 30,
+      "spa": 60,
+      "spd": 75
+    },
+    "gen1Special": 60
+  },
+  {
+    "ndex": 109,
+    "base": {
+      "hp": 40,
+      "atk": 65,
+      "def": 95,
+      "spe": 35,
+      "spa": 60,
+      "spd": 45
+    },
+    "gen1Special": 60
+  },
+  {
+    "ndex": 110,
+    "base": {
+      "hp": 65,
+      "atk": 90,
+      "def": 120,
+      "spe": 60,
+      "spa": 85,
+      "spd": 70
+    },
+    "gen1Special": 85
+  },
+  {
+    "ndex": 111,
+    "base": {
+      "hp": 80,
+      "atk": 85,
+      "def": 95,
+      "spe": 25,
+      "spa": 30,
+      "spd": 30
+    },
+    "gen1Special": 30
+  },
+  {
+    "ndex": 112,
+    "base": {
+      "hp": 105,
+      "atk": 130,
+      "def": 120,
+      "spe": 40,
+      "spa": 45,
+      "spd": 45
+    },
+    "gen1Special": 45
+  },
+  {
+    "ndex": 113,
+    "base": {
+      "hp": 250,
+      "atk": 5,
+      "def": 5,
+      "spe": 50,
+      "spa": 35,
+      "spd": 105
+    },
+    "gen1Special": 105
+  },
+  {
+    "ndex": 114,
+    "base": {
+      "hp": 65,
+      "atk": 55,
+      "def": 115,
+      "spe": 60,
+      "spa": 100,
+      "spd": 40
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 115,
+    "base": {
+      "hp": 105,
+      "atk": 95,
+      "def": 80,
+      "spe": 90,
+      "spa": 40,
+      "spd": 80
+    },
+    "gen1Special": 40
+  },
+  {
+    "ndex": 116,
+    "base": {
+      "hp": 30,
+      "atk": 40,
+      "def": 70,
+      "spe": 60,
+      "spa": 70,
+      "spd": 25
+    },
+    "gen1Special": 70
+  },
+  {
+    "ndex": 117,
+    "base": {
+      "hp": 55,
+      "atk": 65,
+      "def": 95,
+      "spe": 85,
+      "spa": 95,
+      "spd": 45
+    },
+    "gen1Special": 95
+  },
+  {
+    "ndex": 118,
+    "base": {
+      "hp": 45,
+      "atk": 67,
+      "def": 60,
+      "spe": 63,
+      "spa": 35,
+      "spd": 50
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 119,
+    "base": {
+      "hp": 80,
+      "atk": 92,
+      "def": 65,
+      "spe": 68,
+      "spa": 65,
+      "spd": 80
+    },
+    "gen1Special": 80
+  },
+  {
+    "ndex": 120,
+    "base": {
+      "hp": 30,
+      "atk": 45,
+      "def": 55,
+      "spe": 85,
+      "spa": 70,
+      "spd": 55
+    },
+    "gen1Special": 70
+  },
+  {
+    "ndex": 121,
+    "base": {
+      "hp": 60,
+      "atk": 75,
+      "def": 85,
+      "spe": 115,
+      "spa": 100,
+      "spd": 85
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 122,
+    "base": {
+      "hp": 40,
+      "atk": 45,
+      "def": 65,
+      "spe": 90,
+      "spa": 100,
+      "spd": 120
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 123,
+    "base": {
+      "hp": 70,
+      "atk": 110,
+      "def": 80,
+      "spe": 105,
+      "spa": 55,
+      "spd": 80
+    },
+    "gen1Special": 55
+  },
+  {
+    "ndex": 124,
+    "base": {
+      "hp": 65,
+      "atk": 50,
+      "def": 35,
+      "spe": 95,
+      "spa": 115,
+      "spd": 95
+    },
+    "gen1Special": 95
+  },
+  {
+    "ndex": 125,
+    "base": {
+      "hp": 65,
+      "atk": 83,
+      "def": 57,
+      "spe": 105,
+      "spa": 95,
+      "spd": 85
+    },
+    "gen1Special": 85
+  },
+  {
+    "ndex": 126,
+    "base": {
+      "hp": 65,
+      "atk": 95,
+      "def": 57,
+      "spe": 93,
+      "spa": 100,
+      "spd": 85
+    },
+    "gen1Special": 85
+  },
+  {
+    "ndex": 127,
+    "base": {
+      "hp": 65,
+      "atk": 125,
+      "def": 100,
+      "spe": 85,
+      "spa": 55,
+      "spd": 70
+    },
+    "gen1Special": 55
+  },
+  {
+    "ndex": 128,
+    "base": {
+      "hp": 75,
+      "atk": 100,
+      "def": 95,
+      "spe": 110,
+      "spa": 40,
+      "spd": 70
+    },
+    "gen1Special": 70
+  },
+  {
+    "ndex": 129,
+    "base": {
+      "hp": 20,
+      "atk": 10,
+      "def": 55,
+      "spe": 80,
+      "spa": 15,
+      "spd": 20
+    },
+    "gen1Special": 20
+  },
+  {
+    "ndex": 130,
+    "base": {
+      "hp": 95,
+      "atk": 125,
+      "def": 79,
+      "spe": 81,
+      "spa": 60,
+      "spd": 100
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 131,
+    "base": {
+      "hp": 130,
+      "atk": 85,
+      "def": 80,
+      "spe": 60,
+      "spa": 85,
+      "spd": 95
+    },
+    "gen1Special": 95
+  },
+  {
+    "ndex": 132,
+    "base": {
+      "hp": 48,
+      "atk": 48,
+      "def": 48,
+      "spe": 48,
+      "spa": 48,
+      "spd": 48
+    },
+    "gen1Special": 48
+  },
+  {
+    "ndex": 133,
+    "base": {
+      "hp": 55,
+      "atk": 55,
+      "def": 50,
+      "spe": 55,
+      "spa": 45,
+      "spd": 65
+    },
+    "gen1Special": 65
+  },
+  {
+    "ndex": 134,
+    "base": {
+      "hp": 130,
+      "atk": 65,
+      "def": 60,
+      "spe": 65,
+      "spa": 110,
+      "spd": 95
+    },
+    "gen1Special": 110
+  },
+  {
+    "ndex": 135,
+    "base": {
+      "hp": 65,
+      "atk": 65,
+      "def": 60,
+      "spe": 130,
+      "spa": 110,
+      "spd": 95
+    },
+    "gen1Special": 110
+  },
+  {
+    "ndex": 136,
+    "base": {
+      "hp": 65,
+      "atk": 130,
+      "def": 60,
+      "spe": 65,
+      "spa": 95,
+      "spd": 110
+    },
+    "gen1Special": 110
+  },
+  {
+    "ndex": 137,
+    "base": {
+      "hp": 65,
+      "atk": 60,
+      "def": 70,
+      "spe": 40,
+      "spa": 85,
+      "spd": 75
+    },
+    "gen1Special": 75
+  },
+  {
+    "ndex": 138,
+    "base": {
+      "hp": 35,
+      "atk": 40,
+      "def": 100,
+      "spe": 35,
+      "spa": 90,
+      "spd": 55
+    },
+    "gen1Special": 90
+  },
+  {
+    "ndex": 139,
+    "base": {
+      "hp": 70,
+      "atk": 60,
+      "def": 125,
+      "spe": 55,
+      "spa": 115,
+      "spd": 70
+    },
+    "gen1Special": 115
+  },
+  {
+    "ndex": 140,
+    "base": {
+      "hp": 30,
+      "atk": 80,
+      "def": 90,
+      "spe": 55,
+      "spa": 55,
+      "spd": 45
+    },
+    "gen1Special": 45
+  },
+  {
+    "ndex": 141,
+    "base": {
+      "hp": 60,
+      "atk": 115,
+      "def": 105,
+      "spe": 80,
+      "spa": 65,
+      "spd": 70
+    },
+    "gen1Special": 70
+  },
+  {
+    "ndex": 142,
+    "base": {
+      "hp": 80,
+      "atk": 105,
+      "def": 65,
+      "spe": 130,
+      "spa": 60,
+      "spd": 75
+    },
+    "gen1Special": 60
+  },
+  {
+    "ndex": 143,
+    "base": {
+      "hp": 160,
+      "atk": 110,
+      "def": 65,
+      "spe": 30,
+      "spa": 65,
+      "spd": 110
+    },
+    "gen1Special": 65
+  },
+  {
+    "ndex": 144,
+    "base": {
+      "hp": 90,
+      "atk": 85,
+      "def": 100,
+      "spe": 85,
+      "spa": 95,
+      "spd": 125
+    },
+    "gen1Special": 125
+  },
+  {
+    "ndex": 145,
+    "base": {
+      "hp": 90,
+      "atk": 90,
+      "def": 85,
+      "spe": 100,
+      "spa": 125,
+      "spd": 90
+    },
+    "gen1Special": 125
+  },
+  {
+    "ndex": 146,
+    "base": {
+      "hp": 90,
+      "atk": 100,
+      "def": 90,
+      "spe": 90,
+      "spa": 125,
+      "spd": 85
+    },
+    "gen1Special": 125
+  },
+  {
+    "ndex": 147,
+    "base": {
+      "hp": 41,
+      "atk": 64,
+      "def": 45,
+      "spe": 50,
+      "spa": 50,
+      "spd": 50
+    },
+    "gen1Special": 50
+  },
+  {
+    "ndex": 148,
+    "base": {
+      "hp": 61,
+      "atk": 84,
+      "def": 65,
+      "spe": 70,
+      "spa": 70,
+      "spd": 70
+    },
+    "gen1Special": 70
+  },
+  {
+    "ndex": 149,
+    "base": {
+      "hp": 91,
+      "atk": 134,
+      "def": 95,
+      "spe": 80,
+      "spa": 100,
+      "spd": 100
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 150,
+    "base": {
+      "hp": 106,
+      "atk": 110,
+      "def": 90,
+      "spe": 130,
+      "spa": 154,
+      "spd": 90
+    },
+    "gen1Special": 154
+  },
+  {
+    "ndex": 151,
+    "base": {
+      "hp": 100,
+      "atk": 100,
+      "def": 100,
+      "spe": 100,
+      "spa": 100,
+      "spd": 100
+    },
+    "gen1Special": 100
+  },
+  {
+    "ndex": 152,
+    "base": {
+      "hp": 45,
+      "atk": 49,
+      "def": 65,
+      "spe": 45,
+      "spa": 49,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 153,
+    "base": {
+      "hp": 60,
+      "atk": 62,
+      "def": 80,
+      "spe": 60,
+      "spa": 63,
+      "spd": 80
+    }
+  },
+  {
+    "ndex": 154,
+    "base": {
+      "hp": 80,
+      "atk": 82,
+      "def": 100,
+      "spe": 80,
+      "spa": 83,
+      "spd": 100
+    }
+  },
+  {
+    "ndex": 155,
+    "base": {
+      "hp": 39,
+      "atk": 52,
+      "def": 43,
+      "spe": 65,
+      "spa": 60,
+      "spd": 50
+    }
+  },
+  {
+    "ndex": 156,
+    "base": {
+      "hp": 58,
+      "atk": 64,
+      "def": 58,
+      "spe": 80,
+      "spa": 80,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 157,
+    "base": {
+      "hp": 78,
+      "atk": 84,
+      "def": 78,
+      "spe": 100,
+      "spa": 109,
+      "spd": 85
+    }
+  },
+  {
+    "ndex": 158,
+    "base": {
+      "hp": 50,
+      "atk": 65,
+      "def": 64,
+      "spe": 43,
+      "spa": 44,
+      "spd": 48
+    }
+  },
+  {
+    "ndex": 159,
+    "base": {
+      "hp": 65,
+      "atk": 80,
+      "def": 80,
+      "spe": 58,
+      "spa": 59,
+      "spd": 63
+    }
+  },
+  {
+    "ndex": 160,
+    "base": {
+      "hp": 85,
+      "atk": 105,
+      "def": 100,
+      "spe": 78,
+      "spa": 79,
+      "spd": 83
+    }
+  },
+  {
+    "ndex": 161,
+    "base": {
+      "hp": 35,
+      "atk": 46,
+      "def": 34,
+      "spe": 20,
+      "spa": 35,
+      "spd": 45
+    }
+  },
+  {
+    "ndex": 162,
+    "base": {
+      "hp": 85,
+      "atk": 76,
+      "def": 64,
+      "spe": 90,
+      "spa": 45,
+      "spd": 55
+    }
+  },
+  {
+    "ndex": 163,
+    "base": {
+      "hp": 60,
+      "atk": 30,
+      "def": 30,
+      "spe": 50,
+      "spa": 36,
+      "spd": 56
+    }
+  },
+  {
+    "ndex": 164,
+    "base": {
+      "hp": 100,
+      "atk": 50,
+      "def": 50,
+      "spe": 70,
+      "spa": 76,
+      "spd": 96
+    }
+  },
+  {
+    "ndex": 165,
+    "base": {
+      "hp": 40,
+      "atk": 20,
+      "def": 30,
+      "spe": 55,
+      "spa": 40,
+      "spd": 80
+    }
+  },
+  {
+    "ndex": 166,
+    "base": {
+      "hp": 55,
+      "atk": 35,
+      "def": 50,
+      "spe": 85,
+      "spa": 55,
+      "spd": 110
+    }
+  },
+  {
+    "ndex": 167,
+    "base": {
+      "hp": 40,
+      "atk": 60,
+      "def": 40,
+      "spe": 30,
+      "spa": 40,
+      "spd": 40
+    }
+  },
+  {
+    "ndex": 168,
+    "base": {
+      "hp": 70,
+      "atk": 90,
+      "def": 70,
+      "spe": 40,
+      "spa": 60,
+      "spd": 60
+    }
+  },
+  {
+    "ndex": 169,
+    "base": {
+      "hp": 85,
+      "atk": 90,
+      "def": 80,
+      "spe": 130,
+      "spa": 70,
+      "spd": 80
+    }
+  },
+  {
+    "ndex": 170,
+    "base": {
+      "hp": 75,
+      "atk": 38,
+      "def": 38,
+      "spe": 67,
+      "spa": 56,
+      "spd": 56
+    }
+  },
+  {
+    "ndex": 171,
+    "base": {
+      "hp": 125,
+      "atk": 58,
+      "def": 58,
+      "spe": 67,
+      "spa": 76,
+      "spd": 76
+    }
+  },
+  {
+    "ndex": 172,
+    "base": {
+      "hp": 20,
+      "atk": 40,
+      "def": 15,
+      "spe": 60,
+      "spa": 35,
+      "spd": 35
+    }
+  },
+  {
+    "ndex": 173,
+    "base": {
+      "hp": 50,
+      "atk": 25,
+      "def": 28,
+      "spe": 15,
+      "spa": 45,
+      "spd": 55
+    }
+  },
+  {
+    "ndex": 174,
+    "base": {
+      "hp": 90,
+      "atk": 30,
+      "def": 15,
+      "spe": 15,
+      "spa": 40,
+      "spd": 20
+    }
+  },
+  {
+    "ndex": 175,
+    "base": {
+      "hp": 35,
+      "atk": 20,
+      "def": 65,
+      "spe": 20,
+      "spa": 40,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 176,
+    "base": {
+      "hp": 55,
+      "atk": 40,
+      "def": 85,
+      "spe": 40,
+      "spa": 80,
+      "spd": 105
+    }
+  },
+  {
+    "ndex": 177,
+    "base": {
+      "hp": 40,
+      "atk": 50,
+      "def": 45,
+      "spe": 70,
+      "spa": 70,
+      "spd": 45
+    }
+  },
+  {
+    "ndex": 178,
+    "base": {
+      "hp": 65,
+      "atk": 75,
+      "def": 70,
+      "spe": 95,
+      "spa": 95,
+      "spd": 70
+    }
+  },
+  {
+    "ndex": 179,
+    "base": {
+      "hp": 55,
+      "atk": 40,
+      "def": 40,
+      "spe": 35,
+      "spa": 65,
+      "spd": 45
+    }
+  },
+  {
+    "ndex": 180,
+    "base": {
+      "hp": 70,
+      "atk": 55,
+      "def": 55,
+      "spe": 45,
+      "spa": 80,
+      "spd": 60
+    }
+  },
+  {
+    "ndex": 181,
+    "base": {
+      "hp": 90,
+      "atk": 75,
+      "def": 75,
+      "spe": 55,
+      "spa": 115,
+      "spd": 90
+    }
+  },
+  {
+    "ndex": 182,
+    "base": {
+      "hp": 75,
+      "atk": 80,
+      "def": 85,
+      "spe": 50,
+      "spa": 90,
+      "spd": 100
+    }
+  },
+  {
+    "ndex": 183,
+    "base": {
+      "hp": 70,
+      "atk": 20,
+      "def": 50,
+      "spe": 40,
+      "spa": 20,
+      "spd": 50
+    }
+  },
+  {
+    "ndex": 184,
+    "base": {
+      "hp": 100,
+      "atk": 50,
+      "def": 80,
+      "spe": 50,
+      "spa": 50,
+      "spd": 80
+    }
+  },
+  {
+    "ndex": 185,
+    "base": {
+      "hp": 70,
+      "atk": 100,
+      "def": 115,
+      "spe": 30,
+      "spa": 30,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 186,
+    "base": {
+      "hp": 90,
+      "atk": 75,
+      "def": 75,
+      "spe": 70,
+      "spa": 90,
+      "spd": 100
+    }
+  },
+  {
+    "ndex": 187,
+    "base": {
+      "hp": 35,
+      "atk": 35,
+      "def": 40,
+      "spe": 50,
+      "spa": 35,
+      "spd": 55
+    }
+  },
+  {
+    "ndex": 188,
+    "base": {
+      "hp": 55,
+      "atk": 45,
+      "def": 50,
+      "spe": 80,
+      "spa": 45,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 189,
+    "base": {
+      "hp": 75,
+      "atk": 55,
+      "def": 70,
+      "spe": 110,
+      "spa": 55,
+      "spd": 85
+    }
+  },
+  {
+    "ndex": 190,
+    "base": {
+      "hp": 55,
+      "atk": 70,
+      "def": 55,
+      "spe": 85,
+      "spa": 40,
+      "spd": 55
+    }
+  },
+  {
+    "ndex": 191,
+    "base": {
+      "hp": 30,
+      "atk": 30,
+      "def": 30,
+      "spe": 30,
+      "spa": 30,
+      "spd": 30
+    }
+  },
+  {
+    "ndex": 192,
+    "base": {
+      "hp": 75,
+      "atk": 75,
+      "def": 55,
+      "spe": 30,
+      "spa": 105,
+      "spd": 85
+    }
+  },
+  {
+    "ndex": 193,
+    "base": {
+      "hp": 65,
+      "atk": 65,
+      "def": 45,
+      "spe": 95,
+      "spa": 75,
+      "spd": 45
+    }
+  },
+  {
+    "ndex": 194,
+    "base": {
+      "hp": 55,
+      "atk": 45,
+      "def": 45,
+      "spe": 15,
+      "spa": 25,
+      "spd": 25
+    }
+  },
+  {
+    "ndex": 195,
+    "base": {
+      "hp": 95,
+      "atk": 85,
+      "def": 85,
+      "spe": 35,
+      "spa": 65,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 196,
+    "base": {
+      "hp": 65,
+      "atk": 65,
+      "def": 60,
+      "spe": 110,
+      "spa": 130,
+      "spd": 95
+    }
+  },
+  {
+    "ndex": 197,
+    "base": {
+      "hp": 95,
+      "atk": 65,
+      "def": 110,
+      "spe": 65,
+      "spa": 60,
+      "spd": 130
+    }
+  },
+  {
+    "ndex": 198,
+    "base": {
+      "hp": 60,
+      "atk": 85,
+      "def": 42,
+      "spe": 91,
+      "spa": 85,
+      "spd": 42
+    }
+  },
+  {
+    "ndex": 199,
+    "base": {
+      "hp": 95,
+      "atk": 75,
+      "def": 80,
+      "spe": 30,
+      "spa": 100,
+      "spd": 110
+    }
+  },
+  {
+    "ndex": 200,
+    "base": {
+      "hp": 60,
+      "atk": 60,
+      "def": 60,
+      "spe": 85,
+      "spa": 85,
+      "spd": 85
+    }
+  },
+  {
+    "ndex": 201,
+    "base": {
+      "hp": 48,
+      "atk": 72,
+      "def": 48,
+      "spe": 48,
+      "spa": 72,
+      "spd": 48
+    }
+  },
+  {
+    "ndex": 202,
+    "base": {
+      "hp": 190,
+      "atk": 33,
+      "def": 58,
+      "spe": 33,
+      "spa": 33,
+      "spd": 58
+    }
+  },
+  {
+    "ndex": 203,
+    "base": {
+      "hp": 70,
+      "atk": 80,
+      "def": 65,
+      "spe": 85,
+      "spa": 90,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 204,
+    "base": {
+      "hp": 50,
+      "atk": 65,
+      "def": 90,
+      "spe": 15,
+      "spa": 35,
+      "spd": 35
+    }
+  },
+  {
+    "ndex": 205,
+    "base": {
+      "hp": 75,
+      "atk": 90,
+      "def": 140,
+      "spe": 40,
+      "spa": 60,
+      "spd": 60
+    }
+  },
+  {
+    "ndex": 206,
+    "base": {
+      "hp": 100,
+      "atk": 70,
+      "def": 70,
+      "spe": 45,
+      "spa": 65,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 207,
+    "base": {
+      "hp": 65,
+      "atk": 75,
+      "def": 105,
+      "spe": 85,
+      "spa": 35,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 208,
+    "base": {
+      "hp": 75,
+      "atk": 85,
+      "def": 200,
+      "spe": 30,
+      "spa": 55,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 209,
+    "base": {
+      "hp": 60,
+      "atk": 80,
+      "def": 50,
+      "spe": 30,
+      "spa": 40,
+      "spd": 40
+    }
+  },
+  {
+    "ndex": 210,
+    "base": {
+      "hp": 90,
+      "atk": 120,
+      "def": 75,
+      "spe": 45,
+      "spa": 60,
+      "spd": 60
+    }
+  },
+  {
+    "ndex": 211,
+    "base": {
+      "hp": 65,
+      "atk": 95,
+      "def": 75,
+      "spe": 85,
+      "spa": 55,
+      "spd": 55
+    }
+  },
+  {
+    "ndex": 212,
+    "base": {
+      "hp": 70,
+      "atk": 130,
+      "def": 100,
+      "spe": 65,
+      "spa": 55,
+      "spd": 80
+    }
+  },
+  {
+    "ndex": 213,
+    "base": {
+      "hp": 20,
+      "atk": 10,
+      "def": 230,
+      "spe": 5,
+      "spa": 10,
+      "spd": 230
+    }
+  },
+  {
+    "ndex": 214,
+    "base": {
+      "hp": 80,
+      "atk": 125,
+      "def": 75,
+      "spe": 85,
+      "spa": 40,
+      "spd": 95
+    }
+  },
+  {
+    "ndex": 215,
+    "base": {
+      "hp": 55,
+      "atk": 95,
+      "def": 55,
+      "spe": 115,
+      "spa": 35,
+      "spd": 75
+    }
+  },
+  {
+    "ndex": 216,
+    "base": {
+      "hp": 60,
+      "atk": 80,
+      "def": 50,
+      "spe": 40,
+      "spa": 50,
+      "spd": 50
+    }
+  },
+  {
+    "ndex": 217,
+    "base": {
+      "hp": 90,
+      "atk": 130,
+      "def": 75,
+      "spe": 55,
+      "spa": 75,
+      "spd": 75
+    }
+  },
+  {
+    "ndex": 218,
+    "base": {
+      "hp": 40,
+      "atk": 40,
+      "def": 40,
+      "spe": 20,
+      "spa": 70,
+      "spd": 40
+    }
+  },
+  {
+    "ndex": 219,
+    "base": {
+      "hp": 50,
+      "atk": 50,
+      "def": 120,
+      "spe": 30,
+      "spa": 80,
+      "spd": 80
+    }
+  },
+  {
+    "ndex": 220,
+    "base": {
+      "hp": 50,
+      "atk": 50,
+      "def": 40,
+      "spe": 50,
+      "spa": 30,
+      "spd": 30
+    }
+  },
+  {
+    "ndex": 221,
+    "base": {
+      "hp": 100,
+      "atk": 100,
+      "def": 80,
+      "spe": 50,
+      "spa": 60,
+      "spd": 60
+    }
+  },
+  {
+    "ndex": 222,
+    "base": {
+      "hp": 55,
+      "atk": 55,
+      "def": 85,
+      "spe": 35,
+      "spa": 65,
+      "spd": 85
+    }
+  },
+  {
+    "ndex": 223,
+    "base": {
+      "hp": 35,
+      "atk": 65,
+      "def": 35,
+      "spe": 65,
+      "spa": 65,
+      "spd": 35
+    }
+  },
+  {
+    "ndex": 224,
+    "base": {
+      "hp": 75,
+      "atk": 105,
+      "def": 75,
+      "spe": 45,
+      "spa": 105,
+      "spd": 75
+    }
+  },
+  {
+    "ndex": 225,
+    "base": {
+      "hp": 45,
+      "atk": 55,
+      "def": 45,
+      "spe": 75,
+      "spa": 65,
+      "spd": 45
+    }
+  },
+  {
+    "ndex": 226,
+    "base": {
+      "hp": 65,
+      "atk": 40,
+      "def": 70,
+      "spe": 70,
+      "spa": 80,
+      "spd": 140
+    }
+  },
+  {
+    "ndex": 227,
+    "base": {
+      "hp": 65,
+      "atk": 80,
+      "def": 140,
+      "spe": 70,
+      "spa": 40,
+      "spd": 70
+    }
+  },
+  {
+    "ndex": 228,
+    "base": {
+      "hp": 45,
+      "atk": 60,
+      "def": 30,
+      "spe": 65,
+      "spa": 80,
+      "spd": 50
+    }
+  },
+  {
+    "ndex": 229,
+    "base": {
+      "hp": 75,
+      "atk": 90,
+      "def": 50,
+      "spe": 95,
+      "spa": 110,
+      "spd": 80
+    }
+  },
+  {
+    "ndex": 230,
+    "base": {
+      "hp": 75,
+      "atk": 95,
+      "def": 95,
+      "spe": 85,
+      "spa": 95,
+      "spd": 95
+    }
+  },
+  {
+    "ndex": 231,
+    "base": {
+      "hp": 90,
+      "atk": 60,
+      "def": 60,
+      "spe": 40,
+      "spa": 40,
+      "spd": 40
+    }
+  },
+  {
+    "ndex": 232,
+    "base": {
+      "hp": 90,
+      "atk": 120,
+      "def": 120,
+      "spe": 50,
+      "spa": 60,
+      "spd": 60
+    }
+  },
+  {
+    "ndex": 233,
+    "base": {
+      "hp": 85,
+      "atk": 80,
+      "def": 90,
+      "spe": 60,
+      "spa": 105,
+      "spd": 95
+    }
+  },
+  {
+    "ndex": 234,
+    "base": {
+      "hp": 73,
+      "atk": 95,
+      "def": 62,
+      "spe": 85,
+      "spa": 85,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 235,
+    "base": {
+      "hp": 55,
+      "atk": 20,
+      "def": 35,
+      "spe": 75,
+      "spa": 20,
+      "spd": 45
+    }
+  },
+  {
+    "ndex": 236,
+    "base": {
+      "hp": 35,
+      "atk": 35,
+      "def": 35,
+      "spe": 35,
+      "spa": 35,
+      "spd": 35
+    }
+  },
+  {
+    "ndex": 237,
+    "base": {
+      "hp": 50,
+      "atk": 95,
+      "def": 95,
+      "spe": 70,
+      "spa": 35,
+      "spd": 110
+    }
+  },
+  {
+    "ndex": 238,
+    "base": {
+      "hp": 45,
+      "atk": 30,
+      "def": 15,
+      "spe": 65,
+      "spa": 85,
+      "spd": 65
+    }
+  },
+  {
+    "ndex": 239,
+    "base": {
+      "hp": 45,
+      "atk": 63,
+      "def": 37,
+      "spe": 95,
+      "spa": 65,
+      "spd": 55
+    }
+  },
+  {
+    "ndex": 240,
+    "base": {
+      "hp": 45,
+      "atk": 75,
+      "def": 37,
+      "spe": 83,
+      "spa": 70,
+      "spd": 55
+    }
+  },
+  {
+    "ndex": 241,
+    "base": {
+      "hp": 95,
+      "atk": 80,
+      "def": 105,
+      "spe": 100,
+      "spa": 40,
+      "spd": 70
+    }
+  },
+  {
+    "ndex": 242,
+    "base": {
+      "hp": 255,
+      "atk": 10,
+      "def": 10,
+      "spe": 55,
+      "spa": 75,
+      "spd": 135
+    }
+  },
+  {
+    "ndex": 243,
+    "base": {
+      "hp": 90,
+      "atk": 85,
+      "def": 75,
+      "spe": 115,
+      "spa": 115,
+      "spd": 100
+    }
+  },
+  {
+    "ndex": 244,
+    "base": {
+      "hp": 115,
+      "atk": 115,
+      "def": 85,
+      "spe": 100,
+      "spa": 90,
+      "spd": 75
+    }
+  },
+  {
+    "ndex": 245,
+    "base": {
+      "hp": 100,
+      "atk": 75,
+      "def": 115,
+      "spe": 85,
+      "spa": 90,
+      "spd": 115
+    }
+  },
+  {
+    "ndex": 246,
+    "base": {
+      "hp": 50,
+      "atk": 64,
+      "def": 50,
+      "spe": 41,
+      "spa": 45,
+      "spd": 50
+    }
+  },
+  {
+    "ndex": 247,
+    "base": {
+      "hp": 70,
+      "atk": 84,
+      "def": 70,
+      "spe": 51,
+      "spa": 65,
+      "spd": 70
+    }
+  },
+  {
+    "ndex": 248,
+    "base": {
+      "hp": 100,
+      "atk": 134,
+      "def": 110,
+      "spe": 61,
+      "spa": 95,
+      "spd": 100
+    }
+  },
+  {
+    "ndex": 249,
+    "base": {
+      "hp": 106,
+      "atk": 90,
+      "def": 130,
+      "spe": 110,
+      "spa": 90,
+      "spd": 154
+    }
+  },
+  {
+    "ndex": 250,
+    "base": {
+      "hp": 106,
+      "atk": 130,
+      "def": 90,
+      "spe": 90,
+      "spa": 110,
+      "spd": 154
+    }
+  },
+  {
+    "ndex": 251,
+    "base": {
+      "hp": 100,
+      "atk": 100,
+      "def": 100,
+      "spe": 100,
+      "spa": 100,
+      "spd": 100
+    }
+  }
+]
