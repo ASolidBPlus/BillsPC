@@ -10,7 +10,7 @@
  * iterate; the browser just renders).
  */
 import type { Gen12Pokemon, SaveContents } from '@pokeportal/core';
-import { gen2Shiny, getSpecies } from '@pokeportal/core/internal';
+import { gen2Shiny, getSpecies, decodeGen12 } from '@pokeportal/core/internal';
 import { dialog } from './dialog.js';
 import { el } from './dom.js';
 import { spriteImg } from './sprites.js';
@@ -93,6 +93,7 @@ export function boxBrowser(props: BoxBrowserProps): HTMLElement {
         const ndex = entry.mon.speciesGen2Id;
         const speciesName = getSpecies(ndex)?.name ?? `species-${ndex}`;
         tile.append(spriteImg(ndex, 'overworld', speciesName));
+        tile.append(monTooltip(entry.mon, speciesName));
         tile.addEventListener('click', () => props.onMonOpen(entry.ref));
       }
       grid.append(tile);
@@ -100,6 +101,28 @@ export function boxBrowser(props: BoxBrowserProps): HTMLElement {
   }
   wrap.append(grid);
   return wrap;
+}
+
+/**
+ * Hover popover with the mon's front sprite + nickname/species/level/OT.
+ * Plain CSS-only hover (no JS state) so it doesn't compete with click handlers.
+ */
+function monTooltip(mon: Gen12Pokemon, speciesName: string): HTMLElement {
+  const tip = el('div', { class: 'box-tile-tooltip' });
+  const nick = decodeGen12(mon.nicknameBytes) || speciesName;
+  const ot = decodeGen12(mon.otNameBytes) || '(unknown)';
+  tip.append(spriteImg(mon.speciesGen2Id, 'gen2', speciesName));
+  const text = el('div', { class: 'tooltip-text' });
+  text.append(
+    el('div', { class: 'tooltip-line tooltip-nick' }, `${nick}`),
+    el('div', { class: 'tooltip-line' }, `${speciesName}  Lv ${mon.level}`),
+    el('div', { class: 'tooltip-line tooltip-ot' }, `OT: ${ot} (TID ${mon.tid})`),
+  );
+  if (gen2Shiny(mon.dvs)) {
+    text.append(el('div', { class: 'tooltip-line tooltip-shiny' }, '★ shiny'));
+  }
+  tip.append(text);
+  return tip;
 }
 
 /**

@@ -194,10 +194,10 @@ img.sprite,
  * in-place walking animation.
  */
 .ow-sprite {
-  width: 32px;
-  height: 32px;
+  width: 64px;
+  height: 64px;
   background-repeat: no-repeat;
-  background-size: 288px 32px;
+  background-size: 576px 64px; /* source 288×32 scaled 2× */
   background-position: 0 0;
   /*
    * Source strip is 9 frames INTERLEAVED by direction (verified by
@@ -213,8 +213,9 @@ img.sprite,
 }
 
 @keyframes ow-walk {
+  /* Strip frames are 32 px in source → 64 px scaled. Frame 0 = 0; frame 3 = -64*3 = -192. */
   0%, 49%   { background-position: 0 0; }       /* frame 0: down idle */
-  50%, 100% { background-position: -96px 0; }   /* frame 3: down walk-A */
+  50%, 100% { background-position: -192px 0; }  /* frame 3: down walk-A */
 }
 
 /* Big species (legendaries, Snorlax line, etc.) scale up so they read as bigger
@@ -275,14 +276,14 @@ img.sprite,
 
 .box-grid {
   display: grid;
-  grid-template-columns: repeat(4, 32px);
-  grid-template-rows: repeat(5, 32px);
-  gap: 8px;
+  grid-template-columns: repeat(4, 64px);
+  grid-auto-rows: 64px;
+  gap: 12px;
 }
 
 .box-tile {
-  width: 32px;
-  height: 32px;
+  width: 64px;
+  height: 64px;
   background: var(--gbc-bg);
   display: flex;
   align-items: center;
@@ -310,6 +311,56 @@ img.sprite,
   box-shadow: 0 0 0 1px var(--gbc-accent-yellow) inset;
   outline: 2px solid var(--pc-blue);
   outline-offset: -2px;
+}
+
+/* Hover tooltip: small Gen 2-style dialog with front sprite + nickname/level/OT. */
+.box-tile-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  min-width: 200px;
+  background: var(--gbc-bg);
+  color: var(--gbc-text);
+  border: 2px solid var(--gbc-border-outer);
+  box-shadow:
+    0 0 0 1px var(--gbc-bg) inset,
+    0 0 0 3px var(--gbc-border-outer) inset,
+    2px 2px 0 var(--gbc-border-outer);
+  padding: 8px 10px;
+  display: none;
+  z-index: 50;
+  pointer-events: none;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.box-tile:hover .box-tile-tooltip {
+  display: flex;
+}
+
+.tooltip-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.tooltip-nick {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.tooltip-ot {
+  color: var(--gbc-mid-gray, #666);
+}
+
+.tooltip-shiny {
+  color: var(--gbc-accent-yellow, #d4a900);
+  font-weight: bold;
 }
 
 /* Trainer dialog spans wider than a regular dialog. */
