@@ -553,9 +553,10 @@ img.sprite,
 
 .stat-row {
   display: grid;
-  grid-template-columns: 80px 50px 40px;
-  gap: 8px;
+  grid-template-columns: 100px 56px 50px;
+  gap: 12px;
   align-items: baseline;
+  white-space: nowrap;
 }
 
 .stat-label {

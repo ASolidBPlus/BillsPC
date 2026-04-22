@@ -28,7 +28,13 @@ export const SPRITE_RENDER_SIZE: Readonly<Record<SpriteSet, number>> = {
 
 /**
  * Map a save's source format to the per-cart sprite subdir for the Gen 1/2
- * source side. Returns `null` for the destination ('gen3' set) and overworld.
+ * source side. Returns `null` for the destination ('gen3' set), overworld,
+ * and any non-source-side calls.
+ *
+ * Triggered when the caller passes a non-null `format`: that signals "this
+ * is a SOURCE-side render, pick the right cart's art." `set` is ignored in
+ * that path (callers historically passed gen1/gen2 but the format is a
+ * stronger signal of which cart we're looking at).
  *
  * - RBY-RED  / RBY-BLUE → red-blue/<n>.png    (shared sprites, transparent)
  * - RBY-YELLOW          → yellow/<n>.png      (transparent)
@@ -36,16 +42,17 @@ export const SPRITE_RENDER_SIZE: Readonly<Record<SpriteSet, number>> = {
  * - GS                  → crystal/<n>.png     (no GS sprite set fetched yet — fallback)
  */
 function perCartPath(set: SpriteSet, ndex: number, format: SaveFormat | null): string | null {
-  if (set === 'gen1' && (format === 'RBY-RED' || format === 'RBY-BLUE')) {
+  if (set === 'gen3' || set === 'overworld' || format === null) return null;
+  if (format === 'RBY-RED' || format === 'RBY-BLUE') {
     return `sprites/red-blue/${ndex}.png`;
   }
-  if (set === 'gen1' && format === 'RBY-YELLOW') {
+  if (format === 'RBY-YELLOW') {
     return `sprites/yellow/${ndex}.png`;
   }
-  if (set === 'gen2' && format === 'CRYSTAL') {
+  if (format === 'CRYSTAL') {
     return `sprites/crystal-anim/${ndex}.gif`;
   }
-  if (set === 'gen2' && format === 'GS') {
+  if (format === 'GS') {
     return `sprites/crystal/${ndex}.png`;
   }
   return null;
