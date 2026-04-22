@@ -31,22 +31,22 @@ export function conversionDetails(
   ivBlock.append(el('div', { class: 'details-block-title' }, 'DV > IV'));
   const ivTable = el('table', { class: 'details-table' });
   const sourceHpDv = hpDv(mon.dvs);
-  const ivRows: [string, number, string][] = [
-    ['HP', sourceHpDv, String(intermediate.ivs.hp)],
-    ['Atk', mon.dvs.atk, String(intermediate.ivs.atk)],
-    ['Def', mon.dvs.def, String(intermediate.ivs.def)],
-    ['Spe', mon.dvs.spe, String(intermediate.ivs.spe)],
-    [
-      'Spc',
-      mon.dvs.special,
-      `${intermediate.ivs.spa} / ${intermediate.ivs.spd} (split SpA/SpD)`,
-    ],
+  // 6-row form: SpA / SpD share the single Special DV. Mirror rows tinted
+  // so it's clear they're driven by the same source value.
+  type IvRow = readonly [string, string, string, boolean];
+  const ivRows: readonly IvRow[] = [
+    ['HP', String(sourceHpDv), String(intermediate.ivs.hp), false],
+    ['Atk', String(mon.dvs.atk), String(intermediate.ivs.atk), false],
+    ['Def', String(mon.dvs.def), String(intermediate.ivs.def), false],
+    ['SpA', String(mon.dvs.special), String(intermediate.ivs.spa), true],
+    ['SpD', String(mon.dvs.special), String(intermediate.ivs.spd), true],
+    ['Spe', String(mon.dvs.spe), String(intermediate.ivs.spe), false],
   ];
-  for (const [label, dv, iv] of ivRows) {
-    const tr = el('tr');
+  for (const [label, dv, iv, mirror] of ivRows) {
+    const tr = el('tr', mirror ? { class: 'is-mirror' } : {});
     tr.append(
       el('td', { class: 'details-stat' }, label),
-      el('td', { class: 'details-src' }, String(dv)),
+      el('td', { class: 'details-src' }, dv),
       el('td', { class: 'details-arrow' }, '>'),
       el('td', { class: 'details-dst' }, iv),
     );
@@ -67,28 +67,27 @@ export function conversionDetails(
   const rawSpe = rawEv(mon.statExp.spe);
   const rawSpc = rawEv(mon.statExp.special);
   const rawTotal = rawHp + rawAtk + rawDef + rawSpe + rawSpc * 2;
-  type EvRow = readonly [string, number, string, string];
+  // 6-row form: SpA / SpD share the single Special StatExp. Mirror rows
+  // tinted to make the shared source obvious and to keep all numeric
+  // columns single-value so they right-align cleanly.
+  type EvRow = readonly [string, number, number, number, boolean];
   const evRows: readonly EvRow[] = [
-    ['HP', mon.statExp.hp, String(rawHp), String(intermediate.evs.hp)],
-    ['Atk', mon.statExp.atk, String(rawAtk), String(intermediate.evs.atk)],
-    ['Def', mon.statExp.def, String(rawDef), String(intermediate.evs.def)],
-    ['Spe', mon.statExp.spe, String(rawSpe), String(intermediate.evs.spe)],
-    [
-      'Spc',
-      mon.statExp.special,
-      `${rawSpc}/${rawSpc}`,
-      `${intermediate.evs.spa}/${intermediate.evs.spd} (SpA/SpD)`,
-    ],
+    ['HP', mon.statExp.hp, rawHp, intermediate.evs.hp, false],
+    ['Atk', mon.statExp.atk, rawAtk, intermediate.evs.atk, false],
+    ['Def', mon.statExp.def, rawDef, intermediate.evs.def, false],
+    ['SpA', mon.statExp.special, rawSpc, intermediate.evs.spa, true],
+    ['SpD', mon.statExp.special, rawSpc, intermediate.evs.spd, true],
+    ['Spe', mon.statExp.spe, rawSpe, intermediate.evs.spe, false],
   ];
-  for (const [label, se, raw, ev] of evRows) {
-    const tr = el('tr');
+  for (const [label, se, raw, ev, mirror] of evRows) {
+    const tr = el('tr', mirror ? { class: 'is-mirror' } : {});
     tr.append(
       el('td', { class: 'details-stat' }, label),
       el('td', { class: 'details-src' }, String(se)),
       el('td', { class: 'details-arrow' }, '>'),
-      el('td', { class: 'details-raw' }, raw),
+      el('td', { class: 'details-raw' }, String(raw)),
       el('td', { class: 'details-arrow' }, '>'),
-      el('td', { class: 'details-dst' }, ev),
+      el('td', { class: 'details-dst' }, String(ev)),
     );
     evTable.append(tr);
   }
@@ -100,13 +99,14 @@ export function conversionDetails(
     intermediate.evs.spd +
     intermediate.evs.spe;
   const sumRow = el('tr', { class: 'details-sum' });
+  const capLabel = rawTotal > 510 ? `${evSum} / 510` : `${evSum} (≤510)`;
   sumRow.append(
     el('td', { class: 'details-stat' }, 'Σ'),
     el('td', { class: 'details-src' }, '—'),
     el('td', { class: 'details-arrow' }, '>'),
     el('td', { class: 'details-raw' }, String(rawTotal)),
     el('td', { class: 'details-arrow' }, '>'),
-    el('td', { class: 'details-dst' }, `${evSum} (cap 510)`),
+    el('td', { class: 'details-dst' }, capLabel),
   );
   evTable.append(sumRow);
   evBlock.append(evTable);

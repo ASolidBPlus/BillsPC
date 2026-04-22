@@ -462,15 +462,30 @@ img.sprite,
 }
 
 .details-dst {
-  text-align: left;
+  text-align: right;
+  width: 64px;
   font-variant-numeric: tabular-nums;
 }
 
+/* SpA / SpD share a single source value (the Gen 1/2 Special DV / StatExp);
+   tint the pair so the link is visible at a glance. */
+.details-table tr.is-mirror td {
+  background: rgba(88, 120, 168, 0.10); /* --pc-blue @ 10% */
+}
+.details-table tr.is-mirror td.details-stat {
+  color: var(--pc-blue);
+}
+
+/* Σ row: a totals strip that should stand out from the per-stat rows. */
 .details-sum td {
-  border-top: 1px solid var(--gbc-border-outer);
+  border-top: 2px solid var(--gbc-border-outer);
   padding-top: 6px;
   padding-bottom: 3px;
-  font-style: italic;
+  font-weight: bold;
+  background: rgba(216, 168, 56, 0.14); /* --gbc-accent-yellow @ 14% */
+}
+.details-sum td.details-dst {
+  color: var(--gbc-accent-yellow);
 }
 
 .details-note {
