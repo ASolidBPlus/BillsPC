@@ -38,6 +38,7 @@ export {
   SAVE_BYTES_SINGLE,
 } from './format.js';
 
-export { decodeGen3BoxName, decodeGen3BoxNames } from './charmap3.js';
+export { decodeGen3BoxName, decodeGen3BoxNames, decodeGen3String } from './charmap3.js';
+export { decodeSlotSummary, type SlotSummary } from './boxes.js';
 
 export type { SaveSink, SaveSinkOptions, SaveSinkProgress } from './saveSink.js';

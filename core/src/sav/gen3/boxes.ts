@@ -80,6 +80,52 @@ export function assemblePcBuffer(bytes: Uint8Array, active: ActiveSlot): Uint8Ar
   return out;
 }
 
+/** Lightweight tooltip-shaped summary for a boxed slot. */
+export interface SlotSummary {
+  readonly species: number;
+  readonly nicknameBytes: Uint8Array; // 10 bytes raw — caller decodes via charmap3 (EN or JP)
+  readonly otNameBytes: Uint8Array; // 7 bytes raw — same charmap as nickname
+  readonly tid: number;
+  readonly sid: number;
+  readonly heldItem: number;
+  readonly exp: number;
+  readonly shiny: boolean;
+}
+
+/**
+ * Decrypt + unshuffle a Gen 3 boxed slot and pull out the fields that
+ * fit a hover-tooltip view. Returns null for empty/garbage slots.
+ *
+ * Shiny: TID ^ SID ^ pid_high ^ pid_low has its low 3 bits == 0.
+ */
+export function decodeSlotSummary(slot: Uint8Array): SlotSummary | null {
+  if (slot.length !== PCBUFFER_SLOT_BYTES) return null;
+  const species = decodeSlotSpecies(slot);
+  if (species === 0) return null;
+  const pid = readU32LE(slot, 0);
+  const tid = readU16LE(slot, 4);
+  const sid = readU16LE(slot, 6);
+  const nicknameBytes = slot.slice(8, 18);
+  const otNameBytes = slot.slice(20, 27);
+  const cipher = slot.slice(32, 80);
+  const wire = decryptBlock(cipher, pid, makeOtFull(tid, sid));
+  let g: Uint8Array;
+  let a: Uint8Array;
+  try {
+    [g, a] = unshuffleSubstructures(wire, pid);
+  } catch {
+    return null;
+  }
+  void a;
+  // Growth substructure: species(2), heldItem(2), exp(4), ppBonuses(1), friendship(1)
+  const heldItem = readU16LE(g, 2);
+  const exp = readU32LE(g, 4);
+  const pidHigh = (pid >>> 16) & 0xffff;
+  const pidLow = pid & 0xffff;
+  const shiny = ((tid ^ sid ^ pidHigh ^ pidLow) & 0x07) === 0;
+  return { species, nicknameBytes, otNameBytes, tid, sid, heldItem, exp, shiny };
+}
+
 /** Read the species field from a (possibly stale) 80-byte slot. */
 export function decodeSlotSpecies(slot: Uint8Array): number {
   if (slot.length !== PCBUFFER_SLOT_BYTES) {

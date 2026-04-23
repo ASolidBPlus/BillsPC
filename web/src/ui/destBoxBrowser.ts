@@ -16,6 +16,8 @@
  * which uses `state.dest.cursor` as the target).
  */
 import type { Gen3SaveContents, BoxedSlot, SaveFormat3 } from '@pokeportal/core';
+import { decodeSlotSummary, decodeGen3String } from '@pokeportal/core';
+import { getSpecies } from '@pokeportal/core/internal';
 import { dialog } from './dialog.js';
 import { el } from './dom.js';
 import { spriteImg } from './sprites.js';
@@ -25,11 +27,11 @@ export const DEST_ROWS = 5;
 export const DEST_COLS = 6;
 export const DEST_SLOTS_PER_BOX = DEST_ROWS * DEST_COLS; // 30
 
-// TODO: vendor Gen 3 sprites for ndex 252..386 (Treecko..Deoxys) into
-// `web/public/sprites/gen3/`. Until then, slots whose species falls in
-// that range render a "?" placeholder. This is a pure asset-vendoring
-// task — no code changes required once the PNGs land.
-const HIGHEST_VENDORED_GEN3_SPRITE = 251;
+// Overworld follower-sprite set covers ndex 1..251 (TaTaTaZJJ vendored
+// pack — see web/public/sprites/overworld/). Hoenn species (252..386)
+// fall back to the Gen 3 front sprite so the dest box still shows
+// distinct art per species.
+const HIGHEST_OVERWORLD_SPRITE = 251;
 
 /**
  * Map (game family, in-save wallpaper id) → vendored PNG path.
@@ -120,14 +122,15 @@ export function destBoxBrowser(props: DestBoxBrowserProps): HTMLElement {
       });
       if (filled) {
         const species = slotData.species;
-        if (species > 0 && species <= HIGHEST_VENDORED_GEN3_SPRITE) {
-          // HGSS-style overworld follower sprite — same chrome as the source
-          // box browser so the two panes read as a matched set.
-          tile.append(spriteImg(species, 'overworld', `species ${species}`));
-        } else {
-          // Placeholder for un-vendored Hoenn species (252..386); no overworld
-          // strip available in our vendored set either.
-          tile.append(el('span', { class: 'sprite-placeholder' }, '?'));
+        const spriteSet = species > 0 && species <= HIGHEST_OVERWORLD_SPRITE ? 'overworld' : 'gen3';
+        const speciesName = getSpecies(species)?.name ?? `species-${species}`;
+        tile.append(spriteImg(species, spriteSet, speciesName));
+        // Hover tooltip — feature parity with the source-side box browser.
+        // Gen 3 box mons are encrypted; decodeSlotSummary handles the
+        // PID-shuffle + XOR decrypt and pulls out the tooltip-relevant fields.
+        const summary = decodeSlotSummary(slotData.bytes);
+        if (summary) {
+          tile.append(monTooltip(summary, speciesName));
         }
       } else {
         tile.append(el('span', { class: 'empty-marker' }, '·'));
@@ -138,4 +141,36 @@ export function destBoxBrowser(props: DestBoxBrowserProps): HTMLElement {
   }
   wrap.append(grid);
   return wrap;
+}
+
+/**
+ * Hover popover with the dest mon's front sprite + nickname/species/OT.
+ * Feature-mirror of the source-side `monTooltip` in boxBrowser.ts. Plain
+ * CSS hover (.box-tile:hover .box-tile-tooltip) — no JS state needed.
+ *
+ * Nickname/OT decoded via the English Gen 3 charmap; JP carts will
+ * render as `?` for non-ASCII bytes (see AMEND-S7a-13).
+ */
+function monTooltip(
+  summary: import('@pokeportal/core').SlotSummary,
+  speciesName: string,
+): HTMLElement {
+  const tip = el('div', { class: 'box-tile-tooltip' });
+  const nick = decodeGen3String(summary.nicknameBytes) || speciesName;
+  const ot = decodeGen3String(summary.otNameBytes) || '(unknown)';
+  const spriteSet =
+    summary.species > 0 && summary.species <= HIGHEST_OVERWORLD_SPRITE ? 'gen3' : 'gen3';
+  void spriteSet;
+  tip.append(spriteImg(summary.species, 'gen3', speciesName));
+  const text = el('div', { class: 'tooltip-text' });
+  text.append(
+    el('div', { class: 'tooltip-line tooltip-nick' }, `${nick}`),
+    el('div', { class: 'tooltip-line' }, speciesName),
+    el('div', { class: 'tooltip-line tooltip-ot' }, `OT: ${ot} (TID ${summary.tid})`),
+  );
+  if (summary.shiny) {
+    text.append(el('div', { class: 'tooltip-line tooltip-shiny' }, '★ shiny'));
+  }
+  tip.append(text);
+  return tip;
 }

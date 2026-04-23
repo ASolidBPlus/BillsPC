@@ -112,12 +112,12 @@ describe('destBoxBrowser', () => {
     expect(tiles[5]?.getAttribute('title')).toBe('occupied');
   });
 
-  it('renders overworld sprite for species ≤ 251 (vendored), placeholder otherwise', () => {
+  it('renders overworld sprite for ndex ≤ 251 and gen3 front sprite for Hoenn (252-386)', () => {
     const el = destBoxBrowser({
       save: fakeSave({
         0: [
-          { slot: 0, species: 7 },
-          { slot: 1, species: 254 },
+          { slot: 0, species: 7 }, // Squirtle (ndex 7) — has overworld
+          { slot: 1, species: 254 }, // Sceptile (ndex 254) — gen3 front only
         ],
       }),
       boxIndex: 0,
@@ -127,12 +127,11 @@ describe('destBoxBrowser', () => {
       onSlotClick: () => {},
     });
     const tiles = Array.from(el.querySelectorAll('.box-tile.dest-box-tile'));
-    // Slot 0: species 7 (Squirtle) → overworld sprite tile (background-image
-    // div, matches the source browser's chrome).
+    // Slot 0: Kanto species → overworld background-image div.
     expect(tiles[0]?.querySelector('.ow-sprite')).not.toBeNull();
-    // Slot 1: species 254 (Sceptile) → placeholder span, no sprite tile.
+    // Slot 1: Hoenn species → gen3 front <img> (no overworld in vendored set).
     expect(tiles[1]?.querySelector('.ow-sprite')).toBeNull();
-    expect(tiles[1]?.querySelector('.sprite-placeholder')?.textContent).toBe('?');
+    expect(tiles[1]?.querySelector('img.sprite')).not.toBeNull();
   });
 
   it('cursor tile carries .is-cursor', () => {

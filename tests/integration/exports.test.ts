@@ -29,6 +29,8 @@ describe('public API surface', () => {
       'convert',
       'decodeGen3BoxName',
       'decodeGen3BoxNames',
+      'decodeGen3String',
+      'decodeSlotSummary',
       'deleteMonGen1',
       'deleteMonGen2',
       'detectFormat',

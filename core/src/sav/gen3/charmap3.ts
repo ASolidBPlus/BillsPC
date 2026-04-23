@@ -29,6 +29,21 @@ export function decodeGen3BoxName(field: Uint8Array, oneBasedIndex: number): str
 }
 
 /**
+ * Decode an arbitrary Gen 3 string field (nickname / OT name) terminated
+ * by 0xFF. Unmapped bytes become '?'. No fallback synthesis; empty result
+ * is returned as ''.
+ */
+export function decodeGen3String(field: Uint8Array): string {
+  let s = '';
+  for (let i = 0; i < field.length; i++) {
+    const b = field[i]!;
+    if (b === GEN3_TERMINATOR) break;
+    s += GEN3_BYTE_TO_UNICODE.get(b) ?? '?';
+  }
+  return s.replace(/\s+$/, '');
+}
+
+/**
  * Decode a 14×9 = 126-byte box-names blob. Returns a fixed-length
  * 14-element string array.
  */
