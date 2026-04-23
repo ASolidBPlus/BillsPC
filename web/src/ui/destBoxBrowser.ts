@@ -27,11 +27,10 @@ export const DEST_ROWS = 5;
 export const DEST_COLS = 6;
 export const DEST_SLOTS_PER_BOX = DEST_ROWS * DEST_COLS; // 30
 
-// Overworld follower-sprite set covers ndex 1..251 (TaTaTaZJJ vendored
-// pack — see web/public/sprites/overworld/). Hoenn species (252..386)
-// fall back to the Gen 3 front sprite so the dest box still shows
-// distinct art per species.
-const HIGHEST_OVERWORLD_SPRITE = 251;
+// Overworld follower-sprite set covers ndex 1..386 (TaTaTaZJJ vendored
+// pack — see web/public/sprites/overworld/). Gen 1+2+3 all use the
+// same HGSS-style walker chrome.
+const HIGHEST_OVERWORLD_SPRITE = 386;
 
 /**
  * Map (game family, in-save wallpaper id) → vendored PNG path.
