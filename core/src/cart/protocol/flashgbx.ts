@@ -64,6 +64,7 @@ const OP_DMG_CART_WRITE_SRAM = 0xb3;
 const OP_DMG_MBC_RESET = 0xb4;
 const OP_AGB_CART_READ_SRAM = 0xc3;
 const OP_AGB_CART_WRITE_SRAM = 0xc4;
+const OP_AGB_CART_READ = 0xc1;
 const OP_AGB_BOOTUP_SEQUENCE = 0xc9;
 const OP_CART_PWR_ON = 0xf2;
 
@@ -101,6 +102,7 @@ export class FlashgbxProtocol implements CartProtocol {
   private reader: FrameReader;
   private disposed = false;
   private upgraded = false;
+  private currentFamily: CartFamily = 'gb';
   constructor(
     private readonly port: import('../types.js').Port,
     opts: { reader?: FrameReader } = {},
@@ -163,6 +165,19 @@ export class FlashgbxProtocol implements CartProtocol {
     dlog('LK upgrade: now at 1.5M baud');
   }
 
+  /** Reverse of upgradeBaudIfNeeded — TX OFW_USART_1_0M_SPEED + reopen at 1M. */
+  private async downgradeBaudTo1M(): Promise<void> {
+    if (typeof this.port.reopenAtBaud !== 'function') return;
+    this.reader.flush();
+    await writeAll(this.port, new Uint8Array([OP_OFW_USART_1_0M_SPEED]));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    this.reader.release();
+    await this.port.reopenAtBaud(1_000_000);
+    this.reader = new FrameReader(this.port);
+    this.upgraded = false;
+    dlog('LK downgrade: now at 1M baud');
+  }
+
   async readFirmware(opts: { signal?: AbortSignal } = {}): Promise<FirmwareInfo> {
     // QUERY_FW_INFO is a SINGLE-BYTE command (0xA1) per FlashGBX
     // hw_GBxCartRW.LoadFirmwareVersion. Sending extra zero bytes makes the
@@ -201,6 +216,7 @@ export class FlashgbxProtocol implements CartProtocol {
   async setMode(family: CartFamily, opts: { signal?: AbortSignal } = {}): Promise<void> {
     dlog(`LK setMode(${family})`);
     const isDMG = family === 'gb' || family === 'gbc';
+    this.currentFamily = family;
 
     // Replicate FlashGBX's baud-upgrade dance before any SET_VARIABLE.
     await this.upgradeBaudIfNeeded(opts);
@@ -243,6 +259,12 @@ export class FlashgbxProtocol implements CartProtocol {
   }
 
   async readRom(address: number, length: number, opts: CartReadOptions = {}): Promise<Uint8Array> {
+    if (this.currentFamily === 'gba') {
+      // GBA: ADDRESS is in 16-bit words (cart bus is 16-bit), and the
+      // read opcode is AGB_CART_READ — NOT DMG_CART_READ. No
+      // DMG_ACCESS_MODE setvar (DMG-only). Per FlashGBX `ReadROM`.
+      return this.bulkReadAgb(OP_AGB_CART_READ, address >> 1, length, opts);
+    }
     return this.bulkRead({ accessMode: DMG_ACCESS_ROM, baseAddr: address, length, opts });
   }
 
@@ -252,7 +274,16 @@ export class FlashgbxProtocol implements CartProtocol {
     opts: CartReadOptions = {},
   ): Promise<Uint8Array> {
     if (family === 'gba') {
-      return this.bulkReadSram(OP_AGB_CART_READ_SRAM, 0, length, opts);
+      // For >64 KB carts (Pokemon Ruby/Sapphire/Emerald/FRLG = 128 KB
+      // Flash) we have to split the read across 2 × 64 KB Flash banks
+      // with explicit bank-switch commands in between. The Flash chip's
+      // address bus only exposes 64 KB at a time; reading 0xA000..0xFFFF
+      // (CPU-mapped) returns whichever bank was last selected.
+      // For ≤64 KB carts (real SRAM, no Flash) we read flat.
+      if (length > 0x10000) {
+        return this.readAgbFlashBanked(length, opts);
+      }
+      return this.bulkReadAgb(OP_AGB_CART_READ_SRAM, 0, length, opts);
     }
     // DMG SRAM lives at 0xA000 with DMG_ACCESS_MODE=3 + DMG_READ_CS_PULSE=1.
     return this.bulkRead({
@@ -387,14 +418,25 @@ export class FlashgbxProtocol implements CartProtocol {
     return out;
   }
 
-  private async bulkReadSram(
+  /**
+   * AGB bulk read — shared between ROM (OP_AGB_CART_READ) and SRAM
+   * (OP_AGB_CART_READ_SRAM). Unlike DMG, there's no DMG_ACCESS_MODE
+   * setvar; the opcode itself determines the bus routing. ADDRESS for
+   * ROM is in 16-bit words (caller pre-shifts); for SRAM it's the raw
+   * byte offset into SRAM — both fit the same code path.
+   *
+   * Uses TRANSFER_CHUNK=64 to match FlashGBX exactly. Bigger chunks
+   * confuse Chrome's Web Serial stream delivery (we observed duplicated
+   * bytes between chunks at TRANSFER_SIZE=1024).
+   */
+  private async bulkReadAgb(
     opcode: number,
     baseAddr: number,
     length: number,
     opts: CartReadOptions,
   ): Promise<Uint8Array> {
     if (length <= 0) return new Uint8Array(0);
-    dlog(`LK bulkReadSram (AGB) base=0x${baseAddr.toString(16)} len=${length}`);
+    dlog(`LK bulkReadAgb op=0x${opcode.toString(16)} base=0x${baseAddr.toString(16)} len=${length}`);
     const out = new Uint8Array(length);
     let off = 0;
     await this.setVar('TRANSFER_SIZE', TRANSFER_CHUNK, opts);
@@ -431,5 +473,69 @@ export class FlashgbxProtocol implements CartProtocol {
       await this.readAck(opts, `LK SRAM write @ 0x${(baseAddr + off).toString(16)}`);
       opts.onProgress?.({ bytesWritten: off + slice.length, bytesTotal: bytes.length });
     }
+  }
+
+  // --- AGB Flash chip support ---
+  // Pokemon Ruby/Sapphire/Emerald/FireRed/LeafGreen all use 128 KB Flash
+  // exposed via a 64 KB-window bank-switched interface. Flash chips on
+  // these carts (Macronix MX29L010 / Sanyo LE26FV10N1TS / SST39VF512 /
+  // Atmel AT29LV512) all respond to the JEDEC-standard cmd sequence.
+  //
+  // To read 128 KB:
+  //   1. Switch to bank 0 (4-byte cmd: AA/55/B0/00 to addrs 5555/2AAA/5555/0000)
+  //   2. Read 64 KB via AGB_CART_READ_SRAM at offsets 0..0xFFFF
+  //   3. Switch to bank 1 (4-byte cmd, last byte = 01)
+  //   4. Read another 64 KB
+  // Each "cart write" goes through the LK SRAM-write path:
+  //   set TRANSFER_SIZE=1, set ADDRESS=<flash addr>, send AGB_CART_WRITE_SRAM
+  //   opcode + 1 byte value, expect ack.
+
+  private async cartWriteAgbByte(
+    address: number,
+    value: number,
+    opts: { signal?: AbortSignal },
+  ): Promise<void> {
+    await this.setVar('TRANSFER_SIZE', 1, opts);
+    await this.setVar('ADDRESS', address, opts);
+    await writeAll(this.port, new Uint8Array([OP_AGB_CART_WRITE_SRAM]));
+    await writeAll(this.port, new Uint8Array([value & 0xff]));
+    await this.readAck(opts, `cart_write 0x${address.toString(16)}=0x${value.toString(16)}`);
+  }
+
+  private async switchAgbFlashBank(
+    bank: number,
+    opts: { signal?: AbortSignal },
+  ): Promise<void> {
+    dlog(`LK switch AGB flash bank → ${bank}`);
+    // JEDEC bank-select sequence for GBA Flash chips: AA/55/B0 followed
+    // by the bank index at addr 0x0.
+    await this.cartWriteAgbByte(0x5555, 0xaa, opts);
+    await this.cartWriteAgbByte(0x2aaa, 0x55, opts);
+    await this.cartWriteAgbByte(0x5555, 0xb0, opts);
+    await this.cartWriteAgbByte(0x0000, bank & 0xff, opts);
+  }
+
+  private async readAgbFlashBanked(length: number, opts: CartReadOptions): Promise<Uint8Array> {
+    const BANK_SIZE = 0x10000; // 64 KB per bank
+    if (length > 2 * BANK_SIZE) {
+      throw new CartError('UNSUPPORTED_CART', `AGB Flash > 128 KB not supported (got ${length})`);
+    }
+    const out = new Uint8Array(length);
+    let off = 0;
+    for (let bank = 0; off < length; bank++) {
+      const remaining = length - off;
+      const want = Math.min(BANK_SIZE, remaining);
+      const signalOpts = opts.signal ? { signal: opts.signal } : {};
+      await this.switchAgbFlashBank(bank, signalOpts);
+      const chunk = await this.bulkReadAgb(OP_AGB_CART_READ_SRAM, 0, want, {
+        ...opts,
+        onProgress: (p) => {
+          opts.onProgress?.({ bytesRead: off + p.bytesRead, bytesTotal: length });
+        },
+      });
+      out.set(chunk, off);
+      off += chunk.length;
+    }
+    return out;
   }
 }

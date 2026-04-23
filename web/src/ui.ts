@@ -68,7 +68,6 @@ import { isWebSerialAvailable } from './cart/browserCompat.js';
 import { readCart, type CartReadDeps } from './cart/cartReader.js';
 import { requestCartPort } from './cart/serialPort.js';
 import { BackupSink, backupFilename } from './cart/backupSink.js';
-import { isCartError } from '@pokeportal/core';
 
 export interface ControllerDeps {
   readonly parseSave: typeof parseSave;
@@ -520,6 +519,9 @@ function renderCartSourcePane(
         `Cart read failed: ${state.cartReadError.reason} — ${state.cartReadError.message}`,
       ),
     );
+    if (state.cartReadError.rawBytes) {
+      pane.append(renderRawCartDumpButton(state.cartReadError));
+    }
   }
   pane.append(renderCartConnectButton('source', dispatch, deps));
   return pane;
@@ -540,8 +542,36 @@ function renderCartDestPane(
     // shows the progress card by convention. Dest pane stays in its
     // pre-connect state until the source-pane progress completes.
   }
+  if (state.cartReadError && state.cartReadError.rawBytes) {
+    // Mirror the source pane's raw-dump button so the user can grab the
+    // bytes regardless of which side they tried to connect on.
+    pane.append(renderRawCartDumpButton(state.cartReadError));
+  }
   pane.append(renderCartConnectButton('dest', dispatch, deps));
   return pane;
+}
+
+/**
+ * "Download raw cart dump" button — visible when a cart read returned
+ * bytes but the parser rejected them (e.g. corrupted Gen 3 save sectors).
+ * Lets the user binary-diff the bytes against a known-good FlashGBX dump
+ * to bisect "is our protocol returning bad bytes" vs "is our parser too strict".
+ */
+function renderRawCartDumpButton(err: { rawBytes?: Uint8Array; rawFileName?: string }): HTMLElement {
+  const wrap = el('div', { class: 'card cart-debug' });
+  wrap.append(
+    el(
+      'div',
+      { class: 'hint' },
+      'The cart returned bytes but the parser rejected them. Download the raw dump to compare against FlashGBX or another known-good reader.',
+    ),
+  );
+  const btn = el('button', { class: 'secondary', type: 'button' }, 'Download raw cart dump') as HTMLButtonElement;
+  btn.addEventListener('click', () => {
+    if (err.rawBytes) blobDownload(err.rawFileName ?? 'cart.raw.sav', err.rawBytes);
+  });
+  wrap.append(btn);
+  return wrap;
 }
 
 function renderCartConnectButton(
@@ -609,19 +639,13 @@ export async function handleCartConnect(
     },
   });
   if (result.kind === 'error') {
-    if (isCartError(result.error)) {
-      dispatch({
-        type: 'cart_connect_failed',
-        reason: result.error.reason,
-        message: result.error.message,
-      });
-    } else {
-      dispatch({
-        type: 'cart_connect_failed',
-        reason: result.error.reason,
-        message: result.error.message,
-      });
-    }
+    dispatch({
+      type: 'cart_connect_failed',
+      reason: result.error.reason,
+      message: result.error.message,
+      ...(result.rawBytes ? { rawBytes: result.rawBytes } : {}),
+      ...(result.rawFileName ? { rawFileName: result.rawFileName } : {}),
+    });
     return;
   }
   if (side === 'source' && result.kind === 'gen12') {

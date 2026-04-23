@@ -42,6 +42,15 @@ export interface CartReadOk {
 export interface CartReadFail {
   readonly kind: 'error';
   readonly error: CartError | SaveError;
+  /**
+   * Raw bytes returned by the protocol layer if the failure happened in
+   * the parser (not the cart-read itself). Lets the UI offer a "download
+   * raw cart dump" button so the user can binary-diff against a known-good
+   * read from FlashGBX or similar.
+   */
+  readonly rawBytes?: Uint8Array;
+  /** Suggested filename for the raw dump (cart title or "cart"). */
+  readonly rawFileName?: string;
 }
 
 export type CartReadResult = CartReadOk | CartReadFail;
@@ -87,6 +96,7 @@ export async function readCart(
     });
 
     opts.onPhase?.('parsing');
+    const rawFileName = filenameFromIdentity(source.identity()).replace(/\.sav$/i, '.raw.sav');
     if (result.metadata.family === 'gen3') {
       const parsed = parseGen3Save(result.bytes);
       if (isGen3SaveError(parsed)) {
@@ -97,6 +107,8 @@ export async function readCart(
             reason: parsed.reason === 'TOO_SHORT' ? 'TOO_SHORT' : 'CORRUPTED',
             message: parsed.message,
           },
+          rawBytes: result.bytes,
+          rawFileName,
         };
       }
       return {
@@ -110,7 +122,7 @@ export async function readCart(
     }
     const parsed = parseSave(result.bytes);
     if (isSaveError(parsed)) {
-      return { kind: 'error', error: parsed };
+      return { kind: 'error', error: parsed, rawBytes: result.bytes, rawFileName };
     }
     return {
       kind: 'gen12',

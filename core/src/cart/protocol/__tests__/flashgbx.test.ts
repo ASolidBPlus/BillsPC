@@ -129,7 +129,8 @@ describe('FlashgbxProtocol — LK firmware (L>=12)', () => {
 
   it('readSram for GBA uses AGB_CART_READ_SRAM (0xC3) without DMG-specific vars', async () => {
     const port = makeMockPort();
-    ack(port, 2); // TRANSFER_SIZE + ADDRESS only (no DMG_ACCESS_MODE, no RAM pulse)
+    // 2 acks: TRANSFER_SIZE=64 + ADDRESS (one chunk fills the 64-byte read).
+    ack(port, 2);
     const data = new Uint8Array(64).fill(0x77);
     port.enqueueRx(data);
     const proto = new FlashgbxProtocol(port);

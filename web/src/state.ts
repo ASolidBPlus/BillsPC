@@ -127,6 +127,11 @@ export interface CartReadProgress {
 export interface CartReadError {
   readonly reason: string;
   readonly message: string;
+  /** Raw cart bytes if the read succeeded but parsing failed — UI can
+   *  surface a "download raw dump" button so the user can binary-diff
+   *  against a known-good FlashGBX dump. */
+  readonly rawBytes?: Uint8Array;
+  readonly rawFileName?: string;
 }
 
 /**
@@ -207,7 +212,13 @@ export type Action =
       bytes: Uint8Array;
       fileName: string;
     }
-  | { type: 'cart_connect_failed'; reason: string; message: string }
+  | {
+      type: 'cart_connect_failed';
+      reason: string;
+      message: string;
+      rawBytes?: Uint8Array;
+      rawFileName?: string;
+    }
   | { type: 'cart_disconnected' }
   | {
       type: 'store_committed';
@@ -438,7 +449,12 @@ export function reducer(state: AppState, action: Action): AppState {
       return {
         ...state,
         cartReadProgress: undefined,
-        cartReadError: { reason: action.reason, message: action.message },
+        cartReadError: {
+          reason: action.reason,
+          message: action.message,
+          ...(action.rawBytes ? { rawBytes: action.rawBytes } : {}),
+          ...(action.rawFileName ? { rawFileName: action.rawFileName } : {}),
+        },
       };
     }
     case 'cart_disconnected': {
