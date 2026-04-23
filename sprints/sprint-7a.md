@@ -1,8 +1,9 @@
 # Sprint 7a Archive — pokeportal Cart Mode (read-only)
 
-**Status**: PASS (archived 2026-04-22). Hardware-validated end-to-end on
-GBxCart RW v1.4a/b/c PCB R42+L14 firmware reading a real Pokemon Red
-cart over CH340 USB-serial bridge on Arch Linux.
+**Status**: PASS (archived 2026-04-22, GBA additions HIL-validated 2026-04-23).
+Hardware-validated end-to-end on GBxCart RW v1.4a/b/c PCB R42+L14
+firmware reading both Pokemon Red (Gen 1, MBC3) and Pokemon Ruby (JP,
+Gen 3 with 128 KB Flash) over CH340 USB-serial bridge on Arch Linux.
 **Scope**: GBxCart RW Web Serial protocol layer (BOTH stock insidegadgets
 firmware AND Lesserkuma's L-CFW extension), `SaveSource` interface
 symmetric to S6a's frozen `SaveSink`, BackupSink decorator with
@@ -168,6 +169,87 @@ returns `{bytes, metadata}`). S7b's `GbxCartSink` will implement
 async pre-close work. FlashgbxProtocol uses it to downgrade baud back
 to 1M. S7b's flash flow will use it to send any post-write voltage-off
 or cart-power-off sequence before disconnect.
+
+### AMEND-S7a-10 (CRITICAL — GBA AGB protocol): bus width, opcodes, and Flash banking
+
+GBA carts (R/S/E/FR/LG) work fundamentally differently from DMG/GBC
+on the LK protocol surface. Burned ~3 hours of HIL bisection with the
+user's Pokemon Ruby JP cart to nail down the differences:
+
+- **Use AGB_CART_READ (0xC1) for ROM reads, NOT DMG_CART_READ (0xB1).**
+  Earlier impl's `readRom` was hardcoded to DMG, returning all-zero
+  data on AGB carts.
+- **AGB ADDRESS is in 16-bit words, not bytes.** Caller must shift the
+  byte address right by 1 before passing to setVar('ADDRESS', ...).
+  This is because the GBA cart bus is 16-bit (two bytes per address
+  tick). DMG bus is 8-bit (one byte per address tick).
+- **No DMG_ACCESS_MODE setvar for AGB.** That variable is DMG-only;
+  the AGB opcode (0xC1 ROM, 0xC3 SRAM) determines the bus routing
+  directly.
+- **All Pokemon R/S/E/FR/LG use 128 KB Flash, not flat SRAM.** The Flash
+  chip exposes a 64 KB window via bank-switching. To read 128 KB:
+  - Switch to bank 0 via the JEDEC sequence:
+    `cart_write 0x5555=0xAA → 0x2AAA=0x55 → 0x5555=0xB0 → 0x0=0`
+  - Read 64 KB via AGB_CART_READ_SRAM
+  - Switch to bank 1 (last byte = 0x01) and read another 64 KB
+  Without bank-switching, the second 64 KB returns whatever bank was
+  last selected (often a duplicate of bank 0). Pokemon parsers see
+  garbage because slot B's data is missing.
+- **Each cart-write uses LK SRAM-write framing.** TRANSFER_SIZE=1,
+  ADDRESS=<flash addr>, then AGB_CART_WRITE_SRAM (0xC4) opcode + 1
+  byte value + ack. FlashGBX's L>=6 firmware optimises this via the
+  bulk SET_FLASH_CMD (0xA7) opcode that sends multiple writes in one
+  frame; we don't use that yet because per-byte writes work fine for
+  the 4 bytes per bank-switch (negligible perf cost).
+
+### AMEND-S7a-11 (CRITICAL — Web Serial wire shape): TRANSFER_SIZE must match USB CDC packet boundary
+
+Long, painful HIL lesson: **TRANSFER_SIZE must stay at 64 bytes**
+(matching FlashGBX upstream, matching the USB CDC bulk endpoint MPS).
+Any larger and Chrome's Web Serial stream API delivers overlapping or
+duplicated sub-chunks per ReadableStream `read()` call.
+
+Symptom from a misguided "optimisation":
+- Set TRANSFER_SIZE=1024 thinking fewer round-trips would reduce noise
+- Cart-read returned 304-316 bytes for a requested 336-byte transfer
+  (lost 20-32 bytes per request)
+- Trace showed chunk 9 (32 bytes) ending in `40 00 11 e2`, then chunk
+  10 (28 bytes) starting with `80 00 11 e2 27 00 00 1a 04 c0 8c e2 40
+  00 11 e2` — the LAST 16 BYTES of chunk 9 were repeated as the FIRST
+  16 BYTES of chunk 10, then the actual continuation. Net: 16 bytes
+  lost.
+
+This is Chrome-specific behaviour with USB CDC ACM at TRANSFER_SIZE >
+64. pyserial doesn't have the same problem because of different
+buffering semantics. Stick to 64-byte chunks for AGB AND DMG paths.
+
+### AMEND-S7a-12 (IMPORTANT — Web Serial port reuse): defensive close-before-open
+
+`navigator.serial.requestPort()` caches granted permissions per origin.
+On reload mid-session, or after an error path that doesn't reach the
+finally-block close, the SerialPort can be returned still-open — the
+subsequent `sp.open()` then throws "The port is already open." Wrap
+the open with a defensive `try { sp.close() } catch {}` first.
+
+### AMEND-S7a-13 (forward-carried): JP / non-English Gen 3 carts
+
+The `charmap3.ts` we vendored is the English Gen 3 character map.
+Japanese Pokemon Ruby (game code AXVJ) box names render as `????1`
+because the cart's bytes don't decode under the English table.
+S7b (or a follow-up cleanup) must:
+- Add `charmap3JP.ts` (port from PKHeX's `StringConverterGen3JP`).
+- Detect the JP variant from the cart's game_code (last char 'J').
+- Pass the detected charmap into `decodeGen3BoxName(s)` as a parameter
+  (currently hardcoded to English). May need similar treatment for
+  trainer name + nickname decoders.
+
+### AMEND-S7a-14 (forward-carried): Hoenn sprite vendoring (ndex 252-386)
+
+`web/public/sprites/gen3/` only contains ndex 1-251 (Kanto + Johto)
+PNGs from PokeAPI. Pokemon Ruby/Sapphire/Emerald players will mostly
+have Hoenn species (252-386); these render as a `?` placeholder in
+the dest box browser (per AMEND-S7a-9). Vendor the missing PNGs from
+PokeAPI's Emerald sprite set as a follow-up.
 
 ---
 
