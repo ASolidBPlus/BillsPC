@@ -138,7 +138,10 @@ def palette_for(token: str) -> List[Tuple[int, int, int]]:
 
 
 def colorize_one(path: Path, pal: List[Tuple[int, int, int]]) -> Tuple[int, bool]:
-    """Recolor a 4-gray RGBA PNG in place. Returns (unique_input_grays, ok)."""
+    """Recolor a 4-gray RGBA PNG in place. Background pixels (the lightest
+    bucket — palette[0] = pale-green in pret/SoupPotato's NPC palette) are
+    written as transparent so sprites composite cleanly onto whatever
+    box-tile background the UI ships. Returns (unique_input_grays, ok)."""
     im = Image.open(path).convert("RGBA")
     w, h = im.size
     px = im.load()
@@ -150,8 +153,11 @@ def colorize_one(path: Path, pal: List[Tuple[int, int, int]]) -> Tuple[int, bool
             v = r if r == g == b else round(0.299 * r + 0.587 * g + 0.114 * b)
             seen.add(v)
             if v >= 220:
-                tr, tg, tb = pal[0]
-            elif v >= 128:
+                # Background gray (would be palette[0] = pale-green).
+                # Emit transparent instead so the tile bg shows through.
+                px[x, y] = (0, 0, 0, 0)
+                continue
+            if v >= 128:
                 tr, tg, tb = pal[1]
             elif v >= 43:
                 tr, tg, tb = pal[2]
