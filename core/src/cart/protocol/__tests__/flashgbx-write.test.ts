@@ -21,32 +21,28 @@ function ack(port: ReturnType<typeof makeMockPort>, n = 1): void {
 /** Number of TX bytes consumed by a single SET_VARIABLE call. */
 const SET_VAR_FRAME = 1 /* opcode */ + 1 /* size */ + 4 /* key */ + 4; /* value */
 
-describe('FlashgbxProtocol — DMG SRAM writeSram (per AMEND-S7b-1, -3)', () => {
-  it('writes one bank using TRANSFER_SIZE=256 + DMG_ACCESS_MODE=4 + per-page CS-pulse cadence', async () => {
+describe('FlashgbxProtocol — DMG SRAM writeSram (per LK_Device.py:1611-1638)', () => {
+  it('writes one bank with setvar prelude ONCE before loop + cleanup ONCE after', async () => {
     const port = makeMockPort();
-    // Per page (256 bytes): 6 setVar acks (TRANSFER_SIZE, ADDRESS, DMG_ACCESS_MODE,
-    // DMG_WRITE_CS_PULSE=1, ADDRESS=0, DMG_WRITE_CS_PULSE=0) + 1 page-write ack.
-    // 8 KB / 256 = 32 pages → 32 × 7 = 224 acks.
-    ack(port, 32 * 7);
+    // 4 setvar acks before the loop (TRANSFER_SIZE, ADDRESS, DMG_ACCESS_MODE,
+    // DMG_WRITE_CS_PULSE=1) + 32 page-write acks + 2 cleanup setvars
+    // (ADDRESS=0, DMG_WRITE_CS_PULSE=0).
+    ack(port, 4 + 32 + 2);
     const proto = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
     const data = new Uint8Array(8192).fill(0x42);
     await proto.writeSram('gb', data);
-    // Confirm we sent the expected count of OP_DMG_CART_WRITE_SRAM (0xB3)
-    // opcodes. ≥32 because some setVar('ADDRESS', ...) packs (e.g. 0xB300)
-    // can land a 0xB3 byte in the BE-packed address bytes.
+    // OP_DMG_CART_WRITE_SRAM opcode (0xB3) appears once per page = 32 times,
+    // and shouldn't appear inside any setvar frame at this address (0xA000).
     const opcodeCount = port.txLog.filter((b) => b === 0xb3).length;
-    expect(opcodeCount).toBeGreaterThanOrEqual(32);
-    // The payload bytes (8192) are interleaved with the setvar frames; sum
-    // matches roughly 32 × (6 setvars + 1 opcode + 256 payload).
+    expect(opcodeCount).toBe(32);
   });
 
-  it('writes the documented page prelude (TRANSFER_SIZE→ADDRESS→DMG_ACCESS_MODE=4→CS=1→ADDR=0→CS=0)', async () => {
+  it('issues the prelude in the documented order (TRANSFER_SIZE→ADDRESS=0xA000→ACCESS_MODE=4→CS_PULSE=1)', async () => {
     const port = makeMockPort();
-    // Single 256-byte page.
-    ack(port, 7);
+    // 4 prelude setvars + 1 page-write ack + 2 cleanup setvars.
+    ack(port, 4 + 1 + 2);
     const proto = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
-    const data = new Uint8Array(256).fill(0xa5);
-    await proto.writeSram('gb', data);
+    await proto.writeSram('gb', new Uint8Array(256).fill(0xa5));
     const tx = port.txLog;
     // First setvar: TRANSFER_SIZE (size=2, key=0x0000, value=0x0100).
     expect(tx.slice(0, SET_VAR_FRAME)).toEqual([
@@ -64,12 +60,14 @@ describe('FlashgbxProtocol — DMG SRAM writeSram (per AMEND-S7b-1, -3)', () => 
     expect(tx.slice(SET_VAR_FRAME * 3, SET_VAR_FRAME * 4)).toEqual([
       0xa6, 1, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x01,
     ]);
+    // Then OP_DMG_CART_WRITE_SRAM (0xB3) + 256-byte payload.
+    expect(tx[SET_VAR_FRAME * 4]).toBe(0xb3);
   });
 
-  it('writes per writeChunkBytes=64 fallback when configured (AMEND-S7b-3 / DECISION-6)', async () => {
+  it('writes per writeChunkBytes=64 fallback when configured', async () => {
     const port = makeMockPort();
-    // 256 bytes / 64 = 4 pages × 7 acks = 28.
-    ack(port, 4 * 7);
+    // 4 prelude + 4 page-write acks + 2 cleanup.
+    ack(port, 4 + 4 + 2);
     const proto = new FlashgbxProtocol(port, { writeChunkBytes: 64, setVarDelayMs: 0 });
     await proto.writeSram('gb', new Uint8Array(256));
     expect(port.txLog.filter((b) => b === 0xb3).length).toBe(4);
@@ -77,6 +75,9 @@ describe('FlashgbxProtocol — DMG SRAM writeSram (per AMEND-S7b-1, -3)', () => 
 
   it('aborts mid-write on signal', async () => {
     const port = makeMockPort();
+    // Pre-ack the 4 prelude setvars + the 2 finally-block cleanup setvars
+    // (the abort throws inside the loop, finally still runs).
+    ack(port, 4 + 2);
     const ctrl = new AbortController();
     ctrl.abort();
     const proto = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
