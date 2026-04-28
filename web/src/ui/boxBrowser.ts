@@ -74,12 +74,15 @@ export interface BoxBrowserProps {
   readonly embedded?: boolean;
 }
 
-/** Render the box title bar e.g. `◀ BOX 3 ▶`. boxIndex is 0-based over
- *  stored boxes; party / current-box pseudo-boxes are intentionally not
- *  surfaced (per S8 user direction — only stored boxes matter for
- *  cross-gen transfer). */
-function boxLabel(_save: SaveContents, boxIndex: number): string {
-  return `BOX ${boxIndex + 1}`;
+/** Render the box title bar e.g. `◀ BOX 3 ▶` or `◀ BOX 13: CURRENT ▶`.
+ *  boxIndex is 0-based over stored boxes; the live current-box buffer
+ *  (Gen 1/2 only) is at boxIndex === stored.length and rendered with the
+ *  CURRENT suffix so it's clear which slot is the editing-buffer mirror.
+ *  Party is intentionally not surfaced. */
+function boxLabel(save: SaveContents, boxIndex: number): string {
+  const stored = save.boxes.length;
+  if (boxIndex < stored) return `BOX ${boxIndex + 1}`;
+  return `BOX ${boxIndex + 1}: CURRENT`;
 }
 
 export function boxBrowser(props: BoxBrowserProps): HTMLElement {
@@ -213,18 +216,33 @@ function monTooltip(
  * boxIndex N+1 (when present) is the live "current" box on Gen 1/2.
  */
 export function entriesForBox(save: SaveContents, boxIndex: number): readonly BrowserEntry[] {
-  // 0-based over stored boxes only. Party + currentBox pseudo-boxes are
-  // intentionally not exposed (per S8 user direction — only stored boxes
-  // are valid sources/destinations for cross-gen transfer).
+  // 0-based: 0..stored.length-1 are stored boxes; stored.length is the
+  // live current-box buffer (Gen 1/2 only — when present). Party is
+  // intentionally not exposed (per S8 — only stored + current boxes
+  // are valid sources for cross-gen transfer).
   const out: BrowserEntry[] = [];
-  const box = save.boxes[boxIndex];
-  if (!box) return out;
-  for (let i = 0; i < box.length; i++) {
-    out.push({
-      ref: { bucket: 'box', boxIndex, slot: i },
-      mon: box[i]!,
-      slotInBox: i,
-    });
+  const stored = save.boxes.length;
+  if (boxIndex < stored) {
+    const box = save.boxes[boxIndex];
+    if (!box) return out;
+    for (let i = 0; i < box.length; i++) {
+      out.push({
+        ref: { bucket: 'box', boxIndex, slot: i },
+        mon: box[i]!,
+        slotInBox: i,
+      });
+    }
+    return out;
+  }
+  // current box (boxIndex === stored)
+  if (save.currentBox) {
+    for (let i = 0; i < save.currentBox.length; i++) {
+      out.push({
+        ref: { bucket: 'currentBox', slot: i },
+        mon: save.currentBox[i]!,
+        slotInBox: i,
+      });
+    }
   }
   return out;
 }

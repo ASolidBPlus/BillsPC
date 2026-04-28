@@ -532,10 +532,13 @@ function clamp(v: number, lo: number, hi: number): number {
   return v;
 }
 
-/** Maximum valid stored-box index (0-based). Party + currentBox pseudo-
- *  boxes are not navigable. */
+/** Maximum valid box index (0-based). Stored boxes 0..N-1 plus the live
+ *  current-box buffer at index N (Gen 1/2 only — when present). Party
+ *  is not navigable. */
 function maxBoxIndex(save: SaveContents): number {
-  return Math.max(0, save.boxes.length - 1);
+  const stored = save.boxes.length;
+  const live = save.currentBox ? 1 : 0;
+  return Math.max(0, stored + live - 1);
 }
 
 /**
