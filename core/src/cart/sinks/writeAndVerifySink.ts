@@ -25,6 +25,42 @@ import { diffBytes } from '../protocol/agbFlash.js';
 import type { SaveSink, SaveSinkOptions } from '../../sav/saveSink.js';
 import type { WriteVerifyMismatch } from './types.js';
 
+/** Diagnostic shape of the verify failure — surfaced via WriteVerifyError. */
+export type WriteVerifyDiagnosis =
+  | { kind: 'real_corruption' }
+  /** Every readback byte was the same single value (e.g. 0xFF / 0xF3
+   *  / 0x00). Classic "RAM disabled / bus floating" signature, NOT a
+   *  real corrupted-write pattern. */
+  | { kind: 'all_same_byte_readback'; byte: number };
+
+function diagnose(actual: Uint8Array): WriteVerifyDiagnosis {
+  if (actual.length === 0) return { kind: 'real_corruption' };
+  const first = actual[0]!;
+  for (let i = 1; i < actual.length; i++) {
+    if (actual[i] !== first) return { kind: 'real_corruption' };
+  }
+  return { kind: 'all_same_byte_readback', byte: first };
+}
+
+function diagnosisMessage(d: WriteVerifyDiagnosis, count: number, firstOff: number): string {
+  const base = `WriteVerify: ${count} byte(s) mismatched (first @ offset 0x${firstOff.toString(16)})`;
+  if (d.kind === 'all_same_byte_readback') {
+    const hex = '0x' + d.byte.toString(16).padStart(2, '0');
+    return (
+      `${base}. Every readback byte = ${hex} — this is a stuck-bus / ` +
+      `RAM-disabled signature, NOT a real write corruption. The cart ` +
+      `either lost MBC RAM-enable state mid-op, lost power, or uses a ` +
+      `save chip (FRAM / Flash) that needs a different write protocol ` +
+      `than standard SRAM (some custom carts — e.g. insideGadgets FRAM ` +
+      `with software write-protect — silently drop SRAM-style writes). ` +
+      `Try unplugging + replugging the cart and retrying. If the same ` +
+      `${hex}-everywhere pattern repeats, your cart isn't compatible ` +
+      `with the standard MBC3 SRAM write path.`
+    );
+  }
+  return base;
+}
+
 export class WriteVerifyError extends Error {
   readonly mismatch: WriteVerifyMismatch;
   /** Re-read bytes for the recovery dialog ("download what's on the cart now"). */
@@ -32,15 +68,18 @@ export class WriteVerifyError extends Error {
   /** The bytes the sink TRIED to write — same as `expected`. Useful when
    *  the controller wants to attempt a re-write of the same buffer. */
   readonly expected: Uint8Array;
+  /** Heuristic classification of the verify failure. */
+  readonly diagnosis: WriteVerifyDiagnosis;
   constructor(args: { mismatch: WriteVerifyMismatch; actual: Uint8Array; expected: Uint8Array }) {
+    const diagnosis = diagnose(args.actual);
     super(
-      `WriteVerify: ${args.mismatch.mismatchCount} byte(s) mismatched ` +
-        `(first @ offset 0x${args.mismatch.firstMismatchOffset.toString(16)})`,
+      diagnosisMessage(diagnosis, args.mismatch.mismatchCount, args.mismatch.firstMismatchOffset),
     );
     this.name = 'WriteVerifyError';
     this.mismatch = args.mismatch;
     this.actual = args.actual;
     this.expected = args.expected;
+    this.diagnosis = diagnosis;
   }
 }
 

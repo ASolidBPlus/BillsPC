@@ -94,6 +94,8 @@ const AGB_FLASH_WRITE_METHOD_DEFAULT = 1;
 const OP_AGB_CART_READ = 0xc1;
 const OP_AGB_BOOTUP_SEQUENCE = 0xc9;
 const OP_CART_PWR_ON = 0xf2;
+const OP_CART_PWR_OFF = 0xf3;
+const OP_CLK_TOGGLE = 0xa9;
 
 /**
  * fw-variable map: name → [size_bytes, key_id]. Mirrors LK DEVICE_VAR
@@ -310,8 +312,18 @@ export class FlashgbxProtocol implements CartProtocol {
     await this.setVar('AGB_READ_METHOD', 2, opts);
     await this.setVar('CART_MODE', isDMG ? CART_MODE_DMG : CART_MODE_AGB, opts);
 
-    // Voltage: 5V for original GB (Pokemon Red/Blue/Yellow); 3.3V for GBC + GBA.
-    const volt = family === 'gb' ? OP_SET_VOLTAGE_5V : OP_SET_VOLTAGE_3_3V;
+    // Voltage: 5V for ALL Game Boy carts (DMG and GBC both); 3.3V only
+    // for AGB. This mirrors FlashGBX (`LK_Device.py:842-844`) — its UI
+    // has no "GBC" mode at all, ALL Game Boy carts go through `SetMode
+    // ("DMG")` which always sends `SET_VOLTAGE_5V`. GBC carts are
+    // 3.3V-spec but 5V-tolerant; the original DMG ran them at 5V too.
+    //
+    // Confirmed empirically (2026-04-28) on the insideGadgets Crystal
+    // repro: at 3.3V the cart's MBC3 acks every register/SRAM-write
+    // command but the cell array is never modified — symptoms exactly
+    // match an underpowered MBC. Driving at 5V (matching FlashGBX) lets
+    // writes land.
+    const volt = isDMG ? OP_SET_VOLTAGE_5V : OP_SET_VOLTAGE_3_3V;
     await this.opAck(volt, opts);
 
     // Power the cart connector and let the rail settle.
@@ -405,12 +417,128 @@ export class FlashgbxProtocol implements CartProtocol {
       await jedec.exitChipIdMode();
       return;
     }
-    // DMG pre-flash setvars per `flashgbx-write-dmg-pokemon-red.log:983-987`.
+    // 5-setvar prelude per `flashgbx-write-dmg-pokemon-red.log:983-987`.
     await this.setVar('PULLUPS_ENABLED', 0, opts);
     await this.setVar('STATUS_REGISTER_MASK', 0x80, opts);
     await this.setVar('STATUS_REGISTER_VALUE', 0x80, opts);
     await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
     await this.setVar('DMG_READ_CS_PULSE', 0, opts);
+    // RTC unstick — only safe on MBC3+RTC carts. Gated on family='gbc'
+    // because all Pokemon GBC games (Gold/Silver/Crystal) use MBC3+RTC,
+    // and Pokemon DMG games (Red/Blue/Yellow) use MBC1/MBC5 where the
+    // 0x6000 / 0x4000 writes have completely different semantics (mode
+    // register / upper ROM bank bits) — running the dance there would
+    // leave the cart in mode-1 (RAM banking) state, which is benign for
+    // bank-0-only SRAM access but still undesirable.
+    //
+    // FUTURE (separate sprint): proper mapper-class hierarchy mirroring
+    // Mapper.py — DMG_MBC3 implements HasRTC, MBC1/MBC5 don't. Then this
+    // gate becomes `if (mapper.hasRtc()) await mapper.exerciseRtc()`.
+    if (family === 'gbc') {
+      await this.dmgRtcExerciseAndReset(opts);
+    }
+  }
+
+  /**
+   * MBC3 RTC unstick: walk the bank register through every defined value
+   * (RAM banks 0-3 → RTC registers S/M/H/DL/DH at 0x08-0x0C → reset to 0)
+   * to force the MBC's state machine out of any "stuck in RTC mode" or
+   * "stuck on a non-zero RAM bank" state inherited from the prior game
+   * session. Mirrors `Mapper.py:263-287` (HasRTC) which FlashGBX runs
+   * during cart detection.
+   *
+   * Why we need it on the WRITE path specifically: when a Pokemon Crystal
+   * game powers down, it leaves the MBC3 with the RTC-Day-High register
+   * (0x4000 = 0x0C) selected so the on-cart RTC keeps ticking off the
+   * battery. On stock Nintendo MBC3 silicon, our subsequent `0x4000 = 0`
+   * (setBank(0)) cleanly transitions back to SRAM-bank-0 mode. On
+   * insideGadgets's third-party MBC3 reimplementation it apparently
+   * doesn't — and ALL writes to 0xA000-0xBFFF then silently go to the
+   * 1-byte RTC register instead of the 8 KB SRAM cell array. Symptom:
+   * cart's actual SRAM is completely unchanged after a "successful"
+   * write op, fresh-read returns the original SAV intact.
+   *
+   * Cycling through every RTC register and then writing 0 explicitly to
+   * 0x4000 walks the cart's state machine through every reachable state
+   * and lands it in the clean SRAM-bank-0 state we need.
+   */
+  private async dmgRtcExerciseAndReset(opts: { signal?: AbortSignal }): Promise<void> {
+    // Match `Mapper.py:268-287` (HasRTC) literally, including the per-iteration
+    // CLK_TOGGLE(60) and the 256-byte read at 0xA880 — both apparently
+    // load-bearing on the insideGadgets repro: the cart-write alone leaves the
+    // MBC in a half-state that subsequent SRAM writes can't escape from.
+    await this.dmgCartWrite(0x0000, 0x00, opts); // EnableRAM(False) — defensive
+    await this.dmgCartWrite(0x0000, 0x0a, opts); // EnableRAM(True)
+    await this.clkToggle(60, opts);
+    await this.dmgCartWrite(0x0000, 0x0a, opts); // LatchRTC: EnableRAM (re-asserted)
+    await this.dmgCartWrite(0x6000, 0x00, opts); // LatchRTC reset
+    await this.dmgCartWrite(0x6000, 0x01, opts); // LatchRTC set
+    for (let reg = 0x08; reg <= 0x0c; reg++) {
+      await this.clkToggle(60, opts);
+      await this.dmgCartWrite(0x4000, reg, opts); // select each RTC register
+      // Read 256 bytes from 0xA880 (per HasRTC) — the cart returns 256 copies
+      // of the RTC byte; reading actively exercises the cart bus.
+      await this.bulkRead({
+        accessMode: DMG_ACCESS_RAM,
+        baseAddr: 0xa880,
+        length: 0x100,
+        opts,
+        ramPulse: true,
+      });
+    }
+    await this.dmgCartWrite(0x0000, 0x00, opts); // DisableRAM
+    await this.dmgCartWrite(0x4000, 0x00, opts); // reset to SRAM bank 0
+  }
+
+  /**
+   * Toggle the cart's CLK pin `count` times. Per `LK_Device.py:659-664`
+   * (FW ≥ 12) — CLK_TOGGLE opcode + u32 BE count + ack. FlashGBX uses
+   * this in `Mapper.py:274` (HasRTC) and several other RTC-related
+   * code paths to advance the cart's MBC state machine between
+   * register-write operations.
+   */
+  private async clkToggle(count: number, opts: { signal?: AbortSignal }): Promise<void> {
+    const buf = new Uint8Array(1 + 4);
+    buf[0] = OP_CLK_TOGGLE;
+    buf.set(packU32BE(count), 1);
+    await writeAll(this.port, buf);
+    await this.readAck(opts, `CLK_TOGGLE ${count}`);
+  }
+
+  /**
+   * FlashGBX-style "wake the flash chip out of chip-ID mode" probe.
+   *
+   * On a real Nintendo MBC3+RAM cart this is harmless noise: writes to
+   * 0x4000 transiently clobber the RAM-bank register with junk values
+   * (0x90 / 0xF0 / 0xFF), then the trailing 0x4000=0x00 resets it.
+   *
+   * On a third-party MBC3 implementation backed by a re-programmable
+   * NOR flash chip (e.g. insideGadgets Crystal repro cart, observed
+   * 2026-04-28), the flash chip can power up stuck in JEDEC chip-ID
+   * mode. In that mode the chip silently drops SRAM writes and the
+   * data bus floats — every readback byte comes back 0xF3 (or whatever
+   * the bus floats to), and the cart's SRAM is never updated. Writing
+   * 0xF0 (CFI exit) and 0xFF (JEDEC exit) to register 0x4000 restores
+   * normal "read array" mode and unblocks subsequent SRAM writes.
+   *
+   * The intermediate 2-byte ROM read at 0x4000 mirrors FlashGBX's
+   * detection probe (it captures the manufacturer/device ID on flash
+   * carts; we discard the bytes). We keep it in the sequence because
+   * it leaves the firmware's DMG_ACCESS_MODE in a consistent state and
+   * matches the wire trace exactly — diverging here would re-introduce
+   * "works in FlashGBX, fails for us" risk.
+   *
+   * Mirrors `flashgbx-write-dmg-pokemon-crystal-insidegadgets.log:255-264`.
+   */
+  private async dmgFlashChipIdExit(opts: { signal?: AbortSignal }): Promise<void> {
+    await this.dmgCartWrite(0x2000, 0x00, opts); // ROM bank → 0
+    await this.dmgCartWrite(0x4000, 0x90, opts); // JEDEC chip-ID enter
+    // 2-byte ROM read at 0x4000 — drains chip-ID response on flash carts.
+    await this.bulkRead({ accessMode: DMG_ACCESS_ROM, baseAddr: 0x4000, length: 2, opts });
+    await this.dmgCartWrite(0x4000, 0xf0, opts); // CFI exit ID mode
+    await this.dmgCartWrite(0x4000, 0xff, opts); // JEDEC exit ID mode
+    await this.dmgCartWrite(0x2000, 0x01, opts); // restore ROM bank 1
+    await this.dmgCartWrite(0x4000, 0x00, opts); // clear RAM bank reg
   }
 
   async writeSram(
@@ -430,50 +558,65 @@ export class FlashgbxProtocol implements CartProtocol {
       await this.bulkWriteSram(OP_AGB_CART_WRITE_SRAM, 0, bytes, opts);
       return;
     }
-    // DMG SRAM write — per FlashGBX trace
-    // (`flashgbx-write-dmg-pokemon-red.log:998..1500`).
+    // DMG SRAM write — mirrors `LK_Device.py:3286-3458` outer loop +
+    // `:1611-1638` (WriteRAM).
     //
-    // Per-page cadence (one bank's worth of bytes; the GbxCartSink does
-    // setRamEnabled/setBank around this call):
+    // FlashGBX's outer loop walks the bank in `buffer_len` chunks
+    // (0x200 = 512 bytes per `LK_Device.py:3035`) and calls WriteRAM for
+    // each chunk; WriteRAM internally splits the chunk into `max_length`
+    // (256-byte) pages. Each WriteRAM call re-issues the full setvar
+    // prelude — TRANSFER_SIZE, ADDRESS=0xA000+offset, DMG_ACCESS_MODE=4,
+    // DMG_WRITE_CS_PULSE=1 — runs its inner page loop, then drops
+    // ADDRESS=0 + DMG_WRITE_CS_PULSE=0 as cleanup.
     //
-    //   for each page (256 bytes per AMEND-S7b-3):
-    //     SET_VAR TRANSFER_SIZE = 256
-    //     SET_VAR ADDRESS       = 0xA000 + offset_within_bank
-    //     SET_VAR DMG_ACCESS_MODE = 4               (SRAM-write mode!)
-    //     SET_VAR DMG_WRITE_CS_PULSE = 1            (raise pulse for the page)
-    //     SET_VAR ADDRESS       = 0                 (reset before payload)
-    //     SET_VAR DMG_WRITE_CS_PULSE = 0            (lower before payload)
-    //     OP_DMG_CART_WRITE_SRAM (0xB3) + payload   → ack 0x01
+    // We mirror that here: outer chunk = `BATCH_BYTES` (512), inner page
+    // = `writeChunkBytes` (256 by default). The firmware's auto-increment
+    // is only relied on within a single batch (≤ 2 page writes); across
+    // batches we explicitly re-set ADDRESS. A previous impl set ADDRESS
+    // ONCE for the whole 8 KB bank and depended on auto-increment across
+    // 32 page writes; on at least one third-party MBC3 (insideGadgets
+    // Crystal repro, 2026-04-28) the cart silently dropped every write
+    // and the readback came back stuck-bus (0xF8 / 0xFA / 0xF1 / 0xF3
+    // depending on session). FlashGBX's 512-byte batching avoids that.
     //
-    // The DMG_ACCESS_MODE=4 setvar is critical — without it the firmware
-    // is still in whatever mode the last reader left it (likely 3 = SRAM
-    // read), and bytes write to the wrong bus state. Was the silent
-    // bug-source in the previous writeSram impl per PLAN §4.4.
-    // HIL-fix: previous impl did `ADDRESS=0` + `DMG_WRITE_CS_PULSE=0`
-    // BEFORE the data write, deasserting CS before any bytes hit the
-    // bus. Re-reading WriteRAM in LK_Device.py:1617-1636 carefully: the
-    // python `_set_fw_variable("ADDRESS", 0)` + `("DMG_WRITE_CS_PULSE", 0)`
-    // calls fire AFTER the iteration loop, NOT before each write. The
-    // FlashGBX trace prints the cleanup setvars at lines 1241-1242 but
-    // the data writes between them aren't logged at python level.
-    // Symptom of the wrong order: writes ack but the cart's SRAM is
-    // unchanged (CS deasserted means no bus activity reaches the cart).
+    // CS_PULSE stays high across the inner page-write loop and only
+    // drops in the cleanup setvars at the end of each batch.
+    if (bytes.length === 0) return;
     const PAGE = this.writeChunkBytes;
-    for (let off = 0; off < bytes.length; off += PAGE) {
+    const BATCH_BYTES = 0x200;
+    for (let batchOff = 0; batchOff < bytes.length; batchOff += BATCH_BYTES) {
       if (opts.signal?.aborted) throw new CartError('CANCELLED', 'write aborted');
-      const slice = bytes.subarray(off, Math.min(off + PAGE, bytes.length));
-      await this.setVar('TRANSFER_SIZE', slice.length, opts);
-      await this.setVar('ADDRESS', 0xa000 + off, opts);
+      const batchEnd = Math.min(batchOff + BATCH_BYTES, bytes.length);
+      const batchLen = batchEnd - batchOff;
+      const transferSize = Math.min(PAGE, batchLen);
+      await this.setVar('TRANSFER_SIZE', transferSize, opts);
+      await this.setVar('ADDRESS', 0xa000 + batchOff, opts);
       await this.setVar('DMG_ACCESS_MODE', 4, opts);
       await this.setVar('DMG_WRITE_CS_PULSE', 1, opts);
-      await writeAll(this.port, new Uint8Array([OP_DMG_CART_WRITE_SRAM]));
-      await writeAll(this.port, slice);
-      await this.readAck(opts, 'DMG SRAM write');
-      opts.onProgress?.({ bytesWritten: off + slice.length, bytesTotal: bytes.length });
+      try {
+        for (let off = batchOff; off < batchEnd; off += PAGE) {
+          if (opts.signal?.aborted) throw new CartError('CANCELLED', 'write aborted');
+          const slice = bytes.subarray(off, Math.min(off + PAGE, batchEnd));
+          // Send opcode + payload as a SINGLE write — Web Serial chunks
+          // each writer.write() call into its own USB Bulk-OUT transfer,
+          // and the firmware appears to drop the payload-following-opcode
+          // sequence if the two land in separate transfers (the firmware
+          // expects N bytes of payload to immediately follow the 0xB3
+          // opcode within the same read-from-USB pass). FlashGBX's
+          // pyserial backend buffers internally so the two `_write` calls
+          // typically coalesce into one USB transfer.
+          const frame = new Uint8Array(1 + slice.length);
+          frame[0] = OP_DMG_CART_WRITE_SRAM;
+          frame.set(slice, 1);
+          await writeAll(this.port, frame);
+          await this.readAck(opts, 'DMG SRAM write');
+          opts.onProgress?.({ bytesWritten: off + slice.length, bytesTotal: bytes.length });
+        }
+      } finally {
+        await this.setVar('ADDRESS', 0, opts);
+        await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
+      }
     }
-    // Cleanup once at the end — mirrors LK_Device.py:1634-1636.
-    await this.setVar('ADDRESS', 0x0000, opts);
-    await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
   }
 
   // --- helpers ---

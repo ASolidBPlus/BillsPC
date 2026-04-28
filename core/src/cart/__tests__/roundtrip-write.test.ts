@@ -133,6 +133,13 @@ function makeSramMockPort(opts: { sramBytes: Uint8Array }): Port & {
           enqueueRx([0x01]);
           txQueue.shift();
           break;
+        case 0xa9: {
+          // CLK_TOGGLE: opcode + 4-byte u32 BE count = 5 bytes, ack 0x01.
+          if (txQueue.length < 5) return;
+          enqueueRx([0x01]);
+          txQueue.splice(0, 5);
+          break;
+        }
         case 0xb2: {
           // DMG_CART_WRITE: opcode + 4-byte addr BE + 1-byte value = 6 bytes
           if (txQueue.length < 6) return;
@@ -170,25 +177,18 @@ function makeSramMockPort(opts: { sramBytes: Uint8Array }): Port & {
         }
         case 0xb3: {
           // DMG_CART_WRITE_SRAM: opcode then payload of TRANSFER_SIZE bytes.
+          // Per LK_Device.py:1611-1638, ADDRESS is set ONCE before the loop
+          // and the firmware auto-increments it as each payload streams in.
           const want = fwVars.TRANSFER_SIZE!;
           if (txQueue.length < 1 + want) return;
-          // The DMG write impl uses a per-page cadence that resets ADDRESS
-          // to 0 then back via the 6-setvar prelude. Per the impl in
-          // flashgbx.ts writeSram, the actual effective write address is
-          // captured by the FIRST `setVar('ADDRESS', 0xa000+off)` of the
-          // page; the subsequent `setVar('ADDRESS', 0)` is the FlashGBX
-          // "reset before payload" idiom. So we use the ADDRESS that was
-          // active right BEFORE the OP_DMG_CART_WRITE_SRAM byte.
-          // In our emulator, fwVars.ADDRESS holds the LAST setVar value,
-          // which is 0 (per the prelude). Track the prelude-captured
-          // page address by inspecting the most recent ADDRESS setvar in
-          // a tracking field instead.
-          const pageOff = lastDmgWriteOffset;
+          const baseAddr = fwVars.ADDRESS!;
+          const pageOff = baseAddr - 0xa000;
           const bankOff = currentBank * 8 * 1024;
-          if (ramEnabled && fwVars.DMG_ACCESS_MODE === 4) {
+          if (ramEnabled && fwVars.DMG_ACCESS_MODE === 4 && pageOff >= 0) {
             for (let i = 0; i < want; i++) {
               buffer[bankOff + pageOff + i] = txQueue[1 + i] ?? 0;
             }
+            fwVars.ADDRESS = baseAddr + want;
           }
           enqueueRx([0x01]);
           txQueue.splice(0, 1 + want);
@@ -204,51 +204,8 @@ function makeSramMockPort(opts: { sramBytes: Uint8Array }): Port & {
     }
   };
 
-  // Track the ADDRESS-as-page-offset at the moment DMG_ACCESS_MODE goes
-  // to 4 (the "real" page start address per the flashgbx writeSram
-  // cadence). The prelude is:
-  //   setVar TRANSFER_SIZE
-  //   setVar ADDRESS = 0xA000 + page_offset  ← capture this
-  //   setVar DMG_ACCESS_MODE = 4             ← capture trigger
-  //   setVar DMG_WRITE_CS_PULSE = 1
-  //   setVar ADDRESS = 0
-  //   setVar DMG_WRITE_CS_PULSE = 0
-  //   OP_DMG_CART_WRITE_SRAM + payload
-  // We hook by intercepting setVar calls in handleByte above. Simpler:
-  // mutate the SET_VAR_KEY_TO_NAME handler to also bookkeep here.
-  let lastDmgWriteOffset = 0;
-  // Replace fwVars assignment to capture lastDmgWriteOffset on the
-  // ADDRESS-set-while-in-mode-4 case. We do this by wrapping the SET
-  // handler.
-  // (Implemented inline above via re-fetching fwVars.ADDRESS just before
-  // mode goes to 4 — but our handler runs after the mutation, so we
-  // shadow the side effect here:)
   const writable = new WritableStream<Uint8Array>({
     write(chunk) {
-      // Pre-process for the "address captured before mode 4" trick:
-      // peek at the bytes we're about to handle to detect the
-      // setVar(DMG_ACCESS_MODE=4) signature, and snapshot the current
-      // ADDRESS at that moment.
-      let i = 0;
-      while (i < chunk.length) {
-        // Detect a complete SET_VAR for DMG_ACCESS_MODE=4 (10 bytes):
-        // 0xA6, size=1, key=0x00000001, value=0x00000004.
-        if (
-          chunk[i] === 0xa6 &&
-          chunk[i + 1] === 1 &&
-          chunk[i + 2] === 0 &&
-          chunk[i + 3] === 0 &&
-          chunk[i + 4] === 0 &&
-          chunk[i + 5] === 0x01 &&
-          chunk[i + 6] === 0 &&
-          chunk[i + 7] === 0 &&
-          chunk[i + 8] === 0 &&
-          chunk[i + 9] === 0x04
-        ) {
-          lastDmgWriteOffset = (fwVars.ADDRESS ?? 0xa000) - 0xa000;
-        }
-        i++;
-      }
       for (const b of chunk) handleByte(b);
     },
   });

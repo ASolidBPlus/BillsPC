@@ -245,6 +245,24 @@ h1 {
   color: var(--gbc-accent-yellow);
 }
 
+/* Build SHA pill — fixed bottom-right. Lets users confirm which
+   commit their browser is actually running, so cache-staleness can
+   be diagnosed at a glance when a fix doesn't appear to take. */
+#build-pill {
+  position: fixed;
+  bottom: 6px;
+  right: 8px;
+  padding: 2px 7px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 3px;
+  pointer-events: auto;
+  user-select: text;
+  z-index: 9999;
+}
+
 /* Debug bar — only rendered when `?debug=1` is in the URL. Floats
    below the workbench, above the footer. Loud yellow border so it's
    obvious this is a non-production affordance. */
