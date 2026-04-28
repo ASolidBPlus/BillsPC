@@ -95,7 +95,6 @@ const AGB_FLASH_WRITE_METHOD_DEFAULT = 1;
 const OP_AGB_CART_READ = 0xc1;
 const OP_AGB_BOOTUP_SEQUENCE = 0xc9;
 const OP_CART_PWR_ON = 0xf2;
-const OP_CART_PWR_OFF = 0xf3;
 const OP_CLK_TOGGLE = 0xa9;
 
 /**
