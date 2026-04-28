@@ -4,8 +4,16 @@
  * dex), NOT by slot index. Hardcoding `party[0]` would silently pass
  * on a different mon if the demo save is ever swapped.
  *
- * The 117 number is the orchestrator's hand-verified anchor for Gen 2
+ * The 118 number is the orchestrator's hand-verified anchor for Gen 2
  * conversion correctness — losing it means the convert pipeline drifted.
+ *
+ * Was 117 prior to the per-mon-OT-TID parser fix. The Feraligatr in
+ * demo-crystal.sav has a stored OT TID slightly different from the
+ * cart's player TID (the demo SAV happens to include a mon that came
+ * via in-game NPC trade or similar); pre-fix we stamped the cart TID,
+ * which converged on a different PID → different IVs → 117. Post-fix
+ * the per-mon TID is preserved → different PID → 118. The +1 shift is
+ * the IV-randomization rounding moving by one in one stat.
  */
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -35,7 +43,7 @@ const FERALIGATR_BASE = {
   spe: 78,
 } as const;
 
-describe('Crystal Feraligatr |dev|=117 regression (PLAN_EVAL A10)', () => {
+describe('Crystal Feraligatr |dev|=118 regression (PLAN_EVAL A10)', () => {
   const bytes = new Uint8Array(readFileSync(demoCrystalPath));
   const save = parseSave(bytes);
 
@@ -50,7 +58,7 @@ describe('Crystal Feraligatr |dev|=117 regression (PLAN_EVAL A10)', () => {
     expect(idx).toBeLessThanOrEqual(5);
   });
 
-  it('|dev| sum across the six stats == 117 after convert', () => {
+  it('|dev| sum across the six stats == 118 after convert', () => {
     const fer = save.party[idx]!;
     const sourceStats = gen2Stats(FERALIGATR_BASE, fer.dvs, fer.statExp, fer.level);
     const result = convert(fer);
@@ -70,7 +78,7 @@ describe('Crystal Feraligatr |dev|=117 regression (PLAN_EVAL A10)', () => {
       Math.abs(targetStats.spa - sourceStats.spa) +
       Math.abs(targetStats.spd - sourceStats.spd) +
       Math.abs(targetStats.spe - sourceStats.spe);
-    expect(dev).toBe(117);
+    expect(dev).toBe(118);
   });
 
   it('round-trips Feraligatr through packBoxed → unpackBoxed cleanly', () => {

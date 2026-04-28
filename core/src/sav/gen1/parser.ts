@@ -35,6 +35,7 @@ import {
   RB_MON_EXP,
   RB_MON_BOX_LEVEL,
   RB_MON_MOVES,
+  RB_MON_OT_TID,
   RB_MON_PARTY_LEVEL,
   RB_MON_PP,
   RB_MON_STATEXP_ATK,
@@ -112,7 +113,6 @@ function readMon(
   isParty: boolean,
   otNameBytes: Uint8Array,
   nicknameBytes: Uint8Array,
-  trainerTid: number,
 ): Gen12Pokemon | null {
   const internal = bytes[monOff];
   if (internal === undefined || internal === 0 || internal === 0xff) return null;
@@ -131,6 +131,8 @@ function readMon(
   ] as const;
   const exp = be24(bytes, monOff + RB_MON_EXP);
   const level = bytes[monOff + (isParty ? RB_MON_PARTY_LEVEL : RB_MON_BOX_LEVEL)] ?? 0;
+  // Per-mon OT TID — for traded mons this differs from the cart's player TID.
+  const otTid = be16(bytes, monOff + RB_MON_OT_TID);
 
   return {
     sourceGen: 1,
@@ -146,7 +148,7 @@ function readMon(
     friendship: null,
     pokerusByte: 0,
     otNameBytes: new Uint8Array(otNameBytes),
-    tid: trainerTid,
+    tid: otTid,
     nicknameBytes: new Uint8Array(nicknameBytes),
     language: 2,
   };
@@ -159,7 +161,6 @@ function nameSlice(bytes: Uint8Array, base: number, slot: number): Uint8Array {
 function readBox(
   bytes: Uint8Array,
   boxOff: number,
-  trainerTid: number,
 ): { mons: Gen12Pokemon[]; warning: string | null } {
   const count = bytes[boxOff] ?? 0;
   if (count > GEN1_BOX_MAX_MONS) {
@@ -173,7 +174,7 @@ function readBox(
     const monOff = monsBase + s * GEN1_BOX_MON_BYTES;
     const otBytes = nameSlice(bytes, otBase, s);
     const nickBytes = nameSlice(bytes, nickBase, s);
-    const mon = readMon(bytes, monOff, false, otBytes, nickBytes, trainerTid);
+    const mon = readMon(bytes, monOff, false, otBytes, nickBytes);
     if (mon) out.push(mon);
   }
   return { mons: out, warning: null };
@@ -202,12 +203,12 @@ export function parseGen1(sram: Uint8Array, format: SaveFormat): SaveContents {
     const monOff = RB_PARTY_RECORDS_OFFSET + i * GEN1_PARTY_MON_BYTES;
     const otBytes = nameSlice(sram, RB_PARTY_OT_NAMES_OFFSET, i);
     const nickBytes = nameSlice(sram, RB_PARTY_NICKNAMES_OFFSET, i);
-    const mon = readMon(sram, monOff, true, otBytes, nickBytes, tid);
+    const mon = readMon(sram, monOff, true, otBytes, nickBytes);
     if (mon) party.push(mon);
   }
 
   // Current PC box
-  const currentBoxResult = readBox(sram, RB_CURRENT_BOX_OFFSET, tid);
+  const currentBoxResult = readBox(sram, RB_CURRENT_BOX_OFFSET);
   if (currentBoxResult.warning) {
     warnings.push(`current_box_corrupt: ${currentBoxResult.warning}`);
   }
@@ -220,7 +221,7 @@ export function parseGen1(sram: Uint8Array, format: SaveFormat): SaveContents {
       const bankOffset = RB_BOX_BANK_OFFSETS[bank] ?? 0;
       const boxOff = bankOffset + bIdx * GEN1_BOX_STRIDE;
       const storedBoxIndex = bank * RB_BOXES_PER_BANK + bIdx;
-      const result = readBox(sram, boxOff, tid);
+      const result = readBox(sram, boxOff);
       if (result.warning) {
         warnings.push(`box_${storedBoxIndex}_corrupt: ${result.warning}`);
         boxes.push([]);

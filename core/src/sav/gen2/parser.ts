@@ -28,6 +28,7 @@ import {
   C_MON_HELD_ITEM,
   C_MON_LEVEL,
   C_MON_MOVES,
+  C_MON_OT_TID,
   C_MON_POKERUS,
   C_MON_PP,
   C_MON_SPECIES,
@@ -109,7 +110,6 @@ function readMon(
   monOff: number,
   otNameBytes: Uint8Array,
   nicknameBytes: Uint8Array,
-  trainerTid: number,
   trainerGender: 0 | 1 | undefined,
 ): Gen12Pokemon | null {
   const species = bytes[monOff + C_MON_SPECIES];
@@ -130,6 +130,8 @@ function readMon(
   const friendship = bytes[monOff + C_MON_FRIENDSHIP] ?? 0;
   const pokerusByte = bytes[monOff + C_MON_POKERUS] ?? 0;
   const level = bytes[monOff + C_MON_LEVEL] ?? 0;
+  // Per-mon OT TID — for traded mons this differs from the cart's player TID.
+  const otTid = be16(bytes, monOff + C_MON_OT_TID);
 
   const mon: Gen12Pokemon = {
     sourceGen: 2,
@@ -145,7 +147,7 @@ function readMon(
     friendship,
     pokerusByte,
     otNameBytes: new Uint8Array(otNameBytes),
-    tid: trainerTid,
+    tid: otTid,
     nicknameBytes: new Uint8Array(nicknameBytes),
     language: 2,
     ...(trainerGender !== undefined ? { otGender: trainerGender } : {}),
@@ -160,7 +162,6 @@ function nameSlice(bytes: Uint8Array, base: number, slot: number): Uint8Array {
 function readBox(
   bytes: Uint8Array,
   boxOff: number,
-  trainerTid: number,
   trainerGender: 0 | 1 | undefined,
 ): { mons: Gen12Pokemon[]; warning: string | null } {
   const count = bytes[boxOff] ?? 0;
@@ -175,7 +176,7 @@ function readBox(
     const monOff = monsBase + s * GEN2_BOX_MON_BYTES;
     const otBytes = nameSlice(bytes, otBase, s);
     const nickBytes = nameSlice(bytes, nickBase, s);
-    const mon = readMon(bytes, monOff, otBytes, nickBytes, trainerTid, trainerGender);
+    const mon = readMon(bytes, monOff, otBytes, nickBytes, trainerGender);
     if (mon) out.push(mon);
   }
   return { mons: out, warning: null };
@@ -206,7 +207,7 @@ export function parseCrystal(sram: Uint8Array): SaveContents {
     const monOff = C_PARTY_RECORDS_OFFSET + i * GEN2_PARTY_MON_BYTES;
     const otBytes = nameSlice(sram, C_PARTY_OT_NAMES_OFFSET, i);
     const nickBytes = nameSlice(sram, C_PARTY_NICKNAMES_OFFSET, i);
-    const mon = readMon(sram, monOff, otBytes, nickBytes, tid, gender);
+    const mon = readMon(sram, monOff, otBytes, nickBytes, gender);
     if (mon) party.push(mon);
   }
 
@@ -217,7 +218,7 @@ export function parseCrystal(sram: Uint8Array): SaveContents {
       const bankOffset = C_BOX_BANK_OFFSETS[bank] ?? 0;
       const boxOff = bankOffset + bIdx * GEN2_BOX_STRIDE;
       const storedBoxIndex = bank * C_BOXES_PER_BANK + bIdx;
-      const result = readBox(sram, boxOff, tid, gender);
+      const result = readBox(sram, boxOff, gender);
       if (result.warning) {
         warnings.push(`box_${storedBoxIndex}_corrupt: ${result.warning}`);
         boxes.push([]);
@@ -229,7 +230,7 @@ export function parseCrystal(sram: Uint8Array): SaveContents {
   while (boxes.length < C_TOTAL_BOXES) boxes.push([]);
 
   // Current box
-  const currentBoxResult = readBox(sram, C_CURRENT_BOX_OFFSET, tid, gender);
+  const currentBoxResult = readBox(sram, C_CURRENT_BOX_OFFSET, gender);
   if (currentBoxResult.warning) {
     warnings.push(`current_box_corrupt: ${currentBoxResult.warning}`);
   }
