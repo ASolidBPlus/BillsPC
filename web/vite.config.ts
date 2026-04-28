@@ -9,9 +9,21 @@
  * `dist/assets/app.js`.
  */
 import { defineConfig } from 'vite';
+import { execSync } from 'node:child_process';
+
+function gitCommit(): string {
+  try {
+    return execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+  } catch {
+    return 'dev';
+  }
+}
 
 export default defineConfig({
   base: './',
+  define: {
+    __BUILD_COMMIT__: JSON.stringify(gitCommit()),
+  },
   // Allow any host for the preview server so cloudflared / ngrok-style
   // tunnel testing works. The preview server is only used for local
   // testing — never deployed — so the relaxed host check is fine.
