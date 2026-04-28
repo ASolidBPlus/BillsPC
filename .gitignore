@@ -5,3 +5,13 @@ coverage/
 *.tsbuildinfo
 .claude/
 .venv-img/
+
+# Orchestrator-only files — local sprint-harness artefacts (planner /
+# generator / evaluator inputs and outputs). Not part of the project.
+CLAUDE.md
+HANDOFF.md
+PLAN.md
+PLAN_EVAL.md
+EVAL.md
+orchestrator-defaults.md
+sprints/

@@ -122,9 +122,24 @@ sprints/                    Frozen sprint archives (PLAN + PLAN_EVAL + EVAL per 
 HANDOFF.md                  Authoritative conversion spec
 ```
 
-## On AI usage
+## Hardware support
 
-Built with substantial AI-generated code under a planner → generator → evaluator sprint-harness methodology with heavy human orchestrator oversight. Every sprint went through plan review, generator dispatch, code-evaluator verification, and HIL (hardware-in-the-loop) testing on real Game Boy carts before being treated as shipped. The conversion algorithms, cart-write pipeline, and stat-screen reconstructions were all human-reviewed against canonical references (PKHeX, pret disassemblies, Bulbapedia) line-by-line during the evaluator pass.
+Cart Mode talks to GBxCart RW over Web Serial. Tested on:
+
+- **GBxCart RW v1.4 PCB-6** with R42+L14 firmware (the active maintained variant — insideGadgets shop)
+
+Both Insidegadgets and FlashGBX protocols are implemented. The cart-write pipeline mirrors the FlashGBX read/erase/write/verify sequence — anything FlashGBX can flash, this tool can theoretically flash too (PCB-1 through PCB-6, original GBxCart RW, the various community-made clones, etc.) — but only PCB-6 has been HIL-validated end-to-end.
+
+**OS support:**
+
+- **Windows + macOS**: works out of the box. Plug in the cart, the browser prompts for the serial port, you're done.
+- **Linux**: needs a udev rule to grant your user access to the GBxCart RW USB device (otherwise the browser can't enumerate it). Same rule FlashGBX uses on Linux works here. Without the rule you'll either need to run the browser as root (not recommended) or fix the device permissions manually each session.
+
+Web Serial requires a Chromium-based browser (Chrome, Edge, Brave, Opera, Arc). Safari and Firefox don't support it; SAV upload mode still works in those.
+
+## AI Disclaimer
+
+Built with substantial AI-generated code under a [planner → generator → evaluator harness](https://www.anthropic.com/engineering/harness-design-long-running-apps) (Anthropic's "Harness design for long-running apps" pattern) with heavy human orchestrator oversight. Every sprint went through plan review, generator dispatch, code-evaluator verification, and HIL (hardware-in-the-loop) testing on real Game Boy carts before being treated as shipped. The conversion algorithms, cart-write pipeline, and stat-screen reconstructions were all human-reviewed against canonical references (PKHeX, pret disassemblies, Bulbapedia) line-by-line during the evaluator pass.
 
 That said: **always keep a backup of any save file or cart before running it through this tool**. Cart writes are irreversible without the backup the tool downloads pre-flash.
 
@@ -162,6 +177,7 @@ bun --cwd web exec vite preview --host 0.0.0.0 --port 8080
 
 ## Credits
 
+- **[FlashGBX](https://github.com/lesserkuma/FlashGBX)** by Lesserkuma — the canonical reference for the GBxCart RW protocol. The cart-write pipeline (read / erase-sector / chunked-write / readback-verify with retry) is a faithful port of FlashGBX's flow. If anything cart-side works in this tool, it's because FlashGBX figured it out first.
 - **Console pixel-art**: [AloneAgainstPixels](https://www.deviantart.com/aloneagainstpixels) (DeviantArt) — Game Boy + Game Boy Advance console sprites used in the workbench's trading-pipe lane.
 - **Gen 1/2 party icons**: [SoupPotato/sourcrystal](https://github.com/SoupPotato/sourcrystal) — colorized via the vendored palette table from `data/menu_icon_pals.asm`.
 - **Gen 3 party icons + FRLG SKILLS background**: [pret/pokeemerald](https://github.com/pret/pokeemerald) and the FRLG Summary Screen plugin from the Pokemon Essentials community.
