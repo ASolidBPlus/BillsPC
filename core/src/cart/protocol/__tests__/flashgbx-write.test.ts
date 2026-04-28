@@ -21,25 +21,24 @@ function ack(port: ReturnType<typeof makeMockPort>, n = 1): void {
 /** Number of TX bytes consumed by a single SET_VARIABLE call. */
 const SET_VAR_FRAME = 1 /* opcode */ + 1 /* size */ + 4 /* key */ + 4; /* value */
 
-describe('FlashgbxProtocol — DMG SRAM writeSram (per LK_Device.py:1611-1638)', () => {
-  it('writes one bank with setvar prelude ONCE before loop + cleanup ONCE after', async () => {
+describe('FlashgbxProtocol — DMG SRAM writeSram (per LK_Device.py:3286-3458 + :1611-1638)', () => {
+  it('writes one bank in 512-byte batches (4 prelude + 2 page writes + 2 cleanup per batch)', async () => {
     const port = makeMockPort();
-    // 4 setvar acks before the loop (TRANSFER_SIZE, ADDRESS, DMG_ACCESS_MODE,
-    // DMG_WRITE_CS_PULSE=1) + 32 page-write acks + 2 cleanup setvars
-    // (ADDRESS=0, DMG_WRITE_CS_PULSE=0).
-    ack(port, 4 + 32 + 2);
+    // 8 KB bank / 512-byte batch = 16 batches; per batch: 4 prelude
+    // setvar acks + 2 page-write acks + 2 cleanup setvar acks = 8 acks.
+    // 16 × 8 = 128 acks total.
+    ack(port, 16 * 8);
     const proto = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
     const data = new Uint8Array(8192).fill(0x42);
     await proto.writeSram('gb', data);
-    // OP_DMG_CART_WRITE_SRAM opcode (0xB3) appears once per page = 32 times,
-    // and shouldn't appear inside any setvar frame at this address (0xA000).
+    // OP_DMG_CART_WRITE_SRAM opcode (0xB3) appears once per page = 32 times.
     const opcodeCount = port.txLog.filter((b) => b === 0xb3).length;
     expect(opcodeCount).toBe(32);
   });
 
-  it('issues the prelude in the documented order (TRANSFER_SIZE→ADDRESS=0xA000→ACCESS_MODE=4→CS_PULSE=1)', async () => {
+  it('issues the prelude per batch (TRANSFER_SIZE→ADDRESS=0xA000→ACCESS_MODE=4→CS_PULSE=1)', async () => {
     const port = makeMockPort();
-    // 4 prelude setvars + 1 page-write ack + 2 cleanup setvars.
+    // Single 256-byte payload = 1 batch with 1 page: 4 prelude + 1 page + 2 cleanup.
     ack(port, 4 + 1 + 2);
     const proto = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
     await proto.writeSram('gb', new Uint8Array(256).fill(0xa5));
@@ -66,7 +65,8 @@ describe('FlashgbxProtocol — DMG SRAM writeSram (per LK_Device.py:1611-1638)',
 
   it('writes per writeChunkBytes=64 fallback when configured', async () => {
     const port = makeMockPort();
-    // 4 prelude + 4 page-write acks + 2 cleanup.
+    // 256 bytes / 64-byte page = 4 pages. 256 ≤ BATCH_BYTES (512) → 1 batch.
+    // Per batch: 4 prelude + 4 page-writes + 2 cleanup = 10 acks.
     ack(port, 4 + 4 + 2);
     const proto = new FlashgbxProtocol(port, { writeChunkBytes: 64, setVarDelayMs: 0 });
     await proto.writeSram('gb', new Uint8Array(256));
@@ -75,8 +75,8 @@ describe('FlashgbxProtocol — DMG SRAM writeSram (per LK_Device.py:1611-1638)',
 
   it('aborts mid-write on signal', async () => {
     const port = makeMockPort();
-    // Pre-ack the 4 prelude setvars + the 2 finally-block cleanup setvars
-    // (the abort throws inside the loop, finally still runs).
+    // Abort fires before the first page write: 4 prelude acks consumed
+    // before the in-loop signal check; finally still runs the 2 cleanup setvars.
     ack(port, 4 + 2);
     const ctrl = new AbortController();
     ctrl.abort();

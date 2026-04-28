@@ -483,48 +483,54 @@ export class FlashgbxProtocol implements CartProtocol {
       await this.bulkWriteSram(OP_AGB_CART_WRITE_SRAM, 0, bytes, opts);
       return;
     }
-    // DMG SRAM write — mirrors `LK_Device.py:1611-1638` (WriteRAM).
+    // DMG SRAM write — mirrors `LK_Device.py:3286-3458` outer loop +
+    // `:1611-1638` (WriteRAM).
     //
-    // Cadence per writeSram call (one bank's worth of bytes; GbxCartSink
-    // does setRamEnabled/setBank around this):
+    // FlashGBX's outer loop walks the bank in `buffer_len` chunks
+    // (0x200 = 512 bytes per `LK_Device.py:3035`) and calls WriteRAM for
+    // each chunk; WriteRAM internally splits the chunk into `max_length`
+    // (256-byte) pages. Each WriteRAM call re-issues the full setvar
+    // prelude — TRANSFER_SIZE, ADDRESS=0xA000+offset, DMG_ACCESS_MODE=4,
+    // DMG_WRITE_CS_PULSE=1 — runs its inner page loop, then drops
+    // ADDRESS=0 + DMG_WRITE_CS_PULSE=0 as cleanup.
     //
-    //   ONCE before loop:
-    //     SET_VAR TRANSFER_SIZE      = page_bytes (256)
-    //     SET_VAR ADDRESS            = 0xA000 + base_offset
-    //     SET_VAR DMG_ACCESS_MODE    = 4              (SRAM-write mode)
-    //     SET_VAR DMG_WRITE_CS_PULSE = 1              (raise CS, hold high)
+    // We mirror that here: outer chunk = `BATCH_BYTES` (512), inner page
+    // = `writeChunkBytes` (256 by default). The firmware's auto-increment
+    // is only relied on within a single batch (≤ 2 page writes); across
+    // batches we explicitly re-set ADDRESS. A previous impl set ADDRESS
+    // ONCE for the whole 8 KB bank and depended on auto-increment across
+    // 32 page writes; on at least one third-party MBC3 (insideGadgets
+    // Crystal repro, 2026-04-28) the cart silently dropped every write
+    // and the readback came back stuck-bus (0xF8 / 0xFA / 0xF1 / 0xF3
+    // depending on session). FlashGBX's 512-byte batching avoids that.
     //
-    //   for each page:
-    //     OP_DMG_CART_WRITE_SRAM (0xB3) + payload     → ack 0x01
-    //     (firmware auto-increments ADDRESS as it streams payload)
-    //
-    //   ONCE after loop:
-    //     SET_VAR ADDRESS            = 0              (cleanup)
-    //     SET_VAR DMG_WRITE_CS_PULSE = 0              (release CS)
-    //
-    // CS_PULSE MUST stay high across all payloads — the firmware uses it
-    // to gate the cart's chip-select line. Lowering CS between pulse-raise
-    // and the payload (a previous impl did this thinking it was a per-page
-    // cycle) means the cart never strobes the data lines and silently
-    // drops every write. Symptom: stuck-bus readback (0xF1/0xF3 patterns).
+    // CS_PULSE stays high across the inner page-write loop and only
+    // drops in the cleanup setvars at the end of each batch.
     if (bytes.length === 0) return;
     const PAGE = this.writeChunkBytes;
-    await this.setVar('TRANSFER_SIZE', Math.min(PAGE, bytes.length), opts);
-    await this.setVar('ADDRESS', 0xa000, opts);
-    await this.setVar('DMG_ACCESS_MODE', 4, opts);
-    await this.setVar('DMG_WRITE_CS_PULSE', 1, opts);
-    try {
-      for (let off = 0; off < bytes.length; off += PAGE) {
-        if (opts.signal?.aborted) throw new CartError('CANCELLED', 'write aborted');
-        const slice = bytes.subarray(off, Math.min(off + PAGE, bytes.length));
-        await writeAll(this.port, new Uint8Array([OP_DMG_CART_WRITE_SRAM]));
-        await writeAll(this.port, slice);
-        await this.readAck(opts, 'DMG SRAM write');
-        opts.onProgress?.({ bytesWritten: off + slice.length, bytesTotal: bytes.length });
+    const BATCH_BYTES = 0x200;
+    for (let batchOff = 0; batchOff < bytes.length; batchOff += BATCH_BYTES) {
+      if (opts.signal?.aborted) throw new CartError('CANCELLED', 'write aborted');
+      const batchEnd = Math.min(batchOff + BATCH_BYTES, bytes.length);
+      const batchLen = batchEnd - batchOff;
+      const transferSize = Math.min(PAGE, batchLen);
+      await this.setVar('TRANSFER_SIZE', transferSize, opts);
+      await this.setVar('ADDRESS', 0xa000 + batchOff, opts);
+      await this.setVar('DMG_ACCESS_MODE', 4, opts);
+      await this.setVar('DMG_WRITE_CS_PULSE', 1, opts);
+      try {
+        for (let off = batchOff; off < batchEnd; off += PAGE) {
+          if (opts.signal?.aborted) throw new CartError('CANCELLED', 'write aborted');
+          const slice = bytes.subarray(off, Math.min(off + PAGE, batchEnd));
+          await writeAll(this.port, new Uint8Array([OP_DMG_CART_WRITE_SRAM]));
+          await writeAll(this.port, slice);
+          await this.readAck(opts, 'DMG SRAM write');
+          opts.onProgress?.({ bytesWritten: off + slice.length, bytesTotal: bytes.length });
+        }
+      } finally {
+        await this.setVar('ADDRESS', 0, opts);
+        await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
       }
-    } finally {
-      await this.setVar('ADDRESS', 0, opts);
-      await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
     }
   }
 
