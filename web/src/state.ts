@@ -532,11 +532,10 @@ function clamp(v: number, lo: number, hi: number): number {
   return v;
 }
 
-/** Total selectable box count for the given save: 1 (party) + N stored + (1 if currentBox). */
+/** Maximum valid stored-box index (0-based). Party + currentBox pseudo-
+ *  boxes are not navigable. */
 function maxBoxIndex(save: SaveContents): number {
-  const stored = save.boxes.length;
-  const live = save.currentBox ? 1 : 0;
-  return stored + live; // boxIndex 0 is party; max valid index is stored + live
+  return Math.max(0, save.boxes.length - 1);
 }
 
 /**

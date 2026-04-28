@@ -100,11 +100,9 @@ describe('v2 source-tile staged overlay', () => {
   });
 
   it('source-tile at storage-box 0 slot 3 has is-staged class + badge with T01', () => {
-    // The display `boxIndex` is 1-based in `entriesForBox`: 0 = PARTY,
-    // 1 = save.boxes[0], 2 = save.boxes[1]. The MonRef the renderer
-    // emits uses 0-based storage indices (`boxIndex - 1`). So a staged
-    // ref of `{boxIndex: 0, slot: 3}` corresponds to display box 1
-    // slot 3.
+    // S8 — boxIndex is 0-based over stored boxes only (party / currentBox
+    // pseudo-boxes are no longer surfaced). MonRef.boxIndex = display
+    // boxIndex; both are 0-based.
     const box0 = Array.from({ length: 5 }, (_, i) => makeGen2Mon({ speciesGen2Id: 158 + i }));
     const box1 = Array.from({ length: 8 }, (_, i) => makeGen2Mon({ speciesGen2Id: 1 + i }));
     const save = makeSaveWithTwoBoxes(box0, box1);
@@ -119,7 +117,7 @@ describe('v2 source-tile staged overlay', () => {
         leftRole: 'source',
         sourceLoaded: {
           save,
-          boxIndex: 1, // display index 1 == storage save.boxes[0]
+          boxIndex: 0, // storage save.boxes[0]
           cursor: { row: 0, col: 0 },
           fileName: 'crystal.sav',
         },
@@ -145,7 +143,7 @@ describe('v2 source-tile staged overlay', () => {
     expect(otherTile.querySelector('.source-tile-staged-badge')).toBeNull();
   });
 
-  it('switching to display box 2 (storage box 1) lights up slot 7 with T05', () => {
+  it('switching to box 1 (storage box 1) lights up slot 7 with T05', () => {
     const box0 = Array.from({ length: 5 }, (_, i) => makeGen2Mon({ speciesGen2Id: 158 + i }));
     const box1 = Array.from({ length: 8 }, (_, i) => makeGen2Mon({ speciesGen2Id: 1 + i }));
     const save = makeSaveWithTwoBoxes(box0, box1);
@@ -160,7 +158,7 @@ describe('v2 source-tile staged overlay', () => {
         leftRole: 'source',
         sourceLoaded: {
           save,
-          boxIndex: 2, // display index 2 == storage save.boxes[1]
+          boxIndex: 1, // storage save.boxes[1]
           cursor: { row: 0, col: 0 },
           fileName: 'crystal.sav',
         },

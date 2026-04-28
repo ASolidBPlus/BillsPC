@@ -169,15 +169,17 @@ describe('S6a save-to-save flow (jsdom integration)', () => {
     );
     const beforeSave = parseSave(new Uint8Array(readFileSync(CRYSTAL)));
     if (isSaveError(beforeSave)) throw new Error(beforeSave.message);
-    const partyLenBefore = beforeSave.party.length;
-    const partySlot0Species = beforeSave.party[0]!.speciesGen2Id;
+    // S8 — the box browser no longer surfaces party, so the first
+    // occupied tile is the first occupied stored-box mon (box 0).
+    const box0LenBefore = beforeSave.boxes[0]!.length;
+    const box0Slot0Species = beforeSave.boxes[0]![0]!.speciesGen2Id;
 
     await handleDestFileSelected(
       mkFile(new Uint8Array(readFileSync(RUBY)), 'ruby.sav'),
       (a) => controller.dispatch(a),
       DEFAULT_DEPS,
     );
-    // Click the first occupied tile (party slot 0 of demo-crystal).
+    // Click the first occupied tile (storage box 0 slot 0 of demo-crystal).
     const tile = root.querySelector('.box-tile.is-occupied') as HTMLElement;
     tile.click();
     const storeRow = Array.from(root.querySelectorAll('.gen2-menu-row')).find((r) =>
@@ -192,11 +194,11 @@ describe('S6a save-to-save flow (jsdom integration)', () => {
     const sourceBytes = sourceEntry![1]!;
     const reSrc = parseSave(sourceBytes);
     if (isSaveError(reSrc)) throw new Error(reSrc.message);
-    expect(reSrc.party.length).toBe(partyLenBefore - 1);
+    expect(reSrc.boxes[0]!.length).toBe(box0LenBefore - 1);
     // The slot-0 mon is gone; whatever was at slot 1 has shifted down.
-    expect(reSrc.party[0]!.speciesGen2Id).not.toBe(partySlot0Species);
+    expect(reSrc.boxes[0]![0]!.speciesGen2Id).not.toBe(box0Slot0Species);
     // In-memory source state also reflects the delete (chained STORE support).
-    expect(s.save.party.length).toBe(partyLenBefore - 1);
+    expect(s.save.boxes[0]!.length).toBe(box0LenBefore - 1);
   });
 
   it('Download-modified button appears in the toolbar after a successful STORE and triggers a download', async () => {

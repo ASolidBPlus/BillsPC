@@ -74,12 +74,12 @@ export interface BoxBrowserProps {
   readonly embedded?: boolean;
 }
 
-/** Render the box title bar e.g. `◀ BOX 3 ▶` or `◀ PARTY ▶`. */
-function boxLabel(save: SaveContents, boxIndex: number): string {
-  if (boxIndex === 0) return 'PARTY';
-  const stored = save.boxes.length;
-  if (boxIndex <= stored) return `BOX ${boxIndex}`;
-  return 'CURRENT';
+/** Render the box title bar e.g. `◀ BOX 3 ▶`. boxIndex is 0-based over
+ *  stored boxes; party / current-box pseudo-boxes are intentionally not
+ *  surfaced (per S8 user direction — only stored boxes matter for
+ *  cross-gen transfer). */
+function boxLabel(_save: SaveContents, boxIndex: number): string {
+  return `BOX ${boxIndex + 1}`;
 }
 
 export function boxBrowser(props: BoxBrowserProps): HTMLElement {
@@ -213,38 +213,18 @@ function monTooltip(
  * boxIndex N+1 (when present) is the live "current" box on Gen 1/2.
  */
 export function entriesForBox(save: SaveContents, boxIndex: number): readonly BrowserEntry[] {
+  // 0-based over stored boxes only. Party + currentBox pseudo-boxes are
+  // intentionally not exposed (per S8 user direction — only stored boxes
+  // are valid sources/destinations for cross-gen transfer).
   const out: BrowserEntry[] = [];
-  if (boxIndex === 0) {
-    for (let i = 0; i < save.party.length; i++) {
-      out.push({
-        ref: { bucket: 'party', slot: i },
-        mon: save.party[i]!,
-        slotInBox: i,
-      });
-    }
-    return out;
-  }
-  const stored = save.boxes.length;
-  if (boxIndex <= stored) {
-    const box = save.boxes[boxIndex - 1]!;
-    for (let i = 0; i < box.length; i++) {
-      out.push({
-        ref: { bucket: 'box', boxIndex: boxIndex - 1, slot: i },
-        mon: box[i]!,
-        slotInBox: i,
-      });
-    }
-    return out;
-  }
-  // current box
-  if (save.currentBox) {
-    for (let i = 0; i < save.currentBox.length; i++) {
-      out.push({
-        ref: { bucket: 'currentBox', slot: i },
-        mon: save.currentBox[i]!,
-        slotInBox: i,
-      });
-    }
+  const box = save.boxes[boxIndex];
+  if (!box) return out;
+  for (let i = 0; i < box.length; i++) {
+    out.push({
+      ref: { bucket: 'box', boxIndex, slot: i },
+      mon: box[i]!,
+      slotInBox: i,
+    });
   }
   return out;
 }

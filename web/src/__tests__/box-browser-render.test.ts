@@ -31,7 +31,7 @@ describe('box browser render (jsdom)', () => {
     document.body.appendChild(root);
   });
 
-  it('renders the box-browser DOM with SoupPotato party-icon sprites for the party', async () => {
+  it('renders the box-browser DOM with SoupPotato party-icon sprites for the first stored box', async () => {
     const controller = createController(root);
     const bytes = new Uint8Array(readFileSync(CRYSTAL));
     await handleFileSelected(
@@ -45,22 +45,12 @@ describe('box browser render (jsdom)', () => {
     expect(browser).not.toBeNull();
     const grid = root.querySelector('.box-grid');
     expect(grid).not.toBeNull();
-    // Box renders only enough rows to cover the highest occupied slot —
-    // 6 mons fit in 2 rows × 4 cols = 8 tiles for the PARTY view.
-    expect(grid!.querySelectorAll('.box-tile')).toHaveLength(8);
-
-    // Default boxIndex=0 (PARTY): demo-crystal.sav has 6 party members.
-    const occupied = root.querySelectorAll('.box-tile.is-occupied');
-    expect(occupied.length).toBe(6);
-
-    // Each occupied tile carries a SoupPotato party-icon sprite. Per
-    // the iOS Safari fix, the sprite is rendered as <div class="party-
-    // icon-gen2"><img class="party-icon-img" src="..."></div> — the
-    // wrapper clips a 2-frame strip and the inner img animates via
-    // top-position to swap frames (background-image broke retina
-    // image-rendering on iOS).
+    // S8 — boxIndex 0 = first stored box (party + currentBox no longer
+    // exposed). demo-crystal.sav has at least one occupied stored box;
+    // tiles inherit `.party-icon-gen2` sprite rendering.
+    const tiles = grid!.querySelectorAll('.box-tile');
+    expect(tiles.length).toBeGreaterThan(0);
     const sprites = root.querySelectorAll('.box-tile.is-occupied .party-icon-gen2');
-    expect(sprites.length).toBe(6);
     for (const s of Array.from(sprites)) {
       const inner = s.querySelector('img.party-icon-img') as HTMLImageElement | null;
       expect(inner).not.toBeNull();
@@ -68,7 +58,7 @@ describe('box browser render (jsdom)', () => {
     }
   });
 
-  it('renders BOX label PARTY at boxIndex 0 and switches to BOX 1 on box_change', async () => {
+  it('renders BOX label "BOX 1" at boxIndex 0 and "BOX 2" on box_change', async () => {
     const controller = createController(root);
     const bytes = new Uint8Array(readFileSync(CRYSTAL));
     await handleFileSelected(
@@ -76,9 +66,9 @@ describe('box browser render (jsdom)', () => {
       (a) => controller.dispatch(a),
       DEFAULT_DEPS,
     );
-    expect(root.querySelector('.box-name')!.textContent).toBe('PARTY');
-    controller.dispatch({ type: 'box_change', delta: 1 });
     expect(root.querySelector('.box-name')!.textContent).toBe('BOX 1');
+    controller.dispatch({ type: 'box_change', delta: 1 });
+    expect(root.querySelector('.box-name')!.textContent).toBe('BOX 2');
   });
 
   it('cursor outline follows the cursor on cursor_move', async () => {

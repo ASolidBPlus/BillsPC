@@ -135,10 +135,11 @@ describe('reducer transitions', () => {
 
   it('box_change clamps at the upper bound', () => {
     let s: AppState = makeLoaded();
-    // 0 (party) + 14 (boxes) = max valid index 14, no current box.
+    // S8 — boxIndex is 0-based over stored boxes only (no party / current
+    // pseudo-boxes). 14 stored boxes → max valid index 13.
     for (let i = 0; i < 25; i++) s = reducer(s, { type: 'box_change', delta: 1 });
     if (s.kind !== 'loaded') throw new Error('expected loaded');
-    expect(s.boxIndex).toBe(14);
+    expect(s.boxIndex).toBe(13);
   });
 
   it('mon_open / mon_close set and clear openMon', () => {
