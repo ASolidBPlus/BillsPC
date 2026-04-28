@@ -1,4 +1,4 @@
-# PokeTimeCapsule
+# Bill's PC
 
 > Convert Pokémon from Gen 1 (Red/Blue/Yellow) and Gen 2 (Crystal) save files into Gen 3 wire-format records suitable for HOME-strict legality after the standard forward-transfer chain (Gen 3 → 4 → 5 → Bank → HOME).
 
@@ -9,7 +9,6 @@ Static web app, vanilla TypeScript, runs entirely client-side. Drop in your Game
 - **Reads** Gen 1 (Red/Blue) and Gen 2 (Crystal) save files (`.sav`, 32 KB SRAM dump).
 - **Converts** each Pokémon to a Gen 3 record using a deterministic algorithm aligned with VGMoose's "essence preservation" philosophy — preserves DVs, training, OT, friendship, held items, etc., as faithfully as Gen 3's data model allows.
 - **Outputs** 80-byte Gen 3 boxed records (`.pk3`) or 100-byte party records, encrypted and checksummed per Bulbapedia's Gen 3 substructure spec.
-- **Refuses** species that can't legally be hatched from an egg in Gen 3 (Gen 1/2 legendaries plus Ditto), with a clear reason.
 
 ## What it doesn't do (yet)
 
@@ -48,7 +47,7 @@ Species that cannot be hatched from an egg in Gen 3 are **refused** with a typed
 | **Pokerus**                            | Gen 2 byte                     | Direct copy. Gen 1 sources get 0                                                                                                                                                                                                                               |
 | **Moves / PP / PP-Ups**                | Gen 1/2                        | Preserved verbatim. Gen 1 sources get PP-Ups [0,0,0,0]. Move IDs match Gen 3 (Gen 3 is a superset)                                                                                                                                                             |
 | **Level / EXP**                        | Gen 1/2                        | Preserved verbatim. Same growth groups across gens                                                                                                                                                                                                             |
-| **Ability slot**                       | —                              | Always **0**. Hidden Abilities don't exist in Gen 3                                                                                                                                                                                                            |
+| **Ability slot**                       | —                              | Deterministic, derived from chosen PID.                                                                                                                                                                                                            |
 | **Hidden Power**                       | —                              | Falls out of converted IVs automatically; no constraint imposed                                                                                                                                                                                                |
 | **Met data**                           | constants                      | Origin = FireRed, met = FireRed, met-level = 0, met-location = 146 (Four Island), fateful = false, isEgg = false                                                                                                                                               |
 | **Contest stats / ribbons / markings** | —                              | All zero                                                                                                                                                                                                                                                       |
