@@ -21,11 +21,13 @@ interface CartWriteCall {
   readonly value: number;
 }
 
-function makeJedec(opts: {
-  pollSequence?: readonly number[];
-  poll?: () => number;
-  noSleep?: boolean;
-} = {}): {
+function makeJedec(
+  opts: {
+    pollSequence?: readonly number[];
+    poll?: () => number;
+    noSleep?: boolean;
+  } = {},
+): {
   jedec: JedecFlash;
   writes: CartWriteCall[];
   pollCalls: number[];

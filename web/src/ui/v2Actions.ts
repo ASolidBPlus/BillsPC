@@ -16,11 +16,7 @@
  * implementation; the goal is testability, not refactoring.
  */
 
-import type {
-  Action,
-  AppState,
-  MonRef,
-} from '../state.js';
+import type { Action, AppState, MonRef } from '../state.js';
 import type { ControllerDeps } from '../ui.js';
 import type {
   Gen12Pokemon,
@@ -31,11 +27,7 @@ import type {
   StagedMonRefGen3,
 } from '@pokeportal/core';
 import type { CartFamily } from '@pokeportal/core';
-import {
-  composeSourceWrite,
-  composeDestinationWrite,
-  isComposeError,
-} from '@pokeportal/core';
+import { composeSourceWrite, composeDestinationWrite, isComposeError } from '@pokeportal/core';
 import { getSpecies, decodeGen12 } from '@pokeportal/core/internal';
 import type { StagedSlot } from '../cart/stagingStore.types.js';
 import type { StagingStore } from '../cart/stagingStore.js';
@@ -286,11 +278,7 @@ export async function runClearTransferBox(
   state: AppState,
   dispatch: (a: Action) => void,
   deps: ControllerDeps,
-  confirmDialog: (
-    message: string,
-    confirmLabel: string,
-    cancelLabel: string,
-  ) => Promise<boolean>,
+  confirmDialog: (message: string, confirmLabel: string, cancelLabel: string) => Promise<boolean>,
 ): Promise<void> {
   void dispatch;
   const slots = state.staging?.slots ?? [];
@@ -365,13 +353,14 @@ function isCartFlashInFlight(state: AppState): boolean {
  *  format. Returns null when the slot's source family doesn't match the
  *  loaded save format (a mismatched mon snuck into staging from another
  *  cart) — the handler filters these out before composing. */
-function slotToGen12Ref(
-  slot: StagedSlot,
-  sourceFormat: SaveFormat,
-): StagedMonRefGen12 | null {
+function slotToGen12Ref(slot: StagedSlot, sourceFormat: SaveFormat): StagedMonRefGen12 | null {
   const ref = slot.sourceRef;
   if (slot.sourceFamily === 'gen1') {
-    if (sourceFormat !== 'RBY-RED' && sourceFormat !== 'RBY-BLUE' && sourceFormat !== 'RBY-YELLOW') {
+    if (
+      sourceFormat !== 'RBY-RED' &&
+      sourceFormat !== 'RBY-BLUE' &&
+      sourceFormat !== 'RBY-YELLOW'
+    ) {
       return null;
     }
     return {
@@ -427,7 +416,11 @@ export function pendingDestCommitRefs(
   slots: ReadonlyArray<StagedSlot | null>,
   controller: ControllerDeps,
 ):
-  | { readonly kind: 'ok'; readonly slotIdxs: ReadonlyArray<number>; readonly refs: ReadonlyArray<StagedMonRefGen3> }
+  | {
+      readonly kind: 'ok';
+      readonly slotIdxs: ReadonlyArray<number>;
+      readonly refs: ReadonlyArray<StagedMonRefGen3>;
+    }
   | { readonly kind: 'error'; readonly stagedIndex: number; readonly reason: string } {
   const slotIdxs: number[] = [];
   const refs: StagedMonRefGen3[] = [];
@@ -564,7 +557,9 @@ export async function runCommitSource(deps: CommitDeps): Promise<void> {
       action: 'WITH COMMIT',
       cartLabel,
       cartTid: tid,
-      summaryLines: [`Commit ${slotIdxs.length} staged mon${slotIdxs.length === 1 ? '' : 's'} to source cart (DELETE).`],
+      summaryLines: [
+        `Commit ${slotIdxs.length} staged mon${slotIdxs.length === 1 ? '' : 's'} to source cart (DELETE).`,
+      ],
       performSteps: [
         'Download backup of current cart bytes (mandatory)',
         'Flash modified bytes to cart',
@@ -690,7 +685,9 @@ export async function runCommitDestination(deps: CommitDeps): Promise<void> {
       action: 'WITH COMMIT',
       cartLabel,
       cartTid: tid,
-      summaryLines: [`Commit ${built.slotIdxs.length} placed mon${built.slotIdxs.length === 1 ? '' : 's'} to destination cart (WRITE).`],
+      summaryLines: [
+        `Commit ${built.slotIdxs.length} placed mon${built.slotIdxs.length === 1 ? '' : 's'} to destination cart (WRITE).`,
+      ],
       performSteps: [
         'Download backup of current cart bytes (mandatory)',
         'Flash modified bytes to cart',

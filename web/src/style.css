@@ -532,14 +532,26 @@ img.sprite,
 @keyframes party-icon-bounce-gen2 {
   /* Frame 1 sits at y=34 of the 66-px display strip (after the 2-px
      gutter row from the source PNG's 1-px gutter scaled 2×). */
-  0%, 49% { transform: translate3d(0, 0, 0); }
-  50%, 100% { transform: translate3d(0, -34px, 0); }
+  0%,
+  49% {
+    transform: translate3d(0, 0, 0);
+  }
+  50%,
+  100% {
+    transform: translate3d(0, -34px, 0);
+  }
 }
 
 @keyframes party-icon-bounce-gen3 {
   /* Frame 1 sits at y=49 of the 97-px display strip. */
-  0%, 49% { transform: translate3d(0, 0, 0); }
-  50%, 100% { transform: translate3d(0, -49px, 0); }
+  0%,
+  49% {
+    transform: translate3d(0, 0, 0);
+  }
+  50%,
+  100% {
+    transform: translate3d(0, -49px, 0);
+  }
 }
 
 /* RBY (Gen 1) source carts pre-date the GSC colour palette, so render
@@ -1321,7 +1333,9 @@ button.secondary {
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
   display: block;
   letter-spacing: 1px;
-  transition: transform 0.05s ease, box-shadow 0.05s ease;
+  transition:
+    transform 0.05s ease,
+    box-shadow 0.05s ease;
 }
 
 /* Debug-only buttons get a dashed border + muted background so they're
@@ -2300,12 +2314,16 @@ button.secondary {
 .ss-section-tag-mono .party-icon-gen2 {
   filter: grayscale(1) contrast(1.05);
 }
-.ss-before-block, .ss-after-block {
+.ss-before-block,
+.ss-after-block {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.ss-before-block, .ss-after-block { flex: 0 0 auto; }
+.ss-before-block,
+.ss-after-block {
+  flex: 0 0 auto;
+}
 
 /* Both panels float on the cream surface with a subtle drop shadow —
    no decorative frame, since the in-game art has its own visual edges. */
@@ -2392,8 +2410,14 @@ button.secondary {
   font-size: calc(28px * var(--frlg-scale));
   font-weight: bold;
 }
-.frlg-gender-m { color: #4080d0; text-shadow: 1px 1px 0 #2050a8; }
-.frlg-gender-f { color: #f08060; text-shadow: 1px 1px 0 #c83020; }
+.frlg-gender-m {
+  color: #4080d0;
+  text-shadow: 1px 1px 0 #2050a8;
+}
+.frlg-gender-f {
+  color: #f08060;
+  text-shadow: 1px 1px 0 #c83020;
+}
 
 /* Pokéball icon at template (211, 238) — bottom-right of sprite area.
    Native sprite is 32×32; render at scaled native pixel size. */
@@ -2463,15 +2487,47 @@ button.secondary {
   letter-spacing: 0;
 }
 /* Pill positions verified by flood-fill on bg_skills.png */
-.frlg-pill-hp  { left: calc(258px * var(--frlg-scale)); top: calc(45px  * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
-.frlg-pill-atk { left: calc(258px * var(--frlg-scale)); top: calc(87px  * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
-.frlg-pill-def { left: calc(258px * var(--frlg-scale)); top: calc(119px * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
-.frlg-pill-spa { left: calc(258px * var(--frlg-scale)); top: calc(151px * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
-.frlg-pill-spd { left: calc(258px * var(--frlg-scale)); top: calc(183px * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
-.frlg-pill-spe { left: calc(258px * var(--frlg-scale)); top: calc(215px * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
-.frlg-pill-ability { left: calc(8px * var(--frlg-scale)); top: calc(291px * var(--frlg-scale)); width: calc(132px * var(--frlg-scale)); }
+.frlg-pill-hp {
+  left: calc(258px * var(--frlg-scale));
+  top: calc(45px * var(--frlg-scale));
+  width: calc(98px * var(--frlg-scale));
+}
+.frlg-pill-atk {
+  left: calc(258px * var(--frlg-scale));
+  top: calc(87px * var(--frlg-scale));
+  width: calc(98px * var(--frlg-scale));
+}
+.frlg-pill-def {
+  left: calc(258px * var(--frlg-scale));
+  top: calc(119px * var(--frlg-scale));
+  width: calc(98px * var(--frlg-scale));
+}
+.frlg-pill-spa {
+  left: calc(258px * var(--frlg-scale));
+  top: calc(151px * var(--frlg-scale));
+  width: calc(98px * var(--frlg-scale));
+}
+.frlg-pill-spd {
+  left: calc(258px * var(--frlg-scale));
+  top: calc(183px * var(--frlg-scale));
+  width: calc(98px * var(--frlg-scale));
+}
+.frlg-pill-spe {
+  left: calc(258px * var(--frlg-scale));
+  top: calc(215px * var(--frlg-scale));
+  width: calc(98px * var(--frlg-scale));
+}
+.frlg-pill-ability {
+  left: calc(8px * var(--frlg-scale));
+  top: calc(291px * var(--frlg-scale));
+  width: calc(132px * var(--frlg-scale));
+}
 /* EXP. POINTS pill — top half of bottom info area */
-.frlg-pill-exp { left: calc(8px * var(--frlg-scale)); top: calc(259px * var(--frlg-scale)); width: calc(132px * var(--frlg-scale)); }
+.frlg-pill-exp {
+  left: calc(8px * var(--frlg-scale));
+  top: calc(259px * var(--frlg-scale));
+  width: calc(132px * var(--frlg-scale));
+}
 
 /* Nature tag in lavender header (right side, after the species name) */
 .frlg-nature-tag {
@@ -2493,12 +2549,36 @@ button.secondary {
   height: calc(20px * var(--frlg-scale));
   color: #303040;
 }
-.frlg-val-hp  { left: calc(370px * var(--frlg-scale)); top: calc(45px  * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
-.frlg-val-atk { left: calc(370px * var(--frlg-scale)); top: calc(87px  * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
-.frlg-val-def { left: calc(370px * var(--frlg-scale)); top: calc(119px * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
-.frlg-val-spa { left: calc(370px * var(--frlg-scale)); top: calc(151px * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
-.frlg-val-spd { left: calc(370px * var(--frlg-scale)); top: calc(183px * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
-.frlg-val-spe { left: calc(370px * var(--frlg-scale)); top: calc(215px * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
+.frlg-val-hp {
+  left: calc(370px * var(--frlg-scale));
+  top: calc(45px * var(--frlg-scale));
+  width: calc(135px * var(--frlg-scale));
+}
+.frlg-val-atk {
+  left: calc(370px * var(--frlg-scale));
+  top: calc(87px * var(--frlg-scale));
+  width: calc(135px * var(--frlg-scale));
+}
+.frlg-val-def {
+  left: calc(370px * var(--frlg-scale));
+  top: calc(119px * var(--frlg-scale));
+  width: calc(135px * var(--frlg-scale));
+}
+.frlg-val-spa {
+  left: calc(370px * var(--frlg-scale));
+  top: calc(151px * var(--frlg-scale));
+  width: calc(135px * var(--frlg-scale));
+}
+.frlg-val-spd {
+  left: calc(370px * var(--frlg-scale));
+  top: calc(183px * var(--frlg-scale));
+  width: calc(135px * var(--frlg-scale));
+}
+.frlg-val-spe {
+  left: calc(370px * var(--frlg-scale));
+  top: calc(215px * var(--frlg-scale));
+  width: calc(135px * var(--frlg-scale));
+}
 .frlg-val-ability {
   /* "CUTE CHARM" — centered in the cream value box right of ABILITY. */
   left: calc(150px * var(--frlg-scale));
@@ -2538,8 +2618,12 @@ button.secondary {
 }
 
 /* Nature colour markers — red for boosted stat, blue for hindered */
-.frlg-nature-up   { color: #c83020; }
-.frlg-nature-down { color: #2a78c8; }
+.frlg-nature-up {
+  color: #c83020;
+}
+.frlg-nature-down {
+  color: #2a78c8;
+}
 
 /* HP bar fill — uses the canonical overlay_hp.png (96×18, three 6-px
    stripes for green/yellow/red). Coords + dimensions taken straight
@@ -2559,8 +2643,12 @@ button.secondary {
   background-position: 0 0;
   image-rendering: pixelated;
 }
-.frlg-hpbar-fill.hp-yellow { background-position: 0 calc(-6px * var(--frlg-scale)); }
-.frlg-hpbar-fill.hp-red    { background-position: 0 calc(-12px * var(--frlg-scale)); }
+.frlg-hpbar-fill.hp-yellow {
+  background-position: 0 calc(-6px * var(--frlg-scale));
+}
+.frlg-hpbar-fill.hp-red {
+  background-position: 0 calc(-12px * var(--frlg-scale));
+}
 
 /* ============================================================
    Unified Gen 3 "after" card — header + combined stats/conversion
@@ -2608,8 +2696,17 @@ button.secondary {
   flex: 1;
   min-width: 0;
 }
-.g3card-name { font-size: 12px; font-weight: bold; letter-spacing: 1px; color: #383850; }
-.g3card-meta { font-size: 9px; letter-spacing: 0.5px; color: #5a5868; }
+.g3card-name {
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #383850;
+}
+.g3card-meta {
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  color: #5a5868;
+}
 
 .g3card-table {
   width: auto;
@@ -2632,7 +2729,9 @@ button.secondary {
   background: transparent !important;
   border-bottom: 1px solid var(--gbc-border-outer) !important;
 }
-.g3card-h-group { cursor: help; }
+.g3card-h-group {
+  cursor: help;
+}
 
 /* Pixel-art stat rows — tight spacing, dotted dividers between rows */
 .g3card-row td {
@@ -2652,7 +2751,9 @@ button.secondary {
   font-size: 10px;
   letter-spacing: 0.5px;
 }
-.g3card-row-special td { background: rgba(80, 130, 180, 0.08); }
+.g3card-row-special td {
+  background: rgba(80, 130, 180, 0.08);
+}
 .g3card-row.g3card-total td {
   background: transparent;
   color: var(--gbc-text);
@@ -2668,9 +2769,18 @@ button.secondary {
 }
 
 /* Compact fixed-width columns — kill the over-spread look */
-.g3card-h-label, .g3card-label { width: 32px; font-weight: 400; letter-spacing: 0.5px; }
-.g3card-h-final { width: 36px; }
-.g3card-h-delta { width: 32px; }
+.g3card-h-label,
+.g3card-label {
+  width: 32px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+.g3card-h-final {
+  width: 36px;
+}
+.g3card-h-delta {
+  width: 32px;
+}
 .g3card-final {
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -2685,11 +2795,22 @@ button.secondary {
   letter-spacing: 0;
   padding-left: 2px !important;
 }
-.g3card-delta-pos { color: var(--gbc-accent-green); }
-.g3card-delta-neg { color: var(--gbc-accent-red); }
-.g3card-delta-zero { color: var(--gbc-dark-gray); opacity: 0.7; }
-.g3card-nature-up { color: var(--gbc-accent-red); }
-.g3card-nature-down { color: var(--pc-blue); }
+.g3card-delta-pos {
+  color: var(--gbc-accent-green);
+}
+.g3card-delta-neg {
+  color: var(--gbc-accent-red);
+}
+.g3card-delta-zero {
+  color: var(--gbc-dark-gray);
+  opacity: 0.7;
+}
+.g3card-nature-up {
+  color: var(--gbc-accent-red);
+}
+.g3card-nature-down {
+  color: var(--pc-blue);
+}
 
 .g3card-num {
   text-align: right;
@@ -2697,7 +2818,10 @@ button.secondary {
   white-space: nowrap;
   width: 28px;
 }
-.g3card-num-spaced { padding-left: 12px !important; width: 48px; }
+.g3card-num-spaced {
+  padding-left: 12px !important;
+  width: 48px;
+}
 .g3card-arrow {
   width: 14px !important;
   text-align: center;
@@ -2983,13 +3107,32 @@ button.secondary {
    mon name, nickname, dex no, level, and stat labels are all normal
    weight. Explicit font-weight: normal here so the GBC pixel font's
    default rendering doesn't accidentally read as bold. */
-.gsc-screen-dexno { letter-spacing: 1px; font-weight: normal; }
-.gsc-screen-level { letter-spacing: 1px; font-weight: normal; }
+.gsc-screen-dexno {
+  letter-spacing: 1px;
+  font-weight: normal;
+}
+.gsc-screen-level {
+  letter-spacing: 1px;
+  font-weight: normal;
+}
 /* Gender symbol sits inline RIGHT NEXT to the level, not pushed to
    the far-right edge — matches in-game "No.147 :L29 ⚥" layout. */
-.gsc-screen-gender { display: inline-flex; align-items: center; margin-left: 6px; }
-.gsc-screen-gender svg { width: 14px; height: 14px; display: block; }
-.gsc-screen-species, .gsc-screen-nickname { font-size: 16px; letter-spacing: 1px; font-weight: normal; }
+.gsc-screen-gender {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+}
+.gsc-screen-gender svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+.gsc-screen-species,
+.gsc-screen-nickname {
+  font-size: 16px;
+  letter-spacing: 1px;
+  font-weight: normal;
+}
 
 /* HP bar — green/yellow/red gradient inner, dark border outer.
    Matches the in-game "HP:" widget. */
@@ -3017,9 +3160,15 @@ button.secondary {
   height: 100%;
   display: block;
 }
-.gsc-hp-fill-green { background: #38a040; }
-.gsc-hp-fill-yellow { background: #d8a838; }
-.gsc-hp-fill-red { background: #c83838; }
+.gsc-hp-fill-green {
+  background: #38a040;
+}
+.gsc-hp-fill-yellow {
+  background: #d8a838;
+}
+.gsc-hp-fill-red {
+  background: #c83838;
+}
 .gsc-hp-numbers {
   font-size: 11px;
   letter-spacing: 1px;
@@ -3062,14 +3211,14 @@ button.secondary {
 }
 .gsc-screen-row-label {
   font-weight: normal;
-  font-size: 12px;        /* labels smaller — visually de-emphasized */
-  opacity: 0.78;          /* + slight fade for "less bold" perception */
+  font-size: 12px; /* labels smaller — visually de-emphasized */
+  opacity: 0.78; /* + slight fade for "less bold" perception */
 }
 .gsc-screen-row-value {
-  font-weight: normal;    /* PokemonGB is single-weight; visual emphasis via size */
+  font-weight: normal; /* PokemonGB is single-weight; visual emphasis via size */
   text-align: right;
   font-variant-numeric: tabular-nums;
-  font-size: 14px;        /* larger than labels to read as the "main" data */
+  font-size: 14px; /* larger than labels to read as the "main" data */
   margin-top: 2px;
 }
 
@@ -3139,8 +3288,12 @@ button.secondary {
   font-smooth: never;
   text-rendering: geometricPrecision;
 }
-.rby-text.rby-right { justify-content: flex-end; }
-.rby-text.rby-left  { justify-content: flex-start; }
+.rby-text.rby-right {
+  justify-content: flex-end;
+}
+.rby-text.rby-left {
+  justify-content: flex-start;
+}
 
 /* Top-right name / level / HP / status column. Coordinates verified by
    flood-filling the original template's red placeholder rectangles. */
@@ -3327,7 +3480,9 @@ button.secondary {
   border-bottom: 1px dashed #ddc878;
   padding: 2px 0;
 }
-.em-screen-row:last-child { border-bottom: 0; }
+.em-screen-row:last-child {
+  border-bottom: 0;
+}
 .em-screen-row-label {
   font-weight: normal;
 }
@@ -3339,16 +3494,26 @@ button.secondary {
 .em-screen-row-num {
   font-weight: bold;
 }
-.em-nature-up { color: #d04050; }
-.em-nature-down { color: #4080d0; }
+.em-nature-up {
+  color: #d04050;
+}
+.em-nature-down {
+  color: #4080d0;
+}
 
 .em-delta {
   font-size: 10px;
   font-weight: normal;
 }
-.em-delta-pos { color: #2a9038; }
-.em-delta-neg { color: #c83030; }
-.em-delta-zero { color: #888888; }
+.em-delta-pos {
+  color: #2a9038;
+}
+.em-delta-neg {
+  color: #c83030;
+}
+.em-delta-zero {
+  color: #888888;
+}
 
 /* ============================================================
    Shared formula breakdown — Gen 3 only (the conversion output).
@@ -3449,8 +3614,12 @@ button.secondary {
   flex: 1;
   text-align: right;
 }
-.g3-final.g3-nature-up   { color: var(--gbc-accent-red); }
-.g3-final.g3-nature-down { color: var(--pc-blue); }
+.g3-final.g3-nature-up {
+  color: var(--gbc-accent-red);
+}
+.g3-final.g3-nature-down {
+  color: var(--pc-blue);
+}
 .g3-delta {
   font-size: 9px;
   font-variant-numeric: tabular-nums;
@@ -3459,9 +3628,16 @@ button.secondary {
   text-align: right;
   letter-spacing: 0;
 }
-.g3-delta-pos  { color: var(--gbc-accent-green); }
-.g3-delta-neg  { color: var(--gbc-accent-red); }
-.g3-delta-zero { color: var(--gbc-dark-gray); opacity: 0.6; }
+.g3-delta-pos {
+  color: var(--gbc-accent-green);
+}
+.g3-delta-neg {
+  color: var(--gbc-accent-red);
+}
+.g3-delta-zero {
+  color: var(--gbc-dark-gray);
+  opacity: 0.6;
+}
 .g3-stat-row {
   font-size: 9px;
   letter-spacing: 0.3px;
@@ -3525,8 +3701,12 @@ button.secondary {
   text-align: center;
   color: var(--gbc-dark-gray);
 }
-.ss-conv-h-label { width: 32px; }
-.ss-conv-h-group { /* spans 3 cols (num arrow num) */ }
+.ss-conv-h-label {
+  width: 32px;
+}
+.ss-conv-h-group {
+  /* spans 3 cols (num arrow num) */
+}
 
 .ss-conv-footer {
   font-size: 11px;
@@ -3535,7 +3715,9 @@ button.secondary {
   border-top: 1px solid rgba(48, 48, 48, 0.25);
   color: var(--gbc-text);
 }
-.ss-conv-num-spaced { padding-left: 16px !important; }
+.ss-conv-num-spaced {
+  padding-left: 16px !important;
+}
 
 .ss-conv-formula {
   /* Hidden by default — the formulas added a lot of visual clutter and
@@ -3573,11 +3755,23 @@ button.secondary {
 
 /* Per-column widths — table-layout:fixed picks these up from the first
    row (which is the header row). */
-.ss-conv-h-label, .ss-conv-label { width: 38px; letter-spacing: 0.5px; font-weight: bold; }
+.ss-conv-h-label,
+.ss-conv-label {
+  width: 38px;
+  letter-spacing: 0.5px;
+  font-weight: bold;
+}
 .ss-conv-table tr > td.ss-conv-num:nth-child(2),
-.ss-conv-table tr > td.ss-conv-num:nth-child(4) { width: 36px; }
-.ss-conv-table tr > td.ss-conv-num-spaced { width: 64px; padding-left: 12px; }
-.ss-conv-table tr > td.ss-conv-num:nth-child(7) { width: 56px; }
+.ss-conv-table tr > td.ss-conv-num:nth-child(4) {
+  width: 36px;
+}
+.ss-conv-table tr > td.ss-conv-num-spaced {
+  width: 64px;
+  padding-left: 12px;
+}
+.ss-conv-table tr > td.ss-conv-num:nth-child(7) {
+  width: 56px;
+}
 
 .ss-conv-num {
   text-align: right;
@@ -3594,7 +3788,9 @@ button.secondary {
 }
 
 /* Hint that headers are interactive (carry tooltips) */
-.ss-conv-h-group { cursor: help; }
+.ss-conv-h-group {
+  cursor: help;
+}
 .ss-conv-nature {
   font-weight: bold;
   cursor: help;

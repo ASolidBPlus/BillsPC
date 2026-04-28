@@ -23,14 +23,8 @@
  * Render diffs by identity.
  */
 import type { Gen3SaveContents, SaveContents, SaveError } from '@pokeportal/core';
-import {
-  slotToLegacyMon,
-} from './cart/stagingStore.js';
-import type {
-  StagedMon,
-  StagedSlot,
-  StagingSessionV1,
-} from './cart/stagingStore.types.js';
+import { slotToLegacyMon } from './cart/stagingStore.js';
+import type { StagedMon, StagedSlot, StagingSessionV1 } from './cart/stagingStore.types.js';
 import { STAGING_SLOT_COUNT } from './cart/stagingStore.types.js';
 
 export interface MonRef {
@@ -594,16 +588,15 @@ function deriveStagedMons(slots: ReadonlyArray<StagedSlot | null>): ReadonlyArra
  *  shape only (no explicit `slots` field). The legacy session is a
  *  flat list of staged mons; we lay them out into the first N slots,
  *  truncating at 30 and padding the rest with null. */
-function deriveSlotsFromLegacy(
-  session: StagingSessionV1,
-): ReadonlyArray<StagedSlot | null> {
+function deriveSlotsFromLegacy(session: StagingSessionV1): ReadonlyArray<StagedSlot | null> {
   const out: Array<StagedSlot | null> = Array.from({ length: STAGING_SLOT_COUNT }, () => null);
   for (let i = 0; i < Math.min(session.stagedMons.length, STAGING_SLOT_COUNT); i++) {
     const m = session.stagedMons[i];
     if (!m) continue;
-    const sourceRefKey = m.sourceRef.bucket === 'box'
-      ? `${m.sourceCartLabel}|${m.sourceTid}|box:${m.sourceRef.boxIndex ?? 0}:${m.sourceRef.slot}`
-      : `${m.sourceCartLabel}|${m.sourceTid}|${m.sourceRef.bucket}:${m.sourceRef.slot}`;
+    const sourceRefKey =
+      m.sourceRef.bucket === 'box'
+        ? `${m.sourceCartLabel}|${m.sourceTid}|box:${m.sourceRef.boxIndex ?? 0}:${m.sourceRef.slot}`
+        : `${m.sourceCartLabel}|${m.sourceTid}|${m.sourceRef.bucket}:${m.sourceRef.slot}`;
     const placement = m.destination
       ? {
           destBoxIndex: m.destination.destBoxIndex,
@@ -1007,8 +1000,7 @@ export function reducer(state: AppState, action: Action): AppState {
     }
     case 'flash_phase': {
       const prev = state.cartFlash;
-      const progress =
-        prev && prev.kind === 'cart_flash_progressing' ? prev.progress : undefined;
+      const progress = prev && prev.kind === 'cart_flash_progressing' ? prev.progress : undefined;
       return {
         ...state,
         cartFlash: {
@@ -1129,11 +1121,9 @@ export function reducer(state: AppState, action: Action): AppState {
     // slice so it survives `state.kind` transitions cleanly.
     case 'v2_select_toggle': {
       const cur =
-        action.side === 'source' ? state.v2SourceSelection ?? [] : state.v2DestSelection ?? [];
+        action.side === 'source' ? (state.v2SourceSelection ?? []) : (state.v2DestSelection ?? []);
       const anchor =
-        action.side === 'source'
-          ? state.v2SourceSelectionAnchor
-          : state.v2DestSelectionAnchor;
+        action.side === 'source' ? state.v2SourceSelectionAnchor : state.v2DestSelectionAnchor;
       let nextSel: ReadonlyArray<MonRef>;
       let nextAnchor: MonRef | undefined;
       const refKey = monRefKey(action.ref);
@@ -1242,10 +1232,7 @@ export function reducer(state: AppState, action: Action): AppState {
       };
     }
     case 'v2_transfer_select_clear': {
-      if (
-        state.v2TransferSelection === undefined &&
-        state.v2TransferSelectionAnchor === undefined
-      )
+      if (state.v2TransferSelection === undefined && state.v2TransferSelectionAnchor === undefined)
         return state;
       return {
         ...state,

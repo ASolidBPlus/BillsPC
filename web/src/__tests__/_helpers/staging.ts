@@ -8,11 +8,7 @@
  * on its assertions.
  */
 
-import type {
-  Gen12Pokemon,
-  Gen3SaveContents,
-  SaveContents,
-} from '@pokeportal/core';
+import type { Gen12Pokemon, Gen3SaveContents, SaveContents } from '@pokeportal/core';
 import type {
   StagedPlacement,
   StagedSlot,
@@ -79,9 +75,7 @@ export function makeGen2SaveWithBox0(mons: ReadonlyArray<Gen12Pokemon>): SaveCon
 /* Gen 3 fixture                                                      */
 /* ------------------------------------------------------------------ */
 
-type Gen3Slot =
-  | { kind: 'empty' }
-  | { kind: 'filled'; bytes: Uint8Array; species: number };
+type Gen3Slot = { kind: 'empty' } | { kind: 'filled'; bytes: Uint8Array; species: number };
 
 /**
  * Build an Emerald-format Gen3SaveContents with all 14 boxes empty.

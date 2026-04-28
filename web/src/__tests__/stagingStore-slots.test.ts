@@ -77,7 +77,10 @@ describe('StagingStore — slot-addressed API (AMEND-S8v2.2-R1)', () => {
   it('removeAt clears the slot and frees nextEmptySlot', async () => {
     const store = await StagingStore.open(nextDbName());
     await store.placeAt(0, payload({ slot: 0 }));
-    await store.placeAt(1, payload({ slot: 1, sourceRef: { bucket: 'box', boxIndex: 0, slot: 1 } }));
+    await store.placeAt(
+      1,
+      payload({ slot: 1, sourceRef: { bucket: 'box', boxIndex: 0, slot: 1 } }),
+    );
     await store.removeAt(0);
     expect(store.getSlot(0)).toBeNull();
     expect(store.nextEmptySlot()).toBe(0);
@@ -122,7 +125,10 @@ describe('StagingStore — slot-addressed API (AMEND-S8v2.2-R1)', () => {
   it('clear() empties all 30 slots', async () => {
     const store = await StagingStore.open(nextDbName());
     await store.placeAt(0, payload({ slot: 0 }));
-    await store.placeAt(5, payload({ slot: 5, sourceRef: { bucket: 'box', boxIndex: 0, slot: 5 } }));
+    await store.placeAt(
+      5,
+      payload({ slot: 5, sourceRef: { bucket: 'box', boxIndex: 0, slot: 5 } }),
+    );
     await store.clear();
     expect(store.occupiedSlots()).toEqual([]);
     expect(store.getAllSlots().every((s) => s === null)).toBe(true);
@@ -178,9 +184,18 @@ describe('StagingStore — slot-addressed API (AMEND-S8v2.2-R1)', () => {
 
   it('occupiedSlots returns slot-ordered array (not insertion order)', async () => {
     const store = await StagingStore.open(nextDbName());
-    await store.placeAt(5, payload({ slot: 5, sourceRef: { bucket: 'box', boxIndex: 0, slot: 5 } }));
-    await store.placeAt(2, payload({ slot: 2, sourceRef: { bucket: 'box', boxIndex: 0, slot: 2 } }));
-    await store.placeAt(8, payload({ slot: 8, sourceRef: { bucket: 'box', boxIndex: 0, slot: 8 } }));
+    await store.placeAt(
+      5,
+      payload({ slot: 5, sourceRef: { bucket: 'box', boxIndex: 0, slot: 5 } }),
+    );
+    await store.placeAt(
+      2,
+      payload({ slot: 2, sourceRef: { bucket: 'box', boxIndex: 0, slot: 2 } }),
+    );
+    await store.placeAt(
+      8,
+      payload({ slot: 8, sourceRef: { bucket: 'box', boxIndex: 0, slot: 8 } }),
+    );
     const occupied = store.occupiedSlots();
     expect(occupied.map((s) => s.idx)).toEqual([2, 5, 8]);
   });

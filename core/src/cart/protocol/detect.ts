@@ -59,7 +59,10 @@ export async function detectProtocol(
       // Anything else (DISCONNECTED, CANCELLED) bubbles up below.
       if (e instanceof CartError && e.reason !== 'TIMEOUT') throw e;
     }
-    dlog('detect: V probe got', stockFwByte === null ? '(timeout)' : `byte 0x${stockFwByte.toString(16)} (${stockFwByte})`);
+    dlog(
+      'detect: V probe got',
+      stockFwByte === null ? '(timeout)' : `byte 0x${stockFwByte.toString(16)} (${stockFwByte})`,
+    );
     // Carts with Lesserkuma's CFW (firmware "Rxx+Lyy") respond to V with
     // the stock OFW byte for back-compat, BUT only fully respond to
     // bulk-read operations via the LK binary protocol. So we ALWAYS probe

@@ -9,7 +9,10 @@
 
 import { el } from './dom.js';
 
-export function cartPaneShell(side: 'left' | 'right', children: readonly HTMLElement[]): HTMLElement {
+export function cartPaneShell(
+  side: 'left' | 'right',
+  children: readonly HTMLElement[],
+): HTMLElement {
   const wrap = el('div', { class: `cart-pane-shell cart-pane-${side}` });
   for (const c of children) wrap.append(c);
   return wrap;

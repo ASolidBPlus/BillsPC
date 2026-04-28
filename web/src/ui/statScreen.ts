@@ -32,19 +32,34 @@ import { el } from './dom.js';
 import { getAbilityDescription, getAbilityName } from './gen3Abilities.js';
 import { getTypesGen2 } from './pokemonTypesGen2.js';
 import { spriteImg } from './sprites.js';
-import {
-  computeGen12Stats,
-  computeGen3Stats,
-  diffStats,
-  type SixStats,
-} from './statFormulas.js';
+import { computeGen12Stats, computeGen3Stats, diffStats, type SixStats } from './statFormulas.js';
 
 const NATURE_NAMES: readonly string[] = [
-  'Hardy', 'Lonely', 'Brave', 'Adamant', 'Naughty',
-  'Bold', 'Docile', 'Relaxed', 'Impish', 'Lax',
-  'Timid', 'Hasty', 'Serious', 'Jolly', 'Naive',
-  'Modest', 'Mild', 'Quiet', 'Bashful', 'Rash',
-  'Calm', 'Gentle', 'Sassy', 'Careful', 'Quirky',
+  'Hardy',
+  'Lonely',
+  'Brave',
+  'Adamant',
+  'Naughty',
+  'Bold',
+  'Docile',
+  'Relaxed',
+  'Impish',
+  'Lax',
+  'Timid',
+  'Hasty',
+  'Serious',
+  'Jolly',
+  'Naive',
+  'Modest',
+  'Mild',
+  'Quiet',
+  'Bashful',
+  'Rash',
+  'Calm',
+  'Gentle',
+  'Sassy',
+  'Careful',
+  'Quirky',
 ];
 
 // (NEUTRAL_BUCKET_NATURES table previously consumed by the standalone
@@ -52,11 +67,31 @@ const NATURE_NAMES: readonly string[] = [
 // nature directly from `gen3.nature` so the lookup table is unused.)
 
 const NATURE_EFFECTS: readonly [number, number][] = [
-  [-1, -1], [0, 1], [0, 4], [0, 2], [0, 3],
-  [1, 0], [-1, -1], [1, 4], [1, 2], [1, 3],
-  [4, 0], [4, 1], [-1, -1], [4, 2], [4, 3],
-  [2, 0], [2, 1], [2, 4], [-1, -1], [2, 3],
-  [3, 0], [3, 1], [3, 2], [3, 4], [-1, -1],
+  [-1, -1],
+  [0, 1],
+  [0, 4],
+  [0, 2],
+  [0, 3],
+  [1, 0],
+  [-1, -1],
+  [1, 4],
+  [1, 2],
+  [1, 3],
+  [4, 0],
+  [4, 1],
+  [-1, -1],
+  [4, 2],
+  [4, 3],
+  [2, 0],
+  [2, 1],
+  [2, 4],
+  [-1, -1],
+  [2, 3],
+  [3, 0],
+  [3, 1],
+  [3, 2],
+  [3, 4],
+  [-1, -1],
 ];
 
 function natureMark(nature: number, statIdx: 0 | 1 | 2 | 3 | 4): '' | '+' | '-' {
@@ -128,8 +163,7 @@ function renderGscStatScreen(mon: Gen12Pokemon): HTMLElement {
     wrap.append(el('div', { class: `gsc-text ${cls}` }, text));
   };
 
-  const speciesName =
-    getSpecies(mon.speciesGen2Id)?.name ?? `species-${mon.speciesGen2Id}`;
+  const speciesName = getSpecies(mon.speciesGen2Id)?.name ?? `species-${mon.speciesGen2Id}`;
 
   // Header values (top white half). Template already bakes "No." label
   // so we only render the digits — DON'T prefix with №.
@@ -149,9 +183,10 @@ function renderGscStatScreen(mon: Gen12Pokemon): HTMLElement {
   const monGender = gen2Gender(mon.dvs, genderRatio);
   if (monGender !== 2) {
     const genderImg = document.createElement('img');
-    genderImg.src = monGender === 1
-      ? '/sprites/stat-screens/gsc-icon-female.png'
-      : '/sprites/stat-screens/gsc-icon-male.png';
+    genderImg.src =
+      monGender === 1
+        ? '/sprites/stat-screens/gsc-icon-female.png'
+        : '/sprites/stat-screens/gsc-icon-male.png';
     genderImg.className = 'gsc-gender-pos';
     genderImg.alt = monGender === 1 ? '♀' : '♂';
     wrap.append(genderImg);
@@ -189,11 +224,11 @@ function renderGscStatScreen(mon: Gen12Pokemon): HTMLElement {
   // the personal table but the cart still stores one Special StatExp,
   // so showing one value is the honest pre-conversion view.
   const sharedSpecial = stats.spa;
-  addText('gsc-attack',  String(stats.atk));
+  addText('gsc-attack', String(stats.atk));
   addText('gsc-defense', String(stats.def));
   addText('gsc-spclatk', String(sharedSpecial));
   addText('gsc-spcldef', String(sharedSpecial));
-  addText('gsc-speed',   String(stats.spe));
+  addText('gsc-speed', String(stats.spe));
 
   return wrap;
 }
@@ -209,11 +244,12 @@ function renderGscStatScreen(mon: Gen12Pokemon): HTMLElement {
 function renderRbyStatScreen(mon: Gen12Pokemon): HTMLElement {
   const personal = getPersonalGen2(mon.speciesGen2Id);
   const stats = computeGen12Stats(mon, personal, mon.level);
-  const special = personal.gen1Special != null
-    ? // For Gen 1 mons, recompute SPECIAL using the canonical Gen 1
-      // single-Special base (not the split SpA value used in GSC view).
-      Math.max(stats.spa, stats.spd) // both columns derive from the same DV/StatExp
-    : stats.spa;
+  const special =
+    personal.gen1Special != null
+      ? // For Gen 1 mons, recompute SPECIAL using the canonical Gen 1
+        // single-Special base (not the split SpA value used in GSC view).
+        Math.max(stats.spa, stats.spd) // both columns derive from the same DV/StatExp
+      : stats.spa;
   const nick = nicknameOf(mon);
   const ot = otNameOf(mon);
   const types = getTypesGen2(mon.speciesGen2Id);
@@ -266,7 +302,10 @@ interface EmeraldOpts {
   readonly sourceStats?: SixStats | null;
 }
 
-export function renderEmeraldStatScreen(mon: Gen3Intermediate, opts: EmeraldOpts = {}): HTMLElement {
+export function renderEmeraldStatScreen(
+  mon: Gen3Intermediate,
+  opts: EmeraldOpts = {},
+): HTMLElement {
   const personal = getPersonal(mon.species);
   const stats = computeGen3Stats(personal, {
     ivs: mon.ivs,
@@ -309,14 +348,21 @@ export function renderEmeraldStatScreen(mon: Gen3Intermediate, opts: EmeraldOpts
   return wrap;
 }
 
-function emRow(label: string, value: number, delta: number | null, mark: '' | '+' | '-' = ''): HTMLElement {
+function emRow(
+  label: string,
+  value: number,
+  delta: number | null,
+  mark: '' | '+' | '-' = '',
+): HTMLElement {
   const row = el('div', { class: 'em-screen-row' });
   row.append(el('span', { class: 'em-screen-row-label' }, label));
   const valueWrap = el('span', { class: 'em-screen-row-value' });
   valueWrap.append(
     el(
       'span',
-      { class: `em-screen-row-num${mark === '+' ? ' em-nature-up' : mark === '-' ? ' em-nature-down' : ''}` },
+      {
+        class: `em-screen-row-num${mark === '+' ? ' em-nature-up' : mark === '-' ? ' em-nature-down' : ''}`,
+      },
       String(value),
     ),
   );
@@ -411,7 +457,7 @@ function renderFrlgAfterPanel(gen3: Gen3Intermediate, source?: Gen12Pokemon): HT
 
   // Stat rows — gray pill labels on the right column with values in
   // yellow boxes. Layout matches the in-game FR/LG SKILLS sub-page.
-  wrap.append(el('div', { class: 'frlg-pill frlg-pill-hp' },  'HP'));
+  wrap.append(el('div', { class: 'frlg-pill frlg-pill-hp' }, 'HP'));
   wrap.append(el('div', { class: 'frlg-pill frlg-pill-atk' }, 'ATTACK'));
   wrap.append(el('div', { class: 'frlg-pill frlg-pill-def' }, 'DEFENSE'));
   wrap.append(el('div', { class: 'frlg-pill frlg-pill-spa' }, 'SP.ATK'));
@@ -424,21 +470,57 @@ function renderFrlgAfterPanel(gen3: Gen3Intermediate, source?: Gen12Pokemon): HT
   wrap.append(el('div', { class: 'frlg-hpbar-fill' }));
 
   // Stat values inside the yellow input boxes
-  wrap.append(el('div', { class: 'frlg-text frlg-val frlg-val-hp' },  `${stats.hp}/${stats.hp}`));
-  wrap.append(el('div', { class: `frlg-text frlg-val frlg-val-atk ${natureColorClass(gen3.nature, 0)}` }, String(stats.atk)));
-  wrap.append(el('div', { class: `frlg-text frlg-val frlg-val-def ${natureColorClass(gen3.nature, 1)}` }, String(stats.def)));
-  wrap.append(el('div', { class: `frlg-text frlg-val frlg-val-spa ${natureColorClass(gen3.nature, 2)}` }, String(stats.spa)));
-  wrap.append(el('div', { class: `frlg-text frlg-val frlg-val-spd ${natureColorClass(gen3.nature, 3)}` }, String(stats.spd)));
-  wrap.append(el('div', { class: `frlg-text frlg-val frlg-val-spe ${natureColorClass(gen3.nature, 4)}` }, String(stats.spe)));
+  wrap.append(el('div', { class: 'frlg-text frlg-val frlg-val-hp' }, `${stats.hp}/${stats.hp}`));
+  wrap.append(
+    el(
+      'div',
+      { class: `frlg-text frlg-val frlg-val-atk ${natureColorClass(gen3.nature, 0)}` },
+      String(stats.atk),
+    ),
+  );
+  wrap.append(
+    el(
+      'div',
+      { class: `frlg-text frlg-val frlg-val-def ${natureColorClass(gen3.nature, 1)}` },
+      String(stats.def),
+    ),
+  );
+  wrap.append(
+    el(
+      'div',
+      { class: `frlg-text frlg-val frlg-val-spa ${natureColorClass(gen3.nature, 2)}` },
+      String(stats.spa),
+    ),
+  );
+  wrap.append(
+    el(
+      'div',
+      { class: `frlg-text frlg-val frlg-val-spd ${natureColorClass(gen3.nature, 3)}` },
+      String(stats.spd),
+    ),
+  );
+  wrap.append(
+    el(
+      'div',
+      { class: `frlg-text frlg-val frlg-val-spe ${natureColorClass(gen3.nature, 4)}` },
+      String(stats.spe),
+    ),
+  );
   // ABILITY value (UPPERCASE per FR/LG canonical), with nature on the
   // line below as a secondary value, then description further below
   wrap.append(
-    el('div', { class: 'frlg-text frlg-val frlg-val-ability' },
-      getAbilityName(personal.ability0).toUpperCase()),
+    el(
+      'div',
+      { class: 'frlg-text frlg-val frlg-val-ability' },
+      getAbilityName(personal.ability0).toUpperCase(),
+    ),
   );
   wrap.append(
-    el('div', { class: 'frlg-text frlg-val frlg-val-nature' },
-      `${natureName.toUpperCase()} NATURE`),
+    el(
+      'div',
+      { class: 'frlg-text frlg-val frlg-val-nature' },
+      `${natureName.toUpperCase()} NATURE`,
+    ),
   );
   const desc = getAbilityDescription(personal.ability0);
   if (desc) {
@@ -452,7 +534,7 @@ function renderFrlgAfterPanel(gen3: Gen3Intermediate, source?: Gen12Pokemon): HT
 function derivePokemonGender(pid: number, genderRatio: number): 'M' | 'F' | 'N' {
   if (genderRatio === 255) return 'N';
   if (genderRatio === 254) return 'F';
-  if (genderRatio === 0)   return 'M';
+  if (genderRatio === 0) return 'M';
   return (pid & 0xff) < genderRatio ? 'F' : 'M';
 }
 
@@ -500,18 +582,70 @@ function renderGen3UnifiedCard(
   const grid = el('div', { class: 'g3-grid' });
   const sourceHpDv = hpDv(source.dvs);
   type StatSpec = {
-    label: string; statKey: keyof SixStats;
+    label: string;
+    statKey: keyof SixStats;
     /** Index 0..4 for the natureMark lookup; null for HP (no nature effect). */
     statIdx: 0 | 1 | 2 | 3 | 4 | null;
-    dv: number; iv: number; statExp: number; ev: number;
+    dv: number;
+    iv: number;
+    statExp: number;
+    ev: number;
   };
   const specs: StatSpec[] = [
-    { label: 'HP',  statKey: 'hp',  statIdx: null, dv: sourceHpDv,         iv: gen3.ivs.hp,  statExp: source.statExp.hp,      ev: gen3.evs.hp },
-    { label: 'ATK', statKey: 'atk', statIdx:    0, dv: source.dvs.atk,     iv: gen3.ivs.atk, statExp: source.statExp.atk,     ev: gen3.evs.atk },
-    { label: 'DEF', statKey: 'def', statIdx:    1, dv: source.dvs.def,     iv: gen3.ivs.def, statExp: source.statExp.def,     ev: gen3.evs.def },
-    { label: 'SpA', statKey: 'spa', statIdx:    2, dv: source.dvs.special, iv: gen3.ivs.spa, statExp: source.statExp.special, ev: gen3.evs.spa },
-    { label: 'SpD', statKey: 'spd', statIdx:    3, dv: source.dvs.special, iv: gen3.ivs.spd, statExp: source.statExp.special, ev: gen3.evs.spd },
-    { label: 'Spe', statKey: 'spe', statIdx:    4, dv: source.dvs.spe,     iv: gen3.ivs.spe, statExp: source.statExp.spe,     ev: gen3.evs.spe },
+    {
+      label: 'HP',
+      statKey: 'hp',
+      statIdx: null,
+      dv: sourceHpDv,
+      iv: gen3.ivs.hp,
+      statExp: source.statExp.hp,
+      ev: gen3.evs.hp,
+    },
+    {
+      label: 'ATK',
+      statKey: 'atk',
+      statIdx: 0,
+      dv: source.dvs.atk,
+      iv: gen3.ivs.atk,
+      statExp: source.statExp.atk,
+      ev: gen3.evs.atk,
+    },
+    {
+      label: 'DEF',
+      statKey: 'def',
+      statIdx: 1,
+      dv: source.dvs.def,
+      iv: gen3.ivs.def,
+      statExp: source.statExp.def,
+      ev: gen3.evs.def,
+    },
+    {
+      label: 'SpA',
+      statKey: 'spa',
+      statIdx: 2,
+      dv: source.dvs.special,
+      iv: gen3.ivs.spa,
+      statExp: source.statExp.special,
+      ev: gen3.evs.spa,
+    },
+    {
+      label: 'SpD',
+      statKey: 'spd',
+      statIdx: 3,
+      dv: source.dvs.special,
+      iv: gen3.ivs.spd,
+      statExp: source.statExp.special,
+      ev: gen3.evs.spd,
+    },
+    {
+      label: 'Spe',
+      statKey: 'spe',
+      statIdx: 4,
+      dv: source.dvs.spe,
+      iv: gen3.ivs.spe,
+      statExp: source.statExp.spe,
+      ev: gen3.evs.spe,
+    },
   ];
 
   let rawSum = 0;
@@ -525,16 +659,23 @@ function renderGen3UnifiedCard(
     const deltaSign = delta > 0 ? '+' : delta < 0 ? '−' : '±';
     const deltaCls = delta > 0 ? 'g3-delta-pos' : delta < 0 ? 'g3-delta-neg' : 'g3-delta-zero';
     const mark = s.statIdx !== null ? natureMark(gen3.nature, s.statIdx) : '';
-    const finalCls = mark === '+' ? 'g3-final g3-nature-up'
-                   : mark === '-' ? 'g3-final g3-nature-down'
-                   : 'g3-final';
+    const finalCls =
+      mark === '+'
+        ? 'g3-final g3-nature-up'
+        : mark === '-'
+          ? 'g3-final g3-nature-down'
+          : 'g3-final';
 
     const card = el('div', { class: 'g3-stat-card' });
     const head = el('div', { class: 'g3-stat-head' });
     head.append(
       el('span', { class: 'g3-stat-label' }, s.label),
       el('span', { class: finalCls }, String(finalVal)),
-      el('span', { class: `g3-delta ${deltaCls}` }, delta === 0 ? '±0' : `${deltaSign}${Math.abs(delta)}`),
+      el(
+        'span',
+        { class: `g3-delta ${deltaCls}` },
+        delta === 0 ? '±0' : `${deltaSign}${Math.abs(delta)}`,
+      ),
     );
     card.append(head);
     card.append(
@@ -606,7 +747,6 @@ function renderGen3UnifiedCard(
 
   return wrap;
 }
-
 
 /** BEFORE/AFTER section tag — `LABEL [icon]`, icon to the right.
  *  Icon is wrapped in a `.ss-tag-icon` div so we can size/scale it
@@ -733,7 +873,9 @@ export function openStatScreenModal(opts: StatScreenOpts): void {
   // BELOW the BEFORE/AFTER row — same compact table the user already
   // approved, just relocated under the new summary panels.
   if (breakdownSrc && breakdownGen3) {
-    inner.append(renderGen3UnifiedCard(breakdownSrc, breakdownGen3, sourceStatsForCompare(breakdownSrc)));
+    inner.append(
+      renderGen3UnifiedCard(breakdownSrc, breakdownGen3, sourceStatsForCompare(breakdownSrc)),
+    );
   }
 
   const actions = el('div', { class: 'ss-actions' });
@@ -785,7 +927,11 @@ export function openStatScreenModal(opts: StatScreenOpts): void {
     actions.append(pk2);
   }
   if (subject.kind === 'transferSlot' && opts.onRemoveTransfer) {
-    const remove = el('button', { type: 'button', class: 'ss-btn ss-btn-remove' }, 'Remove from Transfer') as HTMLButtonElement;
+    const remove = el(
+      'button',
+      { type: 'button', class: 'ss-btn ss-btn-remove' },
+      'Remove from Transfer',
+    ) as HTMLButtonElement;
     remove.addEventListener('click', () => {
       close();
       opts.onRemoveTransfer?.();
@@ -799,7 +945,11 @@ export function openStatScreenModal(opts: StatScreenOpts): void {
   function onKey(e: KeyboardEvent): void {
     if (e.key === 'Escape') close();
   }
-  const closeBtn = el('button', { type: 'button', class: 'ss-btn ss-btn-close' }, 'Close') as HTMLButtonElement;
+  const closeBtn = el(
+    'button',
+    { type: 'button', class: 'ss-btn ss-btn-close' },
+    'Close',
+  ) as HTMLButtonElement;
   closeBtn.addEventListener('click', () => close());
   actions.append(closeBtn);
   inner.append(actions);

@@ -24,7 +24,10 @@ describe('staging reducer', () => {
   });
 
   it('right_pane_subview only switches on explicit action', () => {
-    let state: AppState = reducer(INITIAL_STATE, { type: 'staging_loaded', session: EMPTY_SESSION });
+    let state: AppState = reducer(INITIAL_STATE, {
+      type: 'staging_loaded',
+      session: EMPTY_SESSION,
+    });
     state = reducer(state, { type: 'right_pane_subview', subview: 'destination' });
     expect(state.staging!.rightPaneSubview).toBe('destination');
     state = reducer(state, { type: 'right_pane_subview', subview: 'staging' });

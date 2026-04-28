@@ -75,11 +75,7 @@ import { requestCartPort } from './cart/serialPort.js';
 import { BackupSink, backupFilename } from './cart/backupSink.js';
 import { stagingPane } from './ui/stagingPane.js';
 import { openStatScreenModal } from './ui/statScreen.js';
-import {
-  renderWorkbench,
-  type LeftRole,
-  type WorkbenchProps,
-} from './ui/workbench.js';
+import { renderWorkbench, type LeftRole, type WorkbenchProps } from './ui/workbench.js';
 import { confirmFlashDialog } from './ui/confirmFlashDialog.js';
 import { flashProgressOverlay } from './ui/flashProgressOverlay.js';
 import { recoveryDialog } from './ui/recoveryDialog.js';
@@ -576,11 +572,7 @@ function renderV2(
     document.createTextNode('Pick a SOURCE and a DESTINATION to get started!'),
     el('span', { class: 'dialog-cursor', 'aria-hidden': 'true' }, '▼'),
   );
-  speech.append(
-    el('div', { class: 'gen2-line' }, "Hi! I'm BILL!"),
-    explainLine,
-    lastLine,
-  );
+  speech.append(el('div', { class: 'gen2-line' }, "Hi! I'm BILL!"), explainLine, lastLine);
   header.append(speech);
   root.append(header);
 
@@ -595,7 +587,11 @@ function renderV2(
     const dbg = el('div', { class: 'debug-bar' });
     dbg.append(el('span', { class: 'debug-bar-label' }, 'DEBUG · demo saves:'));
     const mk = (label: string, side: 'source' | 'dest', file: string): HTMLButtonElement => {
-      const btn = el('button', { type: 'button', class: 'debug-bar-btn' }, label) as HTMLButtonElement;
+      const btn = el(
+        'button',
+        { type: 'button', class: 'debug-bar-btn' },
+        label,
+      ) as HTMLButtonElement;
       btn.addEventListener('click', () => {
         void loadDemoSave(side, file, dispatch, deps);
       });
@@ -643,9 +639,7 @@ function renderV2(
           'AloneAgainstPixels',
         ),
       );
-      credits.append(
-        document.createTextNode(' (DeviantArt). Gen 1/2 party icons by '),
-      );
+      credits.append(document.createTextNode(' (DeviantArt). Gen 1/2 party icons by '));
       credits.append(
         el(
           'a',
@@ -657,9 +651,7 @@ function renderV2(
           'SoupPotato (Sour Crystal)',
         ),
       );
-      credits.append(
-        document.createTextNode('. Gen 3 party icons from '),
-      );
+      credits.append(document.createTextNode('. Gen 3 party icons from '));
       credits.append(
         el(
           'a',
@@ -700,7 +692,10 @@ function renderV2(
         attemptsExhausted: false,
         onRetry: () => {
           if (cf.recoveryAvailable) {
-            dispatch({ type: 'recovery_started', backupFilename: cf.recoveryAvailable.backupFilename });
+            dispatch({
+              type: 'recovery_started',
+              backupFilename: cf.recoveryAvailable.backupFilename,
+            });
           }
         },
         onDismiss: () => dispatch({ type: 'cart_flash_dismissed' }),
@@ -762,9 +757,7 @@ function buildWorkbenchProps(
       : null;
 
   const sourceSavParsing =
-    state.kind === 'parsing'
-      ? { fileName: state.fileName, size: state.size }
-      : null;
+    state.kind === 'parsing' ? { fileName: state.fileName, size: state.size } : null;
 
   const sourceParseError =
     state.kind === 'parse_error'
@@ -842,7 +835,12 @@ function buildWorkbenchProps(
     const tid = state.save.trainer.tid;
     const out: MonRef[] = [];
     for (const s of stagedSlots) {
-      if (s !== null && !s.sourceCommitted && s.sourceCartLabel === cartLabel && s.sourceTid === tid) {
+      if (
+        s !== null &&
+        !s.sourceCommitted &&
+        s.sourceCartLabel === cartLabel &&
+        s.sourceTid === tid
+      ) {
         out.push(s.sourceRef);
       }
     }
@@ -863,7 +861,12 @@ function buildWorkbenchProps(
     const out = new Map<string, number>();
     for (let i = 0; i < stagedSlots.length; i++) {
       const s = stagedSlots[i];
-      if (s != null && !s.sourceCommitted && s.sourceCartLabel === cartLabel && s.sourceTid === tid) {
+      if (
+        s != null &&
+        !s.sourceCommitted &&
+        s.sourceCartLabel === cartLabel &&
+        s.sourceTid === tid
+      ) {
         out.set(monRefKey(s.sourceRef), i);
       }
     }
@@ -991,9 +994,7 @@ function buildWorkbenchProps(
         });
         return;
       }
-      const mode: 'replace' | 'add' | 'range' = modKeys.shift
-        ? 'range'
-        : 'add';
+      const mode: 'replace' | 'add' | 'range' = modKeys.shift ? 'range' : 'add';
       dispatch({
         type: 'v2_select_toggle',
         side: 'source',
@@ -1069,9 +1070,7 @@ function buildWorkbenchProps(
       }
       // Filled slot — build a MonRef and dispatch the selection toggle.
       const ref: MonRef = { bucket: 'box', boxIndex: state.dest.boxIndex, slot };
-      const mode: 'replace' | 'add' | 'range' = modKeys.shift
-        ? 'range'
-        : 'add';
+      const mode: 'replace' | 'add' | 'range' = modKeys.shift ? 'range' : 'add';
       // Build the entries list for range-extend math: occupied dest
       // slots in the current visible box, slot-major.
       const box = state.dest.save.pc.boxes[state.dest.boxIndex] ?? [];
@@ -1263,7 +1262,9 @@ function buildWorkbenchProps(
             // bug, so v1 imports may produce malformed nick/OT fields.
             const pkBytes = Array.isArray(entry.pkBytes)
               ? new Uint8Array(entry.pkBytes as number[])
-              : serializeGen12ForStaging(entry.pkData as Parameters<typeof serializeGen12ForStaging>[0]);
+              : serializeGen12ForStaging(
+                  entry.pkData as Parameters<typeof serializeGen12ForStaging>[0],
+                );
             await store.placeAt(idx, {
               pkBytes,
               speciesId: entry.speciesId as number,
@@ -1280,7 +1281,10 @@ function buildWorkbenchProps(
               await store.setSourceCommitted(idx, true);
             }
             if (entry.placement) {
-              await store.setPlacement(idx, entry.placement as Parameters<typeof store.setPlacement>[1]);
+              await store.setPlacement(
+                idx,
+                entry.placement as Parameters<typeof store.setPlacement>[1],
+              );
             }
           } catch (e) {
             console.error(
@@ -1346,14 +1350,12 @@ function buildWorkbenchProps(
       const bytes = state.dest.save.bytes;
       return () => blobDownload(backupFilename(cartLabel, tid), bytes);
     })(),
-    onDismissTransferBoxFullBanner: () =>
-      dispatch({ type: 'v2_transfer_box_full_dismiss' }),
+    onDismissTransferBoxFullBanner: () => dispatch({ type: 'v2_transfer_box_full_dismiss' }),
     onDismissTransferPlacementBanner: () =>
       dispatch({ type: 'v2_transfer_placement_banner_dismiss' }),
     onDismissTransferConvertSkipBanner: () =>
       dispatch({ type: 'v2_transfer_convert_skip_dismiss' }),
-    onDismissTransferPartySkipBanner: () =>
-      dispatch({ type: 'v2_transfer_party_skip_dismiss' }),
+    onDismissTransferPartySkipBanner: () => dispatch({ type: 'v2_transfer_party_skip_dismiss' }),
     onDismissStagingMigrationOverflowBanner: () =>
       dispatch({ type: 'staging_migration_overflow_dismiss' }),
     sourceSelection: state.v2SourceSelection ?? [],
@@ -1373,14 +1375,12 @@ function buildWorkbenchProps(
     // per INITIAL_STATE). Acceptable for v2.1 because the only error case
     // here is "the SAV failed to parse" — there's no loaded source to
     // preserve. Dest-side dismiss uses `dest_clear` (preserves source).
-    onErrorDismiss: (role) =>
-      dispatch({ type: role === 'source' ? 'source_clear' : 'dest_clear' }),
+    onErrorDismiss: (role) => dispatch({ type: role === 'source' ? 'source_clear' : 'dest_clear' }),
     // Same dispatch as onErrorDismiss but plumbed separately so the
     // pane Reset button has a clear semantic call site (and can later
     // gain a "are you sure?" confirmation step for loaded-data resets
     // without mutating the error-dismiss path).
-    onPaneReset: (role) =>
-      dispatch({ type: role === 'source' ? 'source_clear' : 'dest_clear' }),
+    onPaneReset: (role) => dispatch({ type: role === 'source' ? 'source_clear' : 'dest_clear' }),
     onDownloadRawCartDump: (role) => {
       const err = state.cartReadError;
       if (!err || err.side !== (role === 'source' ? 'source' : 'dest')) return;
@@ -1427,11 +1427,19 @@ function renderStagingRightPane(
       // refusal flag is set. The user must dismiss the refusal modal
       // (or clear staging) before another commit can be scheduled.
       if (state.sameCartRefusal) return;
-      dispatch({ type: 'commit_started', target: 'source', planSummary: `Delete ${stagedMons.length} mons` });
+      dispatch({
+        type: 'commit_started',
+        target: 'source',
+        planSummary: `Delete ${stagedMons.length} mons`,
+      });
     },
     onCommitDest: () => {
       if (state.sameCartRefusal) return;
-      dispatch({ type: 'commit_started', target: 'destination', planSummary: `Inject ${stagedMons.length} mons` });
+      dispatch({
+        type: 'commit_started',
+        target: 'destination',
+        planSummary: `Inject ${stagedMons.length} mons`,
+      });
     },
     onClearStaging: () => {
       void stagingMutate(deps, (s) => s.clear());
@@ -1520,10 +1528,7 @@ async function runAddSelectedToDestination(
  * subscribe callback dispatches the resulting `staging_loaded` so the
  * render reflects the change.
  */
-async function runRemoveFromTransfer(
-  idx: number,
-  deps: ControllerDeps,
-): Promise<void> {
+async function runRemoveFromTransfer(idx: number, deps: ControllerDeps): Promise<void> {
   await stagingMutate(deps, (s) => s.removeAt(idx));
 }
 
@@ -1552,7 +1557,32 @@ function makePlaceholderGen3IntermediateFromDestSlot(
   // proper per-species growth-rate table is shipped.
   const unpacked = unpackBoxed(bytes);
   if (!isDecodeError(unpacked)) {
-    const nature = (unpacked.pid % 25) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24;
+    const nature = (unpacked.pid % 25) as
+      | 0
+      | 1
+      | 2
+      | 3
+      | 4
+      | 5
+      | 6
+      | 7
+      | 8
+      | 9
+      | 10
+      | 11
+      | 12
+      | 13
+      | 14
+      | 15
+      | 16
+      | 17
+      | 18
+      | 19
+      | 20
+      | 21
+      | 22
+      | 23
+      | 24;
     const level = Math.min(100, Math.max(1, Math.floor(Math.cbrt(unpacked.exp))));
     return { ...unpacked, nature, level };
   }
@@ -1695,9 +1725,7 @@ function appendCartFlashOverlays(
     // requires the cart label.
     const cartLabel = state.cartConnection?.deviceId ?? 'CART';
     const tid =
-      state.kind === 'loaded'
-        ? state.save.trainer.tid
-        : (state.dest?.save.trainer.tid ?? 0);
+      state.kind === 'loaded' ? state.save.trainer.tid : (state.dest?.save.trainer.tid ?? 0);
     const action = cf.target === 'source' ? 'DELETE FROM' : 'WRITE TO';
     const dlg = confirmFlashDialog({
       action,
@@ -1728,10 +1756,7 @@ function appendCartFlashOverlays(
     return;
   }
 
-  if (
-    cf.kind === 'cart_flash_progressing' ||
-    cf.kind === 'cart_recovery_progressing'
-  ) {
+  if (cf.kind === 'cart_flash_progressing' || cf.kind === 'cart_recovery_progressing') {
     root.append(flashProgressOverlay({ state: cf }));
     return;
   }
@@ -1745,7 +1770,10 @@ function appendCartFlashOverlays(
         attemptsExhausted: false,
         onRetry: () => {
           if (cf.recoveryAvailable) {
-            dispatch({ type: 'recovery_started', backupFilename: cf.recoveryAvailable.backupFilename });
+            dispatch({
+              type: 'recovery_started',
+              backupFilename: cf.recoveryAvailable.backupFilename,
+            });
           }
         },
         onDismiss: () => dispatch({ type: 'cart_flash_dismissed' }),
@@ -1807,11 +1835,7 @@ function renderSameCartRefusal(
         `"Cancel & clear staging" on the right pane to start over.`,
     ),
   );
-  const ok = el(
-    'button',
-    { type: 'button', class: 'primary' },
-    'OK',
-  ) as HTMLButtonElement;
+  const ok = el('button', { type: 'button', class: 'primary' }, 'OK') as HTMLButtonElement;
   ok.addEventListener('click', () => dispatch({ type: 'same_cart_refusal_dismissed' }));
   card.append(ok);
   return card;
@@ -2310,7 +2334,10 @@ function renderCartDestPane(
  * Lets the user binary-diff the bytes against a known-good FlashGBX dump
  * to bisect "is our protocol returning bad bytes" vs "is our parser too strict".
  */
-function renderRawCartDumpButton(err: { rawBytes?: Uint8Array; rawFileName?: string }): HTMLElement {
+function renderRawCartDumpButton(err: {
+  rawBytes?: Uint8Array;
+  rawFileName?: string;
+}): HTMLElement {
   const wrap = el('div', { class: 'card cart-debug' });
   wrap.append(
     el(
@@ -2319,7 +2346,11 @@ function renderRawCartDumpButton(err: { rawBytes?: Uint8Array; rawFileName?: str
       'The cart returned bytes but the parser rejected them. Download the raw dump to compare against FlashGBX or another known-good reader.',
     ),
   );
-  const btn = el('button', { class: 'secondary', type: 'button' }, 'Download raw cart dump') as HTMLButtonElement;
+  const btn = el(
+    'button',
+    { class: 'secondary', type: 'button' },
+    'Download raw cart dump',
+  ) as HTMLButtonElement;
   btn.addEventListener('click', () => {
     if (err.rawBytes) blobDownload(err.rawFileName ?? 'cart.raw.sav', err.rawBytes);
   });
@@ -2478,9 +2509,7 @@ function detectVariantFromBanner(banner: string): 'insidegadgets' | 'lesserkuma'
  * amendment), which keeps the common case correct and the rare case
  * not-overly-aggressive.
  */
-function sameCartSourceContext(
-  state: AppState,
-): { tid: number; label: string } | null {
+function sameCartSourceContext(state: AppState): { tid: number; label: string } | null {
   if (state.kind !== 'loaded') return null;
   const label = state.cartConnection?.deviceId;
   if (!label) return null;
@@ -2684,7 +2713,11 @@ function buildDestStoreProp(
   // user picks a destination slot later via the staging pane.
   if (state.cartConnection) {
     if (!result.ok) {
-      return { enabled: false, disabledReason: 'Conversion failed; cannot stage', onStore: () => {} };
+      return {
+        enabled: false,
+        disabledReason: 'Conversion failed; cannot stage',
+        onStore: () => {},
+      };
     }
     const sourceRef = state.openMon;
     if (!sourceRef) {

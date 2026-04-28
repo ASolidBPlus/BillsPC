@@ -105,12 +105,8 @@ describe('v2 source-tile staged overlay', () => {
     // emits uses 0-based storage indices (`boxIndex - 1`). So a staged
     // ref of `{boxIndex: 0, slot: 3}` corresponds to display box 1
     // slot 3.
-    const box0 = Array.from({ length: 5 }, (_, i) =>
-      makeGen2Mon({ speciesGen2Id: 158 + i }),
-    );
-    const box1 = Array.from({ length: 8 }, (_, i) =>
-      makeGen2Mon({ speciesGen2Id: 1 + i }),
-    );
+    const box0 = Array.from({ length: 5 }, (_, i) => makeGen2Mon({ speciesGen2Id: 158 + i }));
+    const box1 = Array.from({ length: 8 }, (_, i) => makeGen2Mon({ speciesGen2Id: 1 + i }));
     const save = makeSaveWithTwoBoxes(box0, box1);
     const stagedRef0: MonRef = { bucket: 'box', boxIndex: 0, slot: 3 };
     const stagedRef1: MonRef = { bucket: 'box', boxIndex: 1, slot: 7 };
@@ -150,12 +146,8 @@ describe('v2 source-tile staged overlay', () => {
   });
 
   it('switching to display box 2 (storage box 1) lights up slot 7 with T05', () => {
-    const box0 = Array.from({ length: 5 }, (_, i) =>
-      makeGen2Mon({ speciesGen2Id: 158 + i }),
-    );
-    const box1 = Array.from({ length: 8 }, (_, i) =>
-      makeGen2Mon({ speciesGen2Id: 1 + i }),
-    );
+    const box0 = Array.from({ length: 5 }, (_, i) => makeGen2Mon({ speciesGen2Id: 158 + i }));
+    const box1 = Array.from({ length: 8 }, (_, i) => makeGen2Mon({ speciesGen2Id: 1 + i }));
     const save = makeSaveWithTwoBoxes(box0, box1);
     const stagedRef0: MonRef = { bucket: 'box', boxIndex: 0, slot: 3 };
     const stagedRef1: MonRef = { bucket: 'box', boxIndex: 1, slot: 7 };

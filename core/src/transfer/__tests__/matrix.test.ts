@@ -3,11 +3,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  planTransfer,
-  TransferMatrixRefusal,
-  isTransferMatrixRefusal,
-} from '../matrix.js';
+import { planTransfer, TransferMatrixRefusal, isTransferMatrixRefusal } from '../matrix.js';
 
 describe('planTransfer matrix', () => {
   it('Gen 1 → Gen 1: allowed (identity-gen1)', () => {

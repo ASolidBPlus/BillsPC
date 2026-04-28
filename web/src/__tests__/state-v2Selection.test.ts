@@ -12,13 +12,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-  reducer,
-  INITIAL_STATE,
-  type AppState,
-  type Action,
-  type MonRef,
-} from '../state.js';
+import { reducer, INITIAL_STATE, type AppState, type Action, type MonRef } from '../state.js';
 import type { Gen3SaveContents, SaveContents } from '@pokeportal/core';
 
 const refA: MonRef = { bucket: 'box', boxIndex: 0, slot: 0 };
@@ -225,7 +219,9 @@ describe('v2_transfer_select_toggle', () => {
 
   it('range mode picks inclusive [anchor, click] filtered to occupied slots', () => {
     // Seed staging.slots with slots 2 + 5 occupied.
-    const slot = (idx: number): {
+    const slot = (
+      idx: number,
+    ): {
       idx: number;
       pkBytes: Uint8Array;
       speciesId: number;

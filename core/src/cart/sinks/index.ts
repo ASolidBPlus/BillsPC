@@ -6,10 +6,6 @@
 
 export { GbxCartSink } from './gbxCartSink.js';
 export type { GbxCartSinkDeps } from './gbxCartSink.js';
-export {
-  WriteAndVerifySink,
-  WriteVerifyError,
-  isWriteVerifyError,
-} from './writeAndVerifySink.js';
+export { WriteAndVerifySink, WriteVerifyError, isWriteVerifyError } from './writeAndVerifySink.js';
 export type { WriteAndVerifySinkDeps } from './writeAndVerifySink.js';
 export type { WriteVerifyMismatch } from './types.js';

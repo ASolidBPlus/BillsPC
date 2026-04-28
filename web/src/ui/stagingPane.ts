@@ -113,7 +113,11 @@ function renderSubviewToggle(props: StagingPaneProps): HTMLElement {
 function renderStagedMonCard(mon: StagedMon, props: StagingPaneProps): HTMLElement {
   const card = dialog({ class: 'gen2-dialog staged-mon-card' });
   card.append(
-    el('div', { class: 'staged-mon-sprite' }, spriteImg(mon.speciesId, 'party-gen2', mon.nicknameDisplay)),
+    el(
+      'div',
+      { class: 'staged-mon-sprite' },
+      spriteImg(mon.speciesId, 'party-gen2', mon.nicknameDisplay),
+    ),
     el('div', { class: 'gen2-line staged-mon-name' }, `${mon.nicknameDisplay} (#${mon.speciesId})`),
     el('div', { class: 'gen2-line staged-mon-source' }, `Source: ${mon.sourceCartLabel}`),
   );

@@ -15,5 +15,5 @@
  */
 export function abilitySlot(pid: number, hasSecondAbility: boolean): 0 | 1 {
   if (!hasSecondAbility) return 0;
-  return ((pid & 1) === 1 ? 1 : 0);
+  return (pid & 1) === 1 ? 1 : 0;
 }

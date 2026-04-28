@@ -16,10 +16,7 @@
 import { describe, it, expect } from 'vitest';
 import 'fake-indexeddb/auto';
 import { StagingStore, deriveSourceRefKey } from '../cart/stagingStore.js';
-import {
-  STAGING_DB_NAME,
-  type StagedSlot,
-} from '../cart/stagingStore.types.js';
+import { STAGING_DB_NAME, type StagedSlot } from '../cart/stagingStore.types.js';
 
 let dbCounter = 0;
 function nextDbName(): string {

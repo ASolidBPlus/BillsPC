@@ -13,21 +13,14 @@
 
 import { describe, it, expect } from 'vitest';
 import 'fake-indexeddb/auto';
-import {
-  createController,
-  DEFAULT_DEPS,
-  type ControllerDeps,
-} from '../ui.js';
+import { createController, DEFAULT_DEPS, type ControllerDeps } from '../ui.js';
 import type {
   StagingListener,
   StagingMultiTabListener,
   StagingSnapshotListener,
   StagingStore,
 } from '../cart/stagingStore.js';
-import type {
-  StagedSlot,
-  StagingSessionV1,
-} from '../cart/stagingStore.types.js';
+import type { StagedSlot, StagingSessionV1 } from '../cart/stagingStore.types.js';
 
 class FakeStagingStore {
   legacyListener: StagingListener | null = null;
@@ -94,9 +87,10 @@ describe('controller staging subscribe wire (AMEND-S8v2.2-11)', () => {
       stagedAt: 'iso',
       placement: null,
     };
-    const slots = [slot, ...Array.from({ length: 29 }, () => null)] as ReadonlyArray<
-      StagedSlot | null
-    >;
+    const slots = [
+      slot,
+      ...Array.from({ length: 29 }, () => null),
+    ] as ReadonlyArray<StagedSlot | null>;
     fake.setSlots(slots);
 
     const root = document.createElement('div');

@@ -28,22 +28,11 @@ import {
   runCommitDestination,
 } from '../ui/v2Actions.js';
 import { StagingStore } from '../cart/stagingStore.js';
-import {
-  STAGING_DB_NAME,
-  type StagedSlot,
-} from '../cart/stagingStore.types.js';
+import { STAGING_DB_NAME, type StagedSlot } from '../cart/stagingStore.types.js';
 import type { ControllerDeps } from '../ui.js';
 import type { Action, AppState, MonRef } from '../state.js';
-import type {
-  Gen12Pokemon,
-  Gen3Intermediate,
-  SaveContents,
-} from '@pokeportal/core';
-import {
-  makeGen2Mon,
-  makeGen2SaveWithBox0,
-  makeGen3Save,
-} from './_helpers/staging.js';
+import type { Gen12Pokemon, Gen3Intermediate, SaveContents } from '@pokeportal/core';
+import { makeGen2Mon, makeGen2SaveWithBox0, makeGen3Save } from './_helpers/staging.js';
 
 let dbCounter = 0;
 function nextDbName(): string {
@@ -93,10 +82,7 @@ function neutralIntermediate(species: number): Gen3Intermediate {
   };
 }
 
-function makeDeps(
-  store: StagingStore,
-  parsedSourceAfterCommit: SaveContents,
-): ControllerDeps {
+function makeDeps(store: StagingStore, parsedSourceAfterCommit: SaveContents): ControllerDeps {
   return {
     parseSave: (() => parsedSourceAfterCommit) as unknown as ControllerDeps['parseSave'],
     convert: ((mon: Gen12Pokemon) =>

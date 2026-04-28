@@ -32,11 +32,7 @@ export class WriteVerifyError extends Error {
   /** The bytes the sink TRIED to write — same as `expected`. Useful when
    *  the controller wants to attempt a re-write of the same buffer. */
   readonly expected: Uint8Array;
-  constructor(args: {
-    mismatch: WriteVerifyMismatch;
-    actual: Uint8Array;
-    expected: Uint8Array;
-  }) {
+  constructor(args: { mismatch: WriteVerifyMismatch; actual: Uint8Array; expected: Uint8Array }) {
     super(
       `WriteVerify: ${args.mismatch.mismatchCount} byte(s) mismatched ` +
         `(first @ offset 0x${args.mismatch.firstMismatchOffset.toString(16)})`,

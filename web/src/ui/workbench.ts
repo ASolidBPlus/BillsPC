@@ -222,8 +222,7 @@ export function renderWorkbench(props: WorkbenchProps): HTMLElement {
   for (const node of Array.from(document.body.querySelectorAll('.cart-error-overlay'))) {
     node.remove();
   }
-  const activeError =
-    props.leftRole === 'source' ? props.sourceError : props.destError;
+  const activeError = props.leftRole === 'source' ? props.sourceError : props.destError;
   if (activeError) {
     appendErrorModal(props.leftRole, activeError, props);
   }
@@ -289,10 +288,7 @@ function renderLeftPane(props: WorkbenchProps): HTMLElement {
  * Per C4: `onCursorMove` stays wired to `cursor_move` even though
  * selection is S8v2.2 — keeps the cursor state-driven.
  */
-function renderLoadedSourceLeft(
-  view: SourceLoadedView,
-  props: WorkbenchProps,
-): HTMLElement {
+function renderLoadedSourceLeft(view: SourceLoadedView, props: WorkbenchProps): HTMLElement {
   const wrap = el('div', { class: 'gen2-box-wrap' });
   const entries = entriesForBox(view.save, view.boxIndex);
   wrap.append(
@@ -457,9 +453,7 @@ function appendCartLoadingModal(role: LeftRole, view: CartLoadingView): void {
   const overlay = el('div', { class: 'cart-loading-overlay' });
   const inner = el('div', { class: 'cart-loading-inner' });
   const sideLabel = role === 'source' ? 'SOURCE' : 'DESTINATION';
-  inner.append(
-    el('div', { class: 'cart-loading-phase' }, `READING ${sideLabel} CART…`),
-  );
+  inner.append(el('div', { class: 'cart-loading-phase' }, `READING ${sideLabel} CART…`));
   // Reuse the existing `cartProgress` card (which already renders the
   // `.cart-progress__bar` / `.cart-progress__fill` chrome) so the phase
   // visualization stays consistent with legacy.
@@ -485,9 +479,15 @@ type CableEnd = 'gbc' | 'gba';
 type ConsoleVariant = `r${0 | 1 | 2}c${0 | 1 | 2}`;
 
 const CONSOLE_VARIANTS: ReadonlyArray<ConsoleVariant> = [
-  'r0c0', 'r0c1', 'r0c2',
-  'r1c0', 'r1c1', 'r1c2',
-  'r2c0', 'r2c1', 'r2c2',
+  'r0c0',
+  'r0c1',
+  'r0c2',
+  'r1c0',
+  'r1c1',
+  'r1c2',
+  'r2c0',
+  'r2c1',
+  'r2c2',
 ];
 
 /* Variant is keyed by SIDE + KIND, not just KIND, so the LEFT and
@@ -653,24 +653,36 @@ function openThemePicker(side: ConsoleSide, kind: CableEnd, target: HTMLImageEle
     ),
   );
   const linksWrap = el('div', { class: 'theme-picker-links' });
-  const gbcLink = el('a', {
-    href: 'https://www.deviantart.com/aloneagainstpixels/art/Gameboy-Color-Pixel-art-387395853',
-    target: '_blank',
-    rel: 'noopener noreferrer',
-  }, 'GBC sheet') as HTMLAnchorElement;
-  const gbaLink = el('a', {
-    href: 'https://www.deviantart.com/aloneagainstpixels/art/Gameboy-Advance-Pixel-Art-388212537',
-    target: '_blank',
-    rel: 'noopener noreferrer',
-  }, 'GBA sheet') as HTMLAnchorElement;
+  const gbcLink = el(
+    'a',
+    {
+      href: 'https://www.deviantart.com/aloneagainstpixels/art/Gameboy-Color-Pixel-art-387395853',
+      target: '_blank',
+      rel: 'noopener noreferrer',
+    },
+    'GBC sheet',
+  ) as HTMLAnchorElement;
+  const gbaLink = el(
+    'a',
+    {
+      href: 'https://www.deviantart.com/aloneagainstpixels/art/Gameboy-Advance-Pixel-Art-388212537',
+      target: '_blank',
+      rel: 'noopener noreferrer',
+    },
+    'GBA sheet',
+  ) as HTMLAnchorElement;
   linksWrap.append(gbcLink, document.createTextNode(' · '), gbaLink);
   attribution.append(linksWrap);
   inner.append(attribution);
 
-  const closeBtn = el('button', {
-    type: 'button',
-    class: 'theme-picker-close',
-  }, 'Close') as HTMLButtonElement;
+  const closeBtn = el(
+    'button',
+    {
+      type: 'button',
+      class: 'theme-picker-close',
+    },
+    'Close',
+  ) as HTMLButtonElement;
   closeBtn.addEventListener('click', () => close());
   inner.append(closeBtn);
 
@@ -1069,19 +1081,14 @@ function renderLeftActions(oppositeLabel: string, props: WorkbenchProps): HTMLEl
 
   // (COMMIT button moved to the trading-pipe area between the two
   // consoles — see renderTradingPipe.)
-  const backupBtn = el(
-    'button',
-    { type: 'button' },
-    'Backup to SAV',
-  ) as HTMLButtonElement;
+  const backupBtn = el('button', { type: 'button' }, 'Backup to SAV') as HTMLButtonElement;
   backupBtn.disabled = !props.onBackupToSav;
   if (props.onBackupToSav) backupBtn.addEventListener('click', () => props.onBackupToSav!());
   actions.append(backupBtn);
   // Reset — clears the loaded source/dest data for whichever role is
   // currently the LEFT pane. Disabled when the pane is empty (no
   // loaded data yet) so it's always a meaningful click.
-  const leftRoleHasData =
-    props.leftRole === 'source' ? !!props.sourceLoaded : !!props.destLoaded;
+  const leftRoleHasData = props.leftRole === 'source' ? !!props.sourceLoaded : !!props.destLoaded;
   const resetLeftBtn = el(
     'button',
     { type: 'button', class: 'wb-reset-btn' },
@@ -1101,9 +1108,7 @@ function renderLeftActions(oppositeLabel: string, props: WorkbenchProps): HTMLEl
     ) as HTMLButtonElement;
     // S8v2.2 — enabled only when source loaded AND selection non-empty.
     const enabled =
-      !!props.onAddSelectedToTransfer &&
-      !!props.sourceLoaded &&
-      props.sourceSelection.length > 0;
+      !!props.onAddSelectedToTransfer && !!props.sourceLoaded && props.sourceSelection.length > 0;
     addBtn.disabled = !enabled;
     if (props.onAddSelectedToTransfer)
       addBtn.addEventListener('click', () => props.onAddSelectedToTransfer!());
@@ -1140,9 +1145,14 @@ function renderLeftActions(oppositeLabel: string, props: WorkbenchProps): HTMLEl
 
 function renderRightActions(props: WorkbenchProps): HTMLElement {
   const actions = el('div', { class: 'wb-pane-actions' });
-  const saveBtn = el('button', { type: 'button', title: 'Coming soon — write the transfer box to a Crystal SAV file' }, 'Save to SAV (not implemented)') as HTMLButtonElement;
+  const saveBtn = el(
+    'button',
+    { type: 'button', title: 'Coming soon — write the transfer box to a Crystal SAV file' },
+    'Save to SAV (not implemented)',
+  ) as HTMLButtonElement;
   saveBtn.disabled = !props.onSaveTempBoxToSav;
-  if (props.onSaveTempBoxToSav) saveBtn.addEventListener('click', () => props.onSaveTempBoxToSav!());
+  if (props.onSaveTempBoxToSav)
+    saveBtn.addEventListener('click', () => props.onSaveTempBoxToSav!());
   actions.append(saveBtn);
 
   const loadLabel = el(
@@ -1165,10 +1175,7 @@ function renderRightActions(props: WorkbenchProps): HTMLElement {
 
   // S8v2.2 — Clear Transfer Box. Always present; disabled when the
   // staging store is empty.
-  const occupiedCount = props.stagedSlots.reduce(
-    (acc, s) => (s !== null ? acc + 1 : acc),
-    0,
-  );
+  const occupiedCount = props.stagedSlots.reduce((acc, s) => (s !== null ? acc + 1 : acc), 0);
   const clearBtn = el(
     'button',
     { type: 'button', class: 'wb-clear-transfer-box' },
@@ -1237,9 +1244,7 @@ function renderRightActions(props: WorkbenchProps): HTMLElement {
     'Add selected mons to Destination',
   ) as HTMLButtonElement;
   const enabled =
-    !!props.onAddSelectedToDestination &&
-    !!props.destLoaded &&
-    props.transferSelection.length > 0;
+    !!props.onAddSelectedToDestination && !!props.destLoaded && props.transferSelection.length > 0;
   addBtn.disabled = !enabled;
   if (props.onAddSelectedToDestination)
     addBtn.addEventListener('click', () => props.onAddSelectedToDestination!());

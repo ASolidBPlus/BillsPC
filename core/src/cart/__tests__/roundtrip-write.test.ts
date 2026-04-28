@@ -115,8 +115,7 @@ function makeSramMockPort(opts: { sramBytes: Uint8Array }): Port & {
           // SET_VARIABLE: opcode + size + 4-byte key BE + 4-byte value BE = 10 bytes
           if (txQueue.length < 10) return;
           const size = txQueue[1]!;
-          const key =
-            (txQueue[2]! << 24) | (txQueue[3]! << 16) | (txQueue[4]! << 8) | txQueue[5]!;
+          const key = (txQueue[2]! << 24) | (txQueue[3]! << 16) | (txQueue[4]! << 8) | txQueue[5]!;
           const value =
             (txQueue[6]! << 24) | (txQueue[7]! << 16) | (txQueue[8]! << 8) | txQueue[9]!;
           const name = SET_VAR_KEY_TO_NAME[`${size}-${key}`];
@@ -137,8 +136,7 @@ function makeSramMockPort(opts: { sramBytes: Uint8Array }): Port & {
         case 0xb2: {
           // DMG_CART_WRITE: opcode + 4-byte addr BE + 1-byte value = 6 bytes
           if (txQueue.length < 6) return;
-          const addr =
-            (txQueue[1]! << 24) | (txQueue[2]! << 16) | (txQueue[3]! << 8) | txQueue[4]!;
+          const addr = (txQueue[1]! << 24) | (txQueue[2]! << 16) | (txQueue[3]! << 8) | txQueue[4]!;
           const value = txQueue[5]!;
           if (addr === 0x0000) {
             ramEnabled = value === 0x0a;

@@ -12,7 +12,10 @@ import { dialog } from './dialog.js';
 import { el } from './dom.js';
 
 export interface FlashProgressOverlayProps {
-  readonly state: Extract<CartFlashState, { kind: 'cart_flash_progressing' | 'cart_flash_pending' | 'cart_recovery_progressing' }>;
+  readonly state: Extract<
+    CartFlashState,
+    { kind: 'cart_flash_progressing' | 'cart_flash_pending' | 'cart_recovery_progressing' }
+  >;
 }
 
 export function flashProgressOverlay(props: FlashProgressOverlayProps): HTMLElement {
@@ -30,10 +33,16 @@ export function flashProgressOverlay(props: FlashProgressOverlayProps): HTMLElem
     wrap.append(el('div', { class: 'gen2-line phase' }, 'Connecting to cart…'));
   } else if (props.state.kind === 'cart_recovery_progressing') {
     wrap.append(
-      el('div', { class: 'gen2-line phase' }, `Restoring from backup: ${props.state.backupFilename}`),
+      el(
+        'div',
+        { class: 'gen2-line phase' },
+        `Restoring from backup: ${props.state.backupFilename}`,
+      ),
     );
     if (props.state.progress) {
-      wrap.append(renderProgressBar(props.state.progress.bytesWritten, props.state.progress.bytesTotal));
+      wrap.append(
+        renderProgressBar(props.state.progress.bytesWritten, props.state.progress.bytesTotal),
+      );
     }
   } else {
     // cart_flash_progressing.
@@ -46,7 +55,9 @@ export function flashProgressOverlay(props: FlashProgressOverlayProps): HTMLElem
     };
     wrap.append(el('div', { class: 'gen2-line phase' }, phaseLabel[props.state.phase]));
     if (props.state.progress) {
-      wrap.append(renderProgressBar(props.state.progress.bytesWritten, props.state.progress.bytesTotal));
+      wrap.append(
+        renderProgressBar(props.state.progress.bytesWritten, props.state.progress.bytesTotal),
+      );
     }
   }
 
@@ -59,7 +70,10 @@ function renderProgressBar(bytesWritten: number, bytesTotal: number): HTMLElemen
   const wrap = el('div', { class: 'flash-progress-bar' });
   const total = Math.max(1, bytesTotal);
   const ratio = Math.max(0, Math.min(1, bytesWritten / total));
-  const fill = el('div', { class: 'flash-progress-bar-fill', style: `width: ${(ratio * 100).toFixed(1)}%;` });
+  const fill = el('div', {
+    class: 'flash-progress-bar-fill',
+    style: `width: ${(ratio * 100).toFixed(1)}%;`,
+  });
   wrap.append(fill);
   wrap.append(
     el(

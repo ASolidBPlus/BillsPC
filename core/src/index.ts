@@ -100,12 +100,12 @@ export type {
   TransferConversion,
   TransferMatrixRefusalReason,
 } from './transfer/matrix.js';
-export { composeSourceWrite, composeDestinationWrite, isComposeError } from './transfer/composeWrite.js';
-export type {
-  StagedMonRefGen12,
-  StagedMonRefGen3,
-  ComposeError,
+export {
+  composeSourceWrite,
+  composeDestinationWrite,
+  isComposeError,
 } from './transfer/composeWrite.js';
+export type { StagedMonRefGen12, StagedMonRefGen3, ComposeError } from './transfer/composeWrite.js';
 export type {
   Port,
   CartIdentity,

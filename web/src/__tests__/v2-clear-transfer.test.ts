@@ -134,10 +134,7 @@ describe('runClearTransferBox — confirm dialog + clear semantics', () => {
   it('Y > 0: message includes the literal "PERMANENTLY LOST" substring', async () => {
     const store = new FakeStagingStore();
     // 5 occupied slots, 2 of them flagged source-committed.
-    const slots: Array<ReturnType<typeof makeSlot> | null> = Array.from(
-      { length: 30 },
-      () => null,
-    );
+    const slots: Array<ReturnType<typeof makeSlot> | null> = Array.from({ length: 30 }, () => null);
     for (let i = 0; i < 5; i++) {
       const s = makeSlot(i);
       slots[i] = i < 2 ? { ...s, sourceCommitted: true } : s;

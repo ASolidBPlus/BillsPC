@@ -144,8 +144,7 @@ describe('runCommitSource — cart mode (S8v2.3)', () => {
     expect(flashSpy).toHaveBeenCalledTimes(1);
     expect(flashCalls).toHaveLength(1);
     const opts = flashCalls[0]!.opts;
-    const sourceBytes =
-      state.kind === 'loaded' ? state.sourceBytes : new Uint8Array(0);
+    const sourceBytes = state.kind === 'loaded' ? state.sourceBytes : new Uint8Array(0);
     expect(opts.cartCurrentBytes).toBe(sourceBytes);
     expect(opts.family).toBe('gbc');
     // Slots flipped + v2_source_committed dispatched.

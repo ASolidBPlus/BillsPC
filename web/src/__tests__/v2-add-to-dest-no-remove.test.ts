@@ -22,17 +22,9 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import 'fake-indexeddb/auto';
-import {
-  reducer,
-  INITIAL_STATE,
-  type AppState,
-  type Action,
-} from '../state.js';
+import { reducer, INITIAL_STATE, type AppState, type Action } from '../state.js';
 import { StagingStore, deriveSourceRefKey } from '../cart/stagingStore.js';
-import {
-  STAGING_DB_NAME,
-  type StagedSlot,
-} from '../cart/stagingStore.types.js';
+import { STAGING_DB_NAME, type StagedSlot } from '../cart/stagingStore.types.js';
 import { runAddSelectedToDestination } from '../ui/v2Actions.js';
 import type { ControllerDeps } from '../ui.js';
 import { makeGen2SaveWithBox0, makeGen3Save } from './_helpers/staging.js';

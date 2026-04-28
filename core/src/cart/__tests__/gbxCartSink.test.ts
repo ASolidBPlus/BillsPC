@@ -27,37 +27,47 @@ function makeStubProtocol(opts: { failOn?: string } = {}): {
   };
   const protocol: CartProtocol = {
     variant: 'lesserkuma',
-    readFirmware: wrap('readFirmware', async () => ({ banner: '', variant: 'lesserkuma', majorRev: 14 })) as CartProtocol['readFirmware'],
+    readFirmware: wrap('readFirmware', async () => ({
+      banner: '',
+      variant: 'lesserkuma',
+      majorRev: 14,
+    })) as CartProtocol['readFirmware'],
     readRom: wrap('readRom', async () => new Uint8Array(0)) as CartProtocol['readRom'],
     readSram: wrap('readSram', async () => new Uint8Array(0)) as CartProtocol['readSram'],
     writeSram: wrap('writeSram', async () => undefined) as CartProtocol['writeSram'],
     setMode: wrap('setMode', async () => undefined) as CartProtocol['setMode'],
     setBank: wrap('setBank', async () => undefined) as CartProtocol['setBank'],
     setRamEnabled: wrap('setRamEnabled', async () => undefined) as CartProtocol['setRamEnabled'],
-    prepareForWrite: wrap('prepareForWrite', async () => undefined) as CartProtocol['prepareForWrite'],
+    prepareForWrite: wrap(
+      'prepareForWrite',
+      async () => undefined,
+    ) as CartProtocol['prepareForWrite'],
   };
   return { protocol, calls };
 }
 
 describe('GbxCartSink — DMG path', () => {
-  it.each<CartFamily>(['gb', 'gbc'])('drives setMode → prepareForWrite → setRamEnabled(true) → bank loop → setRamEnabled(false) for %s', async (family) => {
-    const { protocol, calls } = makeStubProtocol();
-    const sink = new GbxCartSink({ protocol, family });
-    const data = new Uint8Array(8 * 1024).fill(0x42); // single bank
-    await sink.write(data);
-    const ops = calls.map((c) => c.op);
-    expect(ops).toEqual([
-      'setMode',
-      'prepareForWrite',
-      'setRamEnabled',
-      'writeSram',
-      'setRamEnabled',
-    ]);
-    // setRamEnabled was called as enable(true) then disable(false).
-    const ramCalls = calls.filter((c) => c.op === 'setRamEnabled');
-    expect(ramCalls[0]!.args![0]).toBe(true);
-    expect(ramCalls[1]!.args![0]).toBe(false);
-  });
+  it.each<CartFamily>(['gb', 'gbc'])(
+    'drives setMode → prepareForWrite → setRamEnabled(true) → bank loop → setRamEnabled(false) for %s',
+    async (family) => {
+      const { protocol, calls } = makeStubProtocol();
+      const sink = new GbxCartSink({ protocol, family });
+      const data = new Uint8Array(8 * 1024).fill(0x42); // single bank
+      await sink.write(data);
+      const ops = calls.map((c) => c.op);
+      expect(ops).toEqual([
+        'setMode',
+        'prepareForWrite',
+        'setRamEnabled',
+        'writeSram',
+        'setRamEnabled',
+      ]);
+      // setRamEnabled was called as enable(true) then disable(false).
+      const ramCalls = calls.filter((c) => c.op === 'setRamEnabled');
+      expect(ramCalls[0]!.args![0]).toBe(true);
+      expect(ramCalls[1]!.args![0]).toBe(false);
+    },
+  );
 
   it('runs the bank loop for 32 KB Gen 2 / 32 KB Gen 1 carts (4 banks)', async () => {
     const { protocol, calls } = makeStubProtocol();

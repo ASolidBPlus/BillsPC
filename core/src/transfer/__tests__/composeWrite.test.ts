@@ -14,11 +14,7 @@ import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { composeSourceWrite, composeDestinationWrite } from '../composeWrite.js';
-import {
-  deleteMonGen2,
-  type Gen2DeleteRef,
-  type Gen2WriterFormat,
-} from '../../sav/gen2/writer.js';
+import { deleteMonGen2, type Gen2DeleteRef, type Gen2WriterFormat } from '../../sav/gen2/writer.js';
 import { parseSave } from '../../sav/index.js';
 import { isSaveError } from '../../types/sav.js';
 

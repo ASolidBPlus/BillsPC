@@ -85,10 +85,11 @@ function makeDeps(store: FakeStagingStore): ControllerDeps {
   };
 }
 
-function buildState(opts: {
-  selectedCount: number;
-  preStagedCount: number;
-}): { state: AppState; refs: MonRef[]; store: FakeStagingStore } {
+function buildState(opts: { selectedCount: number; preStagedCount: number }): {
+  state: AppState;
+  refs: MonRef[];
+  store: FakeStagingStore;
+} {
   // Source has 30 mons in box 0 so we can address slots up to 29.
   const mons = Array.from({ length: 30 }, (_, i) =>
     makeGen2Mon({ speciesGen2Id: 25, nickname: `M${i}` }),

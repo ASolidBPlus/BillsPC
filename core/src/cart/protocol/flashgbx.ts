@@ -393,10 +393,7 @@ export class FlashgbxProtocol implements CartProtocol {
    * crashed session that left the chip in chip-ID mode doesn't corrupt
    * our writes. Idempotent — safe to call multiple times.
    */
-  async prepareForWrite(
-    family: CartFamily,
-    opts: { signal?: AbortSignal } = {},
-  ): Promise<void> {
+  async prepareForWrite(family: CartFamily, opts: { signal?: AbortSignal } = {}): Promise<void> {
     if (family === 'gba') {
       // AGB pre-flash setvars per `flashgbx-write-agb-pokemon-ruby-jp.log:159-160`.
       await this.setVar('STATUS_REGISTER_MASK', 0x80, opts);
@@ -535,7 +532,10 @@ export class FlashgbxProtocol implements CartProtocol {
     buf.set(packU32BE(address), 1);
     buf[5] = value & 0xff;
     await writeAll(this.port, buf);
-    await this.readAck(opts, `DMG_CART_WRITE addr=0x${address.toString(16)} val=0x${value.toString(16)}`);
+    await this.readAck(
+      opts,
+      `DMG_CART_WRITE addr=0x${address.toString(16)} val=0x${value.toString(16)}`,
+    );
   }
 
   private async bulkRead(args: {
@@ -565,7 +565,10 @@ export class FlashgbxProtocol implements CartProtocol {
           await this.setVar('TRANSFER_SIZE', want, args.opts);
         }
         await writeAll(this.port, new Uint8Array([OP_DMG_CART_READ]));
-        const chunk = await this.reader.readExactly(want, this.timeoutOpts(BLOCK_TIMEOUT_MS, args.opts));
+        const chunk = await this.reader.readExactly(
+          want,
+          this.timeoutOpts(BLOCK_TIMEOUT_MS, args.opts),
+        );
         out.set(chunk, off);
         off += want;
         args.opts.onProgress?.({ bytesRead: off, bytesTotal: args.length });
@@ -594,7 +597,9 @@ export class FlashgbxProtocol implements CartProtocol {
     opts: CartReadOptions,
   ): Promise<Uint8Array> {
     if (length <= 0) return new Uint8Array(0);
-    dlog(`LK bulkReadAgb op=0x${opcode.toString(16)} base=0x${baseAddr.toString(16)} len=${length}`);
+    dlog(
+      `LK bulkReadAgb op=0x${opcode.toString(16)} base=0x${baseAddr.toString(16)} len=${length}`,
+    );
     const out = new Uint8Array(length);
     let off = 0;
     await this.setVar('TRANSFER_SIZE', TRANSFER_CHUNK, opts);
@@ -660,10 +665,7 @@ export class FlashgbxProtocol implements CartProtocol {
     await this.readAck(opts, `cart_write 0x${address.toString(16)}=0x${value.toString(16)}`);
   }
 
-  private async switchAgbFlashBank(
-    bank: number,
-    opts: { signal?: AbortSignal },
-  ): Promise<void> {
+  private async switchAgbFlashBank(bank: number, opts: { signal?: AbortSignal }): Promise<void> {
     dlog(`LK switch AGB flash bank → ${bank}`);
     // JEDEC bank-select sequence for GBA Flash chips: AA/55/B0 followed
     // by the bank index at addr 0x0.
@@ -688,10 +690,7 @@ export class FlashgbxProtocol implements CartProtocol {
    * carrying `{sectorIndex, sectorAddress, withinSectorOffset, phase}`
    * per AMEND-S7b-11.
    */
-  private async writeAgbFlashBanked(
-    bytes: Uint8Array,
-    opts: CartWriteOptions,
-  ): Promise<void> {
+  private async writeAgbFlashBanked(bytes: Uint8Array, opts: CartWriteOptions): Promise<void> {
     const plan = agbFlashSectorPlan(bytes.length);
     if (plan.length === 0) return;
 
@@ -700,12 +699,16 @@ export class FlashgbxProtocol implements CartProtocol {
 
     for (const sector of plan) {
       if (opts.signal?.aborted) {
-        throw new CartError('CANCELLED', 'AGB Flash write aborted', flashErrorMeta({
-          sectorIndex: sector.sectorIndex,
-          sectorAddress: sector.addressInBank,
-          withinSectorOffset: 0,
-          phase: 'erase',
-        }));
+        throw new CartError(
+          'CANCELLED',
+          'AGB Flash write aborted',
+          flashErrorMeta({
+            sectorIndex: sector.sectorIndex,
+            sectorAddress: sector.addressInBank,
+            withinSectorOffset: 0,
+            phase: 'erase',
+          }),
+        );
       }
       if (sector.bank !== currentBank) {
         await this.switchAgbFlashBank(sector.bank, opts);
@@ -748,17 +751,18 @@ export class FlashgbxProtocol implements CartProtocol {
     await this.setVar('ADDRESS', sector.addressInBank, opts);
     for (let i = 0; i < AGB_FLASH_SECTOR_BYTES; i += page) {
       if (opts.signal?.aborted) {
-        throw new CartError('CANCELLED', 'AGB Flash write aborted', flashErrorMeta({
-          sectorIndex: sector.sectorIndex,
-          sectorAddress: sector.addressInBank,
-          withinSectorOffset: i,
-          phase: 'write',
-        }));
+        throw new CartError(
+          'CANCELLED',
+          'AGB Flash write aborted',
+          flashErrorMeta({
+            sectorIndex: sector.sectorIndex,
+            sectorAddress: sector.addressInBank,
+            withinSectorOffset: i,
+            phase: 'write',
+          }),
+        );
       }
-      const slice = bytes.subarray(
-        sector.absoluteOffset + i,
-        sector.absoluteOffset + i + page,
-      );
+      const slice = bytes.subarray(sector.absoluteOffset + i, sector.absoluteOffset + i + page);
       try {
         await writeAll(
           this.port,

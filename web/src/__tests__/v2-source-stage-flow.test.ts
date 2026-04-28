@@ -22,11 +22,7 @@ import { runAddSelectedToTransfer } from '../ui/v2Actions.js';
 import type { ControllerDeps } from '../ui.js';
 import type { Action, AppState, MonRef } from '../state.js';
 import type { Gen12Pokemon, Gen3Intermediate } from '@pokeportal/core';
-import {
-  FakeStagingStore,
-  makeGen2Mon,
-  makeGen2SaveWithBox0,
-} from './_helpers/staging.js';
+import { FakeStagingStore, makeGen2Mon, makeGen2SaveWithBox0 } from './_helpers/staging.js';
 
 function neutralIntermediate(species: number): Gen3Intermediate {
   return {
@@ -186,10 +182,7 @@ describe('runAddSelectedToTransfer — source → TRANSFER COPY pipeline', () =>
   it('skips party-bucket refs and surfaces v2_transfer_party_skip', async () => {
     // Two box mons + one party mon in the selection. The party mon must
     // be skipped silently; the banner dispatch carries the count.
-    const mons = [
-      makeGen2Mon({ speciesGen2Id: 25 }),
-      makeGen2Mon({ speciesGen2Id: 1 }),
-    ];
+    const mons = [makeGen2Mon({ speciesGen2Id: 25 }), makeGen2Mon({ speciesGen2Id: 1 })];
     const save = makeGen2SaveWithBox0(mons);
     const refs: MonRef[] = [
       { bucket: 'box', boxIndex: 0, slot: 0 },

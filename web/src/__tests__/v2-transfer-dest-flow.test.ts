@@ -47,9 +47,7 @@ describe('runAddSelectedToDestination — TRANSFER → DEST placement pipeline',
     // 5 mons staged in slots 0..4. Dest box 1 has slot 2 pre-occupied
     // so the placement run must produce destSlots [0, 1, 3, 4, 5].
     const store = new FakeStagingStore();
-    const seedSlots = Array.from({ length: 30 }, (_, i) =>
-      i < 5 ? makeSlot(i) : null,
-    );
+    const seedSlots = Array.from({ length: 30 }, (_, i) => (i < 5 ? makeSlot(i) : null));
     store.seed(seedSlots);
 
     const destSave = makeGen3Save([{ boxIndex: 1, slot: 2 }]);
@@ -111,8 +109,6 @@ describe('runAddSelectedToDestination — TRANSFER → DEST placement pipeline',
     ).toEqual(destSnapshot);
 
     // Transfer-selection clear dispatched (no idxsOverride).
-    expect(dispatched).toEqual(
-      expect.arrayContaining([{ type: 'v2_transfer_select_clear' }]),
-    );
+    expect(dispatched).toEqual(expect.arrayContaining([{ type: 'v2_transfer_select_clear' }]));
   });
 });

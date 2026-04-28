@@ -181,9 +181,11 @@ export function slotToLegacyMon(slot: StagedSlot): StagedMon {
  * Drops entries past slot 29 and surfaces the count in `dropped`.
  * Skips corrupted entries (missing `pkBytes`) and logs them.
  */
-function migrateV1ToV2(
-  v1: StagingSessionV1,
-): { slots: Array<StagedSlot | null>; dropped: number; skipped: number } {
+function migrateV1ToV2(v1: StagingSessionV1): {
+  slots: Array<StagedSlot | null>;
+  dropped: number;
+  skipped: number;
+} {
   const slots = emptySlots();
   let dropped = 0;
   let skipped = 0;
@@ -211,9 +213,7 @@ function migrateV1ToV2(
     // Normalize bytes to a Uint8Array so downstream consumers don't
     // need to care about the source realm.
     const pkBytes =
-      m.pkBytes instanceof Uint8Array
-        ? m.pkBytes
-        : new Uint8Array(m.pkBytes as ArrayLike<number>);
+      m.pkBytes instanceof Uint8Array ? m.pkBytes : new Uint8Array(m.pkBytes as ArrayLike<number>);
     if (nextIdx >= STAGING_SLOT_COUNT) {
       dropped += 1;
       continue;
@@ -377,10 +377,7 @@ export class StagingStore {
    * `mon.sourceRefKey` matches any existing occupied slot's
    * `sourceRefKey` (de-dupe). Per Generator pre-flight #1.
    */
-  async placeAt(
-    idx: number,
-    mon: Omit<StagedSlot, 'idx' | 'placement'>,
-  ): Promise<void> {
+  async placeAt(idx: number, mon: Omit<StagedSlot, 'idx' | 'placement'>): Promise<void> {
     if (idx < 0 || idx >= STAGING_SLOT_COUNT) {
       throw new Error(`StagingStore.placeAt: idx ${idx} out of range`);
     }

@@ -5,10 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import {
-  confirmFlashDialog,
-  expectedConfirmString,
-} from '../ui/confirmFlashDialog.js';
+import { confirmFlashDialog, expectedConfirmString } from '../ui/confirmFlashDialog.js';
 
 describe('expectedConfirmString', () => {
   it('uppercases + dasherises the cart label (legacy DELETE FROM / WRITE TO)', () => {
@@ -42,10 +39,12 @@ describe('confirmFlashDialog gate', () => {
     document.body.appendChild(host);
   });
 
-  function mount(opts: {
-    onConfirm?: () => void;
-    onCancel?: () => void;
-  } = {}): {
+  function mount(
+    opts: {
+      onConfirm?: () => void;
+      onCancel?: () => void;
+    } = {},
+  ): {
     commitBtn: HTMLButtonElement;
     cancelBtn: HTMLButtonElement;
     checkbox: HTMLInputElement;
@@ -163,10 +162,12 @@ describe("confirmFlashDialog gate — 'WITH COMMIT' variant (S8v2.3)", () => {
     document.body.appendChild(host);
   });
 
-  function mountWithCommit(opts: {
-    onConfirm?: () => void;
-    onCancel?: () => void;
-  } = {}): {
+  function mountWithCommit(
+    opts: {
+      onConfirm?: () => void;
+      onCancel?: () => void;
+    } = {},
+  ): {
     commitBtn: HTMLButtonElement;
     cancelBtn: HTMLButtonElement;
     checkbox: HTMLInputElement;

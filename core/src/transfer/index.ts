@@ -2,11 +2,7 @@
  * Public surface for the S7b transfer module.
  */
 
-export {
-  planTransfer,
-  TransferMatrixRefusal,
-  isTransferMatrixRefusal,
-} from './matrix.js';
+export { planTransfer, TransferMatrixRefusal, isTransferMatrixRefusal } from './matrix.js';
 export type {
   TransferFamily,
   TransferConversion,

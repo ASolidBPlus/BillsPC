@@ -40,8 +40,18 @@ export interface StagedMonRefGen3 {
 }
 
 export type ComposeError =
-  | { readonly kind: 'compose_error'; readonly reason: 'GEN3_INJECT_FAILED'; readonly underlying: Gen3InjectError; readonly stagedIndex: number }
-  | { readonly kind: 'compose_error'; readonly reason: 'GEN12_DELETE_FAILED'; readonly message: string; readonly stagedIndex: number };
+  | {
+      readonly kind: 'compose_error';
+      readonly reason: 'GEN3_INJECT_FAILED';
+      readonly underlying: Gen3InjectError;
+      readonly stagedIndex: number;
+    }
+  | {
+      readonly kind: 'compose_error';
+      readonly reason: 'GEN12_DELETE_FAILED';
+      readonly message: string;
+      readonly stagedIndex: number;
+    };
 
 export function isComposeError(x: unknown): x is ComposeError {
   return typeof x === 'object' && x !== null && (x as { kind?: string }).kind === 'compose_error';

@@ -16,10 +16,7 @@ import type { ControllerDeps } from '../ui.js';
 import type { Action, AppState } from '../state.js';
 import type { CartFlasherDeps, CartFlashResult } from '../cart/cartFlasher.js';
 import { CartError } from '@pokeportal/core';
-import type {
-  Gen12Pokemon,
-  Gen3Intermediate,
-} from '@pokeportal/core';
+import type { Gen12Pokemon, Gen3Intermediate } from '@pokeportal/core';
 import {
   FakeStagingStore,
   makeGen2SaveWithBox0,
@@ -165,11 +162,7 @@ function autoConfirmDialog(): { spy: ReturnType<typeof vi.fn>; fn: any } {
 describe('runCommitDestination — cart mode (S8v2.3)', () => {
   it('typed-PROCEED + flashCart invoked + slots removed on ok', async () => {
     const store = new FakeStagingStore();
-    store.seed([
-      placedSlot(0, 0),
-      placedSlot(1, 1),
-      ...Array.from({ length: 28 }, () => null),
-    ]);
+    store.seed([placedSlot(0, 0), placedSlot(1, 1), ...Array.from({ length: 28 }, () => null)]);
     const state = destCartState(store);
     const dispatched: Action[] = [];
     const removeSpy = vi.spyOn(store, 'removeAt');

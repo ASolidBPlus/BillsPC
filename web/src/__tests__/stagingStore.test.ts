@@ -6,10 +6,7 @@
 import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
 import 'fake-indexeddb/auto';
 import { StagingStore } from '../cart/stagingStore.js';
-import {
-  STAGING_DB_NAME,
-  type StagedMon,
-} from '../cart/stagingStore.types.js';
+import { STAGING_DB_NAME, type StagedMon } from '../cart/stagingStore.types.js';
 
 function mon(opts: Partial<StagedMon> & { stagedAt: string; slot: number }): StagedMon {
   return {

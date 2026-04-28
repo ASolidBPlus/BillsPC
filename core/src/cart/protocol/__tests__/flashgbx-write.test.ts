@@ -19,7 +19,7 @@ function ack(port: ReturnType<typeof makeMockPort>, n = 1): void {
 }
 
 /** Number of TX bytes consumed by a single SET_VARIABLE call. */
-const SET_VAR_FRAME = 1 /* opcode */ + 1 /* size */ + 4 /* key */ + 4 /* value */;
+const SET_VAR_FRAME = 1 /* opcode */ + 1 /* size */ + 4 /* key */ + 4; /* value */
 
 describe('FlashgbxProtocol — DMG SRAM writeSram (per AMEND-S7b-1, -3)', () => {
   it('writes one bank using TRANSFER_SIZE=256 + DMG_ACCESS_MODE=4 + per-page CS-pulse cadence', async () => {
@@ -50,55 +50,19 @@ describe('FlashgbxProtocol — DMG SRAM writeSram (per AMEND-S7b-1, -3)', () => 
     const tx = port.txLog;
     // First setvar: TRANSFER_SIZE (size=2, key=0x0000, value=0x0100).
     expect(tx.slice(0, SET_VAR_FRAME)).toEqual([
-      0xa6,
-      2,
-      0x00,
-      0x00,
-      0x00,
-      0x00,
-      0x00,
-      0x00,
-      0x01,
-      0x00,
+      0xa6, 2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00,
     ]);
     // Second setvar: ADDRESS (size=4, key=0x0000, value=0xA000).
     expect(tx.slice(SET_VAR_FRAME, SET_VAR_FRAME * 2)).toEqual([
-      0xa6,
-      4,
-      0x00,
-      0x00,
-      0x00,
-      0x00,
-      0x00,
-      0x00,
-      0xa0,
-      0x00,
+      0xa6, 4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xa0, 0x00,
     ]);
     // Third setvar: DMG_ACCESS_MODE (size=1, key=0x0001, value=4).
     expect(tx.slice(SET_VAR_FRAME * 2, SET_VAR_FRAME * 3)).toEqual([
-      0xa6,
-      1,
-      0x00,
-      0x00,
-      0x00,
-      0x01,
-      0x00,
-      0x00,
-      0x00,
-      0x04,
+      0xa6, 1, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x04,
     ]);
     // Fourth setvar: DMG_WRITE_CS_PULSE = 1 (size=1, key=0x0009).
     expect(tx.slice(SET_VAR_FRAME * 3, SET_VAR_FRAME * 4)).toEqual([
-      0xa6,
-      1,
-      0x00,
-      0x00,
-      0x00,
-      0x09,
-      0x00,
-      0x00,
-      0x00,
-      0x01,
+      0xa6, 1, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x01,
     ]);
   });
 
@@ -132,29 +96,11 @@ describe('FlashgbxProtocol — prepareForWrite (AMEND-S7b-1, -4)', () => {
     expect(port.txLog.length).toBe(5 * SET_VAR_FRAME);
     // PULLUPS_ENABLED (size=1, key=0x000E, value=0).
     expect(port.txLog.slice(0, SET_VAR_FRAME)).toEqual([
-      0xa6,
-      1,
-      0x00,
-      0x00,
-      0x00,
-      0x0e,
-      0x00,
-      0x00,
-      0x00,
-      0x00,
+      0xa6, 1, 0x00, 0x00, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x00,
     ]);
     // STATUS_REGISTER_MASK (size=2, key=0x0005, value=0x80).
     expect(port.txLog.slice(SET_VAR_FRAME, SET_VAR_FRAME * 2)).toEqual([
-      0xa6,
-      2,
-      0x00,
-      0x00,
-      0x00,
-      0x05,
-      0x00,
-      0x00,
-      0x00,
-      0x80,
+      0xa6, 2, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x80,
     ]);
   });
 
@@ -285,12 +231,8 @@ describe('FlashgbxProtocol — AGB Flash sector boundaries', () => {
     // command map.
     // 0xC4 count: 8 (bank-switch cart_writes) + 6 × sectors (erase) ≥ 110.
     // 0xC7 count: at least one per page write = 16 × 17 = 272.
-    expect(port.txLog.filter((b) => b === 0xc4).length).toBeGreaterThanOrEqual(
-      8 + 6 * sectors,
-    );
-    expect(port.txLog.filter((b) => b === 0xc7).length).toBeGreaterThanOrEqual(
-      16 * sectors,
-    );
+    expect(port.txLog.filter((b) => b === 0xc4).length).toBeGreaterThanOrEqual(8 + 6 * sectors);
+    expect(port.txLog.filter((b) => b === 0xc7).length).toBeGreaterThanOrEqual(16 * sectors);
   });
 
   it('refuses non-sector-aligned AGB Flash sizes', async () => {

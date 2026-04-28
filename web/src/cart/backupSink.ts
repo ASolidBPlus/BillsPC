@@ -141,9 +141,7 @@ export class BackupSink implements SaveSink {
   }
 }
 
-async function defaultSavePicker(
-  filename: string,
-): Promise<FileSystemHandleAndWritable | null> {
+async function defaultSavePicker(filename: string): Promise<FileSystemHandleAndWritable | null> {
   const w = globalThis as unknown as SaveFilePickerWindow;
   if (typeof w.showSaveFilePicker !== 'function') return null;
   const handle = await w.showSaveFilePicker({ suggestedName: filename });
