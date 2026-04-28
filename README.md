@@ -19,12 +19,12 @@ Static web app, vanilla TypeScript, runs entirely client-side. Drop in your save
 - **Per-mon Stat Inspect** modal with pixel-faithful re-creations of the actual in-game stat screens (RBY status screen, GSC status screen, FRLG SKILLS sub-page).
 - **Exports**: per-mon `.pk2` (Crystal box record), Backup-to-SAV (the loaded SAV with a timestamped filename), Transfer Box snapshot as JSON.
 
-## What it doesn't do (yet)
+## Possible directions
 
-- **Pokémon Gold/Silver dest carts** — Crystal-only on the cart-write path. RBY source supported, GS read works, GS write deferred (the writer throws "GS write support is deferred to a later sprint").
-- **Bred-egg cover-story under-Lv-5 mons** — pkhex flags hatched eggs at level < 5 since Gen 3 hatches at Lv 5. Train them up first or accept the warning.
-- **Hidden Abilities** — Gen 5+ concept, doesn't apply to Gen 3-converted mons. Ability slot derives from PID per Gen 3 mechanics (`pid & 1` for 2-ability species, pinned to slot 0 for 1-ability species like Charizard).
-- **Pokemon Bank / Virtual Console-style import** — Nintendo's official VC → Bank chain discards EVs, randomises IVs (with 3 forced 31s), and picks a nature from current EXP. This project does strictly better: deterministic, EV-preserving, legality-defensible.
+Not promises — just the things I'd genuinely consider building if there's interest:
+
+- **Gen 1/2 ROM-hack support** — Prism, Brown, Polished Crystal, Orange. The conversion pipeline already runs against arbitrary parsed `Gen12Pokemon` records; the lift is per-hack save-format detection + custom-species handling.
+- **Modular stat-conversion choices** — opt out of EV preservation entirely, swap the StatExp → EV algorithm (proportional vs Hamilton vs caller-supplied), pick from a wider nature pool, etc. The conversion functions are already pure + composable; surfacing the levers in the UI is the main work.
 
 ## Design philosophy: essence preservation
 
@@ -122,18 +122,11 @@ sprints/                    Frozen sprint archives (PLAN + PLAN_EVAL + EVAL per 
 HANDOFF.md                  Authoritative conversion spec
 ```
 
-## Sprint roadmap
+## On AI usage
 
-| Sprint        | Scope                                                                                                                             | Status                                                                       |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **S1**        | Conversion core: data tables, IV/EV/nature/PID algorithms, refused species                                                        | Done                                                                         |
-| **S2**        | Gen 3 wire format: substructure shuffle, XOR encryption, checksum, packBoxed/packParty + independent PKHeX-spec oracle            | Done                                                                         |
-| **S3a**       | Save reader (RBY + Crystal) + Vite web UI: file upload + .pk3 download + .zip batch                                               | Done                                                                         |
-| **S5**        | Pokémon-faithful UI: GBC chrome, side-by-side Gen 1/2 vs Gen 3 status comparison                                                  | Done                                                                         |
-| **S6a / S6b** | Gen 3 destination saves: read, parse, inject, source-side delete, two-save zip                                                    | Done                                                                         |
-| **S7a**       | Cart Mode (read-only): GBxCart RW + Web Serial adapter, Insidegadgets + FlashGBX protocols                                        | Done                                                                         |
-| **S7b**       | Cart Mode (write): backup → write → verify pipeline, typed-PROCEED gate, recovery dialog                                          | Done — HIL-validated on Pokemon Red SRAM + Pokemon Ruby JP AGB Flash         |
-| **S8 (v2)**   | **Bill's PC workbench**: two-pane layout, multi-select staging, transfer box, source-DELETE → SWITCH → dest-WRITE commit pipeline | Done — HIL-validated end-to-end on Pokemon Crystal → Pokemon Emerald (PCB-6) |
+Built with substantial AI-generated code under a planner → generator → evaluator sprint-harness methodology with heavy human orchestrator oversight. Every sprint went through plan review, generator dispatch, code-evaluator verification, and HIL (hardware-in-the-loop) testing on real Game Boy carts before being treated as shipped. The conversion algorithms, cart-write pipeline, and stat-screen reconstructions were all human-reviewed against canonical references (PKHeX, pret disassemblies, Bulbapedia) line-by-line during the evaluator pass.
+
+That said: **always keep a backup of any save file or cart before running it through this tool**. Cart writes are irreversible without the backup the tool downloads pre-flash.
 
 ## Running locally
 

@@ -3,6 +3,14 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      # Only redeploy when something the built bundle actually depends on
+      # changes — README, sprint archives, scripts/ etc. don't affect dist/.
+      - 'web/**'
+      - 'core/**'
+      - 'package.json'
+      - 'bun.lock'
+      - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
 permissions:
