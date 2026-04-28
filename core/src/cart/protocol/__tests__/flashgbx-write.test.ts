@@ -88,37 +88,42 @@ describe('FlashgbxProtocol — DMG SRAM writeSram (per LK_Device.py:3286-3458 + 
 });
 
 describe('FlashgbxProtocol — prepareForWrite (AMEND-S7b-1, -4)', () => {
-  it('DMG: power-cycle + MBC reset + setvar prelude + chip-ID exit probe', async () => {
+  it('DMG: power-cycle + MBC reset + 0xFF strange-bootleg workaround + setvar prelude + chip-ID exit probe', async () => {
     const port = makeMockPort();
     // Order matters — the mock returns chunks in FIFO order:
-    //   2 single-opcode acks for OP_CART_PWR_ON (0xF2) + OP_DMG_MBC_RESET (0xB4)
+    //   3 single-opcode acks for OP_CART_PWR_OFF (0xF3), OP_CART_PWR_ON (0xF2),
+    //     OP_DMG_MBC_RESET (0xB4)
+    // + 1 dmgCartWrite ack (0x0000 = 0xFF)
     // + 5 setvar prelude acks
     // + 2 cart_write probe acks (0x2000=0x00, 0x4000=0x90)
-    // + 4 setvar acks for the 2-byte ROM read (TRANSFER_SIZE=64 →
-    //   ADDRESS → DMG_ACCESS_MODE → TRANSFER_SIZE=2)
+    // + 4 setvar acks for the 2-byte ROM read
     // + 2 ROM-read data bytes
     // + 4 trailing cart_write acks (0x4000=0xF0, 0xFF; 0x2000=0x1; 0x4000=0)
-    ack(port, 2 + 5 + 2 + 4);
+    ack(port, 3 + 1 + 5 + 2 + 4);
     port.enqueueRx(bytes(0x00, 0x00));
     ack(port, 4);
     const proto = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
     await proto.prepareForWrite('gb');
-    // First two TX bytes: OP_CART_PWR_ON (0xF2), then OP_DMG_MBC_RESET (0xB4).
-    expect(port.txLog[0]).toBe(0xf2);
-    expect(port.txLog[1]).toBe(0xb4);
+    // First three TX bytes: OP_CART_PWR_OFF, OP_CART_PWR_ON, OP_DMG_MBC_RESET.
+    expect(port.txLog[0]).toBe(0xf3);
+    expect(port.txLog[1]).toBe(0xf2);
+    expect(port.txLog[2]).toBe(0xb4);
+    // Fourth TX frame is the 6-byte dmgCartWrite of 0xFF to 0x0000.
+    expect(port.txLog.slice(3, 3 + 6)).toEqual([0xb2, 0x00, 0x00, 0x00, 0x00, 0xff]);
+    const setvarStart = 3 + 6;
     // PULLUPS_ENABLED (size=1, key=0x000E, value=0).
-    expect(port.txLog.slice(2, 2 + SET_VAR_FRAME)).toEqual([
+    expect(port.txLog.slice(setvarStart, setvarStart + SET_VAR_FRAME)).toEqual([
       0xa6, 1, 0x00, 0x00, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x00,
     ]);
     // STATUS_REGISTER_MASK (size=2, key=0x0005, value=0x80).
-    expect(port.txLog.slice(2 + SET_VAR_FRAME, 2 + SET_VAR_FRAME * 2)).toEqual([
+    expect(port.txLog.slice(setvarStart + SET_VAR_FRAME, setvarStart + SET_VAR_FRAME * 2)).toEqual([
       0xa6, 2, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x80,
     ]);
     // After the 5 setvars, the chip-ID exit probe issues:
     //   _cart_write 0x2000=0x00, 0x4000=0x90, [2-byte ROM read],
     //   0x4000=0xF0, 0x4000=0xFF, 0x2000=0x01, 0x4000=0x00.
     // OP_DMG_CART_WRITE opcode is 0xB2 (1 + 4-byte addr + 1 value = 6 bytes per write).
-    const probeStart = 2 + 5 * SET_VAR_FRAME;
+    const probeStart = setvarStart + 5 * SET_VAR_FRAME;
     // First probe write: 0x2000 = 0x00.
     expect(port.txLog.slice(probeStart, probeStart + 6)).toEqual([
       0xb2, 0x00, 0x00, 0x20, 0x00, 0x00,
