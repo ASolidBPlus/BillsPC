@@ -406,49 +406,27 @@ export class FlashgbxProtocol implements CartProtocol {
       await jedec.exitChipIdMode();
       return;
     }
-    // Full cart power-cycle + MBC reset + strange-bootleg workaround.
+    // EXPERIMENT (2026-04-28): strip prepareForWrite to bare minimum.
     //
-    // FlashGBX's GUI flow naturally power-cycles the cart between
-    // operations: AUTO_POWEROFF_TIME (5000ms) trips during the user's
-    // file-picker/UI delay, so by the time the write phase starts, the
-    // cart is OFF. CartPowerOn (`LK_Device.py:741-789`) then runs its
-    // FULL dance: SET_MODE_DMG → CART_PWR_ON → 200ms → poll-for-ack
-    // → DMG_MBC_RESET → and (the critical bit, line 789, gated on
-    // `pcb_name == "GBxCart RW"`) `_cart_write(0, 0xFF)` —
-    // commented as "workaround for strange bootlegs".
+    // Earlier debugging stacked up power-cycle, MBC reset, 0xFF
+    // strange-bootleg workaround, and a JEDEC chip-ID exit probe. None
+    // of them fixed silent-drop SRAM writes on the insideGadgets Crystal
+    // repro. The chip-ID exit probe writes `0x4000 = 0xFF` (lower 4 bits
+    // = 0xF, an UNDEFINED MBC3 RAM-bank-register value per pandocs); on
+    // a stock MBC3 this is harmless, but on third-party MBC3 silicon it
+    // may latch the cart into a state where subsequent 0xA000 writes go
+    // to an RTC register or get dropped entirely.
     //
-    // Our flow has no GUI delay, so the cart never auto-powers-off,
-    // which means our equivalent CartPowerOn is a no-op (firmware sees
-    // "already on" and skips the dance). The 0xFF cart-write — which
-    // disables MBC RAM access through a route that ALSO seems to reset
-    // some MBC-internal state on third-party MBC3 implementations —
-    // never fires. Confirmed empirically on an insideGadgets Crystal
-    // repro cart (2026-04-28): without this sequence, writes are
-    // silently dropped (cart still reads as the unmodified original
-    // SAV) and the verify-read returns floating-bus garbage.
-    //
-    // We force the equivalent flow explicitly: PWR_OFF → 100ms →
-    // PWR_ON → 200ms → MBC_RESET → cart_write(0x0, 0xFF). The
-    // chip-ID exit probe + setvar prelude run after.
-    await this.opAck(OP_CART_PWR_OFF, opts);
-    // Hold the cart powered-down long enough for its decoupling caps to
-    // discharge fully — 100ms isn't enough on at least the insideGadgets
-    // repro (cart's MBC stays in a half-state and writes still fail). 500ms
-    // is what FlashGBX's GUI flow effectively gives via AUTO_POWEROFF (the
-    // user's file-picker delay easily exceeds 5s).
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    await this.opAck(OP_CART_PWR_ON, opts);
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    await this.opAck(OP_DMG_MBC_RESET, opts);
-    await this.dmgCartWrite(0x0000, 0xff, opts);
-    // DMG pre-flash setvars per `flashgbx-write-dmg-pokemon-red.log:983-987`.
+    // Going minimal: just the 5 setvars FlashGBX issues at the start of
+    // every write op. No probe, no power-cycle, no extra cart writes.
+    // If this works on the insideGadgets cart, the previous experiments
+    // were all noise. If it doesn't, we know the missing piece is
+    // something OTHER than the chip-ID probe / power-cycle dance.
     await this.setVar('PULLUPS_ENABLED', 0, opts);
     await this.setVar('STATUS_REGISTER_MASK', 0x80, opts);
     await this.setVar('STATUS_REGISTER_VALUE', 0x80, opts);
     await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
     await this.setVar('DMG_READ_CS_PULSE', 0, opts);
-    // Wake-up probe — see dmgFlashChipIdExit doc.
-    await this.dmgFlashChipIdExit(opts);
   }
 
   /**
