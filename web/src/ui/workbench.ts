@@ -127,8 +127,6 @@ export interface WorkbenchProps {
   readonly onDownloadRawCartDump?: (role: LeftRole) => void;
   // existing optional handlers kept for v2.0 parity (RIGHT pane stays empty/disabled)
   readonly onBackupToSav?: () => void;
-  readonly onSaveTempBoxToSav?: () => void;
-  readonly onLoadTempBoxFromSav?: (file: File) => void;
   // S8v2.2 — role-specific add buttons (replace the old single
   // `onAddSelected`). Each is enabled by the controller only when the
   // corresponding role + selection state allows it.
@@ -1145,33 +1143,6 @@ function renderLeftActions(oppositeLabel: string, props: WorkbenchProps): HTMLEl
 
 function renderRightActions(props: WorkbenchProps): HTMLElement {
   const actions = el('div', { class: 'wb-pane-actions' });
-  const saveBtn = el(
-    'button',
-    { type: 'button', title: 'Coming soon — write the transfer box to a Crystal SAV file' },
-    'Save to SAV (not implemented)',
-  ) as HTMLButtonElement;
-  saveBtn.disabled = !props.onSaveTempBoxToSav;
-  if (props.onSaveTempBoxToSav)
-    saveBtn.addEventListener('click', () => props.onSaveTempBoxToSav!());
-  actions.append(saveBtn);
-
-  const loadLabel = el(
-    'label',
-    { class: 'wb-load-tempbox-sav' },
-    'Load from SAV',
-  ) as HTMLLabelElement;
-  const loadInput = el('input', {
-    type: 'file',
-    accept: '.sav',
-    style: 'display:none',
-  }) as HTMLInputElement;
-  loadInput.addEventListener('change', () => {
-    const f = loadInput.files?.[0];
-    if (f && props.onLoadTempBoxFromSav) props.onLoadTempBoxFromSav(f);
-    loadInput.value = '';
-  });
-  loadLabel.append(loadInput);
-  actions.append(loadLabel);
 
   // S8v2.2 — Clear Transfer Box. Always present; disabled when the
   // staging store is empty.
@@ -1205,7 +1176,7 @@ function renderRightActions(props: WorkbenchProps): HTMLElement {
   const importLabel = el(
     'label',
     { class: 'wb-import-transfer-json' },
-    '[debug] Load Transfer Box (JSON)',
+    'Load Transfer Box (JSON)',
   ) as HTMLLabelElement;
   const importInput = el('input', {
     type: 'file',

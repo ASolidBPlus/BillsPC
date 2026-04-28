@@ -1320,7 +1320,6 @@ button.secondary {
 .wb-empty-cta,
 .wb-pane-actions button,
 .wb-pane-actions label,
-.wb-load-tempbox-sav,
 .wb-import-transfer-json {
   font-family: 'PokemonGB', 'Courier New', monospace;
   background: var(--gbc-bg);
@@ -1338,15 +1337,6 @@ button.secondary {
     box-shadow 0.05s ease;
 }
 
-/* Debug-only buttons get a dashed border + muted background so they're
-   visually distinct from real-feature buttons. */
-.wb-import-transfer-json {
-  border-style: dashed;
-  background: rgba(255, 255, 255, 0.6);
-  font-size: 0.6rem;
-  opacity: 0.8;
-}
-
 /* The two LEFT-pane first-load CTAs are the loudest visual on screen;
    bump padding/font slightly to make them feel like the primary CTAs
    they are. */
@@ -1359,7 +1349,6 @@ button.secondary {
 .wb-empty-cta:hover,
 .wb-pane-actions button:hover:not(:disabled),
 .wb-pane-actions label:hover,
-.wb-load-tempbox-sav:hover,
 .wb-import-transfer-json:hover {
   background: #fff8e0;
 }
@@ -1367,7 +1356,6 @@ button.secondary {
 .wb-empty-cta:active,
 .wb-pane-actions button:active:not(:disabled),
 .wb-pane-actions label:active,
-.wb-load-tempbox-sav:active,
 .wb-import-transfer-json:active {
   /* Press effect — button sinks into its shadow on click. */
   transform: translate(4px, 4px);
