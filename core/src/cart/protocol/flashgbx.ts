@@ -431,7 +431,12 @@ export class FlashgbxProtocol implements CartProtocol {
     // PWR_ON → 200ms → MBC_RESET → cart_write(0x0, 0xFF). The
     // chip-ID exit probe + setvar prelude run after.
     await this.opAck(OP_CART_PWR_OFF, opts);
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    // Hold the cart powered-down long enough for its decoupling caps to
+    // discharge fully — 100ms isn't enough on at least the insideGadgets
+    // repro (cart's MBC stays in a half-state and writes still fail). 500ms
+    // is what FlashGBX's GUI flow effectively gives via AUTO_POWEROFF (the
+    // user's file-picker delay easily exceeds 5s).
+    await new Promise((resolve) => setTimeout(resolve, 500));
     await this.opAck(OP_CART_PWR_ON, opts);
     await new Promise((resolve) => setTimeout(resolve, 200));
     await this.opAck(OP_DMG_MBC_RESET, opts);
@@ -538,8 +543,18 @@ export class FlashgbxProtocol implements CartProtocol {
         for (let off = batchOff; off < batchEnd; off += PAGE) {
           if (opts.signal?.aborted) throw new CartError('CANCELLED', 'write aborted');
           const slice = bytes.subarray(off, Math.min(off + PAGE, batchEnd));
-          await writeAll(this.port, new Uint8Array([OP_DMG_CART_WRITE_SRAM]));
-          await writeAll(this.port, slice);
+          // Send opcode + payload as a SINGLE write — Web Serial chunks
+          // each writer.write() call into its own USB Bulk-OUT transfer,
+          // and the firmware appears to drop the payload-following-opcode
+          // sequence if the two land in separate transfers (the firmware
+          // expects N bytes of payload to immediately follow the 0xB3
+          // opcode within the same read-from-USB pass). FlashGBX's
+          // pyserial backend buffers internally so the two `_write` calls
+          // typically coalesce into one USB transfer.
+          const frame = new Uint8Array(1 + slice.length);
+          frame[0] = OP_DMG_CART_WRITE_SRAM;
+          frame.set(slice, 1);
+          await writeAll(this.port, frame);
           await this.readAck(opts, 'DMG SRAM write');
           opts.onProgress?.({ bytesWritten: off + slice.length, bytesTotal: bytes.length });
         }
