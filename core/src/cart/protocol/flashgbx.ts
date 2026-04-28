@@ -97,7 +97,8 @@ const OP_CART_PWR_ON = 0xf2;
 
 /**
  * fw-variable map: name → [size_bytes, key_id]. Mirrors LK DEVICE_VAR
- * **byte-for-byte** from `docs/flashgbx-reference/LK_Device.py:90-118`.
+ * **byte-for-byte** from FlashGBX upstream (`LK_Device.py` `DEVICE_VAR`
+ * dict — https://github.com/lesserkuma/FlashGBX).
  *
  * IMPORTANT — DO NOT INFER ENTRIES (per AMEND-S7b-1 + DECISION-1 + DECISION-8):
  *

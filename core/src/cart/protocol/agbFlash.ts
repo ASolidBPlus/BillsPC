@@ -4,8 +4,9 @@
  * `InsidegadgetsProtocol` (stock OFW) so the two firmwares produce
  * byte-identical wire traces for the same logical Flash op.
  *
- * Source of truth: `docs/flashgbx-reference/flashgbx-write-agb-pokemon-ruby-jp.log`
- * (Pokemon Ruby JP, Macronix MX29L010, 32 sectors × 4 KB = 128 KB).
+ * Source of truth: protocol traces captured from FlashGBX
+ * (https://github.com/lesserkuma/FlashGBX) writing Pokemon Ruby JP onto
+ * a Macronix MX29L010 (32 sectors × 4 KB = 128 KB).
  *
  * Per AMEND-S7b-3 + DECISION-6 the per-sector page write uses
  * TRANSFER_SIZE=256 (matching FlashGBX upstream traces). The host sends
