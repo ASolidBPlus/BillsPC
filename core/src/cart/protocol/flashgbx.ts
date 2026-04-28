@@ -312,8 +312,18 @@ export class FlashgbxProtocol implements CartProtocol {
     await this.setVar('AGB_READ_METHOD', 2, opts);
     await this.setVar('CART_MODE', isDMG ? CART_MODE_DMG : CART_MODE_AGB, opts);
 
-    // Voltage: 5V for original GB (Pokemon Red/Blue/Yellow); 3.3V for GBC + GBA.
-    const volt = family === 'gb' ? OP_SET_VOLTAGE_5V : OP_SET_VOLTAGE_3_3V;
+    // Voltage: 5V for ALL Game Boy carts (DMG and GBC both); 3.3V only
+    // for AGB. This mirrors FlashGBX (`LK_Device.py:842-844`) — its UI
+    // has no "GBC" mode at all, ALL Game Boy carts go through `SetMode
+    // ("DMG")` which always sends `SET_VOLTAGE_5V`. GBC carts are
+    // 3.3V-spec but 5V-tolerant; the original DMG ran them at 5V too.
+    //
+    // Confirmed empirically (2026-04-28) on the insideGadgets Crystal
+    // repro: at 3.3V the cart's MBC3 acks every register/SRAM-write
+    // command but the cell array is never modified — symptoms exactly
+    // match an underpowered MBC. Driving at 5V (matching FlashGBX) lets
+    // writes land.
+    const volt = isDMG ? OP_SET_VOLTAGE_5V : OP_SET_VOLTAGE_3_3V;
     await this.opAck(volt, opts);
 
     // Power the cart connector and let the rail settle.

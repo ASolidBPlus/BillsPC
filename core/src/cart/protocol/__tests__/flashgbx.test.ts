@@ -59,13 +59,15 @@ describe('FlashgbxProtocol — LK firmware (L>=12)', () => {
     expect(port.txLog.includes(0xa4)).toBe(false); // no 3.3V for plain gb
   });
 
-  it('setMode("gbc") uses 3.3V instead of 5V', async () => {
+  it('setMode("gbc") uses 5V (FlashGBX has no separate GBC voltage)', async () => {
     const port = makeMockPort();
     ack(port, 3 + 3);
     const proto = new FlashgbxProtocol(port);
     await proto.setMode('gbc');
-    expect(port.txLog).toContain(0xa4); // 3.3V
-    expect(port.txLog.includes(0xa5)).toBe(false);
+    // Per LK_Device.py:842-844 — SetMode("DMG") always sends SET_VOLTAGE_5V.
+    // GBC carts are 3.3V-spec but 5V-tolerant; FlashGBX runs them at 5V.
+    expect(port.txLog).toContain(0xa5); // 5V
+    expect(port.txLog.includes(0xa4)).toBe(false);
   });
 
   it('setMode("gba") uses 3.3V + AGB bootup sequence (no MBC reset)', async () => {
