@@ -25,7 +25,7 @@ Not promises — just the things I'd genuinely consider building if there's inte
 
 - **Gen 1/2 ROM-hack support** — Prism, Brown, Polished Crystal, Orange. The conversion pipeline already runs against arbitrary parsed `Gen12Pokemon` records; the lift is per-hack save-format detection + custom-species handling.
 - **Modular stat-conversion choices** — opt out of EV preservation entirely, swap the StatExp → EV algorithm (proportional vs Hamilton vs caller-supplied), pick from a wider nature pool, etc. The conversion functions are already pure + composable; surfacing the levers in the UI is the main work.
-- **Legendary + Ditto support** — currently the convert pipeline refuses all 11 Gen 1/2 legendaries plus Ditto (12 species total) because the bred-egg cover story doesn't fit them. Routing them through a different cover-story (event-distribution / Mystery Gift / fateful-encounter origin) would need a per-species legality study but is doable.
+- **Legendary + Ditto support** — currently the convert pipeline refuses all 11 Gen 1/2 legendaries plus Ditto (12 species total) because the bred-egg origin metadata doesn't fit them. Routing them through a different origin profile (event-distribution / Mystery Gift / fateful-encounter) would need a per-species legality study but is doable.
 
 ## Design philosophy: essence preservation
 
