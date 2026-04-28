@@ -152,8 +152,8 @@ function renderGscStatScreen(mon: Gen12Pokemon): HTMLElement {
   const sprite = el('div', { class: 'gsc-sprite' });
   const spriteImgEl = document.createElement('img');
   spriteImgEl.src = isShiny
-    ? `/sprites/crystal-anim-shiny/${mon.speciesGen2Id}.gif`
-    : `/sprites/crystal-anim/${mon.speciesGen2Id}.gif`;
+    ? `sprites/crystal-anim-shiny/${mon.speciesGen2Id}.gif`
+    : `sprites/crystal-anim/${mon.speciesGen2Id}.gif`;
   spriteImgEl.alt = nick;
   spriteImgEl.className = 'sprite';
   sprite.append(spriteImgEl);
@@ -171,7 +171,7 @@ function renderGscStatScreen(mon: Gen12Pokemon): HTMLElement {
   // ":L" rendered as the canonical icon image (vendored from rby-menus
   // English-row icon strip); level digits text-overlaid right after.
   const lIcon = document.createElement('img');
-  lIcon.src = '/sprites/stat-screens/gsc-icon-l.png';
+  lIcon.src = 'sprites/stat-screens/gsc-icon-l.png';
   lIcon.className = 'gsc-icon-l';
   lIcon.alt = ':L';
   wrap.append(lIcon);
@@ -185,8 +185,8 @@ function renderGscStatScreen(mon: Gen12Pokemon): HTMLElement {
     const genderImg = document.createElement('img');
     genderImg.src =
       monGender === 1
-        ? '/sprites/stat-screens/gsc-icon-female.png'
-        : '/sprites/stat-screens/gsc-icon-male.png';
+        ? 'sprites/stat-screens/gsc-icon-female.png'
+        : 'sprites/stat-screens/gsc-icon-male.png';
     genderImg.className = 'gsc-gender-pos';
     genderImg.alt = monGender === 1 ? '♀' : '♂';
     wrap.append(genderImg);
@@ -196,7 +196,7 @@ function renderGscStatScreen(mon: Gen12Pokemon): HTMLElement {
   addText('gsc-species', speciesName.toUpperCase());
   // HP — canonical "HP:" icon (16×8) + value digits next to it
   const hpIcon = document.createElement('img');
-  hpIcon.src = '/sprites/stat-screens/gsc-icon-hp.png';
+  hpIcon.src = 'sprites/stat-screens/gsc-icon-hp.png';
   hpIcon.className = 'gsc-icon-hp';
   hpIcon.alt = 'HP:';
   wrap.append(hpIcon);
@@ -207,7 +207,7 @@ function renderGscStatScreen(mon: Gen12Pokemon): HTMLElement {
   // template already shows blank white in that cell.
   if (isShiny) {
     const star = document.createElement('img');
-    star.src = '/sprites/stat-screens/gsc-shiny-mark.png';
+    star.src = 'sprites/stat-screens/gsc-shiny-mark.png';
     star.className = 'gsc-shiny';
     star.alt = 'shiny';
     wrap.append(star);
@@ -410,7 +410,7 @@ function renderFrlgAfterPanel(gen3: Gen3Intermediate, source?: Gen12Pokemon): HT
 
   // Pokéball icon at template (211, 238) — bottom-right of sprite area
   const ballImg = document.createElement('img');
-  ballImg.src = '/sprites/stat-screens/frlg-icon-pokeball.png';
+  ballImg.src = 'sprites/stat-screens/frlg-icon-pokeball.png';
   ballImg.className = 'frlg-pokeball';
   ballImg.alt = '';
   wrap.append(ballImg);
@@ -418,7 +418,7 @@ function renderFrlgAfterPanel(gen3: Gen3Intermediate, source?: Gen12Pokemon): HT
   // Shiny star at template (214, 42) — only shown for shiny mons
   if (isShiny) {
     const star = document.createElement('img');
-    star.src = '/sprites/stat-screens/frlg-shiny-star.png';
+    star.src = 'sprites/stat-screens/frlg-shiny-star.png';
     star.className = 'frlg-shiny-star';
     star.alt = 'shiny';
     wrap.append(star);
@@ -430,7 +430,7 @@ function renderFrlgAfterPanel(gen3: Gen3Intermediate, source?: Gen12Pokemon): HT
   const sprite = el('div', { class: 'frlg-sprite' });
   if (isShiny) {
     const shinyImg = document.createElement('img');
-    shinyImg.src = `/sprites/gen3-shiny/${gen3.species}.png`;
+    shinyImg.src = `sprites/gen3-shiny/${gen3.species}.png`;
     shinyImg.alt = speciesName;
     shinyImg.className = 'sprite';
     sprite.append(shinyImg);
