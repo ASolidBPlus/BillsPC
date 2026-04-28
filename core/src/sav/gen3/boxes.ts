@@ -21,6 +21,7 @@
 import { readU32LE, readU16LE, writeU32LE } from '../../pack/leBytes.js';
 import { decryptBlock, makeOtFull } from '../../pack/gen3Crypt.js';
 import { unshuffleSubstructures } from '../../pack/gen3Shuffle.js';
+import { gen3InternalToNdex } from './internalDex.js';
 import {
   PCBUFFER_BOX_COUNT,
   PCBUFFER_BOX_DATA_OFFSET,
@@ -126,7 +127,11 @@ export function decodeSlotSummary(slot: Uint8Array): SlotSummary | null {
   return { species, nicknameBytes, otNameBytes, tid, sid, heldItem, exp, shiny };
 }
 
-/** Read the species field from a (possibly stale) 80-byte slot. */
+/** Read the species field from a (possibly stale) 80-byte slot. Returns
+ *  the NATIONAL DEX id (1..386), translated from the cart's internal
+ *  storage id via `gen3InternalToNdex`. Returns 0 for empty/garbage
+ *  slots OR for internal ids that don't map to a real species
+ *  (OLD_UNOWN placeholders 252-276, anything above 411). */
 export function decodeSlotSpecies(slot: Uint8Array): number {
   if (slot.length !== PCBUFFER_SLOT_BYTES) {
     throw new RangeError(
@@ -156,7 +161,8 @@ export function decodeSlotSpecies(slot: Uint8Array): number {
     // Out-of-range PID%24 — treat as empty/garbage so we don't refuse the inject.
     return 0;
   }
-  return readU16LE(g, 0);
+  const internalId = readU16LE(g, 0);
+  return gen3InternalToNdex(internalId);
 }
 
 /**
