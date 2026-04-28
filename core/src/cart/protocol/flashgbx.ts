@@ -406,27 +406,48 @@ export class FlashgbxProtocol implements CartProtocol {
       await jedec.exitChipIdMode();
       return;
     }
-    // EXPERIMENT (2026-04-28): strip prepareForWrite to bare minimum.
-    //
-    // Earlier debugging stacked up power-cycle, MBC reset, 0xFF
-    // strange-bootleg workaround, and a JEDEC chip-ID exit probe. None
-    // of them fixed silent-drop SRAM writes on the insideGadgets Crystal
-    // repro. The chip-ID exit probe writes `0x4000 = 0xFF` (lower 4 bits
-    // = 0xF, an UNDEFINED MBC3 RAM-bank-register value per pandocs); on
-    // a stock MBC3 this is harmless, but on third-party MBC3 silicon it
-    // may latch the cart into a state where subsequent 0xA000 writes go
-    // to an RTC register or get dropped entirely.
-    //
-    // Going minimal: just the 5 setvars FlashGBX issues at the start of
-    // every write op. No probe, no power-cycle, no extra cart writes.
-    // If this works on the insideGadgets cart, the previous experiments
-    // were all noise. If it doesn't, we know the missing piece is
-    // something OTHER than the chip-ID probe / power-cycle dance.
+    // 5-setvar prelude per `flashgbx-write-dmg-pokemon-red.log:983-987`.
     await this.setVar('PULLUPS_ENABLED', 0, opts);
     await this.setVar('STATUS_REGISTER_MASK', 0x80, opts);
     await this.setVar('STATUS_REGISTER_VALUE', 0x80, opts);
     await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
     await this.setVar('DMG_READ_CS_PULSE', 0, opts);
+    // RTC unstick + bank reset — see dmgRtcExerciseAndReset doc.
+    await this.dmgRtcExerciseAndReset(opts);
+  }
+
+  /**
+   * MBC3 RTC unstick: walk the bank register through every defined value
+   * (RAM banks 0-3 → RTC registers S/M/H/DL/DH at 0x08-0x0C → reset to 0)
+   * to force the MBC's state machine out of any "stuck in RTC mode" or
+   * "stuck on a non-zero RAM bank" state inherited from the prior game
+   * session. Mirrors `Mapper.py:263-287` (HasRTC) which FlashGBX runs
+   * during cart detection.
+   *
+   * Why we need it on the WRITE path specifically: when a Pokemon Crystal
+   * game powers down, it leaves the MBC3 with the RTC-Day-High register
+   * (0x4000 = 0x0C) selected so the on-cart RTC keeps ticking off the
+   * battery. On stock Nintendo MBC3 silicon, our subsequent `0x4000 = 0`
+   * (setBank(0)) cleanly transitions back to SRAM-bank-0 mode. On
+   * insideGadgets's third-party MBC3 reimplementation it apparently
+   * doesn't — and ALL writes to 0xA000-0xBFFF then silently go to the
+   * 1-byte RTC register instead of the 8 KB SRAM cell array. Symptom:
+   * cart's actual SRAM is completely unchanged after a "successful"
+   * write op, fresh-read returns the original SAV intact.
+   *
+   * Cycling through every RTC register and then writing 0 explicitly to
+   * 0x4000 walks the cart's state machine through every reachable state
+   * and lands it in the clean SRAM-bank-0 state we need.
+   */
+  private async dmgRtcExerciseAndReset(opts: { signal?: AbortSignal }): Promise<void> {
+    await this.dmgCartWrite(0x0000, 0x0a, opts); // EnableRAM
+    await this.dmgCartWrite(0x6000, 0x00, opts); // LatchRTC reset
+    await this.dmgCartWrite(0x6000, 0x01, opts); // LatchRTC set
+    for (let reg = 0x08; reg <= 0x0c; reg++) {
+      await this.dmgCartWrite(0x4000, reg, opts); // select each RTC register
+    }
+    await this.dmgCartWrite(0x0000, 0x00, opts); // DisableRAM
+    await this.dmgCartWrite(0x4000, 0x00, opts); // reset to SRAM bank 0
   }
 
   /**

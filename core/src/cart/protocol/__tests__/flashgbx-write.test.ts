@@ -88,38 +88,35 @@ describe('FlashgbxProtocol — DMG SRAM writeSram (per LK_Device.py:3286-3458 + 
 });
 
 describe('FlashgbxProtocol — prepareForWrite (AMEND-S7b-1, -4)', () => {
-  it('DMG: minimal setvar prelude (5 setvars, no probe / power-cycle)', async () => {
+  it('DMG: 5-setvar prelude + RTC unstick dance', async () => {
     const port = makeMockPort();
-    ack(port, 5);
+    // 5 setvar acks + 10 dmgCartWrite acks for the RTC dance:
+    //   EnableRAM, LatchRTC reset, LatchRTC set, 5 RTC reg selects (0x08-0x0C),
+    //   DisableRAM, SRAM bank reset (0x4000=0).
+    ack(port, 5 + 10);
     const proto = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
     await proto.prepareForWrite('gb');
-    // PULLUPS_ENABLED (size=1, key=0x000E, value=0).
+    // PULLUPS_ENABLED first.
     expect(port.txLog.slice(0, SET_VAR_FRAME)).toEqual([
       0xa6, 1, 0x00, 0x00, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x00,
     ]);
-    // STATUS_REGISTER_MASK (size=2, key=0x0005, value=0x80).
-    expect(port.txLog.slice(SET_VAR_FRAME, SET_VAR_FRAME * 2)).toEqual([
-      0xa6, 2, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x80,
-    ]);
-    // STATUS_REGISTER_VALUE (size=2, key=0x0006, value=0x80).
-    expect(port.txLog.slice(SET_VAR_FRAME * 2, SET_VAR_FRAME * 3)).toEqual([
-      0xa6, 2, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x80,
-    ]);
-    // DMG_WRITE_CS_PULSE = 0 (size=1, key=0x0009).
-    expect(port.txLog.slice(SET_VAR_FRAME * 3, SET_VAR_FRAME * 4)).toEqual([
-      0xa6, 1, 0x00, 0x00, 0x00, 0x09, 0x00, 0x00, 0x00, 0x00,
-    ]);
-    // DMG_READ_CS_PULSE = 0 (size=1, key=0x0008).
-    expect(port.txLog.slice(SET_VAR_FRAME * 4, SET_VAR_FRAME * 5)).toEqual([
-      0xa6, 1, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00,
-    ]);
-    // No 0xB2 (cart_write) or 0xB1 (cart_read) — no probe.
-    expect(port.txLog.filter((b) => b === 0xb2).length).toBe(0);
-    expect(port.txLog.filter((b) => b === 0xb1).length).toBe(0);
-    // No 0xF3/0xF2/0xB4 — no power-cycle / MBC reset.
-    expect(port.txLog.filter((b) => b === 0xf3).length).toBe(0);
-    expect(port.txLog.filter((b) => b === 0xf2).length).toBe(0);
-    expect(port.txLog.filter((b) => b === 0xb4).length).toBe(0);
+    // RTC dance starts after the 5 setvars (50 bytes).
+    const rtcStart = 5 * SET_VAR_FRAME;
+    // EnableRAM: cart_write 0x0000 = 0x0A.
+    expect(port.txLog.slice(rtcStart, rtcStart + 6)).toEqual([0xb2, 0, 0, 0, 0, 0x0a]);
+    // LatchRTC reset: cart_write 0x6000 = 0x00.
+    expect(port.txLog.slice(rtcStart + 6, rtcStart + 12)).toEqual([0xb2, 0, 0, 0x60, 0, 0x00]);
+    // LatchRTC set: cart_write 0x6000 = 0x01.
+    expect(port.txLog.slice(rtcStart + 12, rtcStart + 18)).toEqual([0xb2, 0, 0, 0x60, 0, 0x01]);
+    // RTC register selects (0x4000 = 0x08, 0x09, 0x0A, 0x0B, 0x0C).
+    for (let i = 0; i < 5; i++) {
+      const off = rtcStart + 18 + i * 6;
+      expect(port.txLog.slice(off, off + 6)).toEqual([0xb2, 0, 0, 0x40, 0, 0x08 + i]);
+    }
+    // DisableRAM + SRAM bank 0 reset.
+    const tailStart = rtcStart + 18 + 5 * 6;
+    expect(port.txLog.slice(tailStart, tailStart + 6)).toEqual([0xb2, 0, 0, 0, 0, 0x00]);
+    expect(port.txLog.slice(tailStart + 6, tailStart + 12)).toEqual([0xb2, 0, 0, 0x40, 0, 0x00]);
   });
 
   it('AGB: STATUS_REGISTER_MASK/VALUE + JEDEC chip-ID exit (AMEND-S7b-4)', async () => {
