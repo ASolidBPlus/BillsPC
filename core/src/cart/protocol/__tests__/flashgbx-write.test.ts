@@ -88,7 +88,20 @@ describe('FlashgbxProtocol — DMG SRAM writeSram (per LK_Device.py:3286-3458 + 
 });
 
 describe('FlashgbxProtocol — prepareForWrite (AMEND-S7b-1, -4)', () => {
-  it('DMG: 5-setvar prelude + full HasRTC dance with CLK_TOGGLE + reads', async () => {
+  it('DMG (gb): just 5 setvars — no RTC dance (MBC1 has no RTC)', async () => {
+    const port = makeMockPort();
+    ack(port, 5);
+    const proto = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
+    await proto.prepareForWrite('gb');
+    // Just the 5-setvar prelude, nothing else.
+    expect(port.txLog.length).toBe(5 * SET_VAR_FRAME);
+    // No CLK_TOGGLE, no cart_write, no cart_read.
+    expect(port.txLog.filter((b) => b === 0xa9).length).toBe(0);
+    expect(port.txLog.filter((b) => b === 0xb2).length).toBe(0);
+    expect(port.txLog.filter((b) => b === 0xb1).length).toBe(0);
+  });
+
+  it('GBC: 5-setvar prelude + full HasRTC dance with CLK_TOGGLE + reads', async () => {
     const port = makeMockPort();
     // Acks needed (in order the mock returns them):
     //   5 setvar prelude acks
@@ -111,7 +124,7 @@ describe('FlashgbxProtocol — prepareForWrite (AMEND-S7b-1, -4)', () => {
     }
     ack(port, 2); // tail cart_writes
     const proto = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
-    await proto.prepareForWrite('gb');
+    await proto.prepareForWrite('gbc');
     // Sanity: PULLUPS_ENABLED first.
     expect(port.txLog.slice(0, SET_VAR_FRAME)).toEqual([
       0xa6, 1, 0x00, 0x00, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x00,

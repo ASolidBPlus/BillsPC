@@ -423,8 +423,20 @@ export class FlashgbxProtocol implements CartProtocol {
     await this.setVar('STATUS_REGISTER_VALUE', 0x80, opts);
     await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
     await this.setVar('DMG_READ_CS_PULSE', 0, opts);
-    // RTC unstick + bank reset — see dmgRtcExerciseAndReset doc.
-    await this.dmgRtcExerciseAndReset(opts);
+    // RTC unstick — only safe on MBC3+RTC carts. Gated on family='gbc'
+    // because all Pokemon GBC games (Gold/Silver/Crystal) use MBC3+RTC,
+    // and Pokemon DMG games (Red/Blue/Yellow) use MBC1/MBC5 where the
+    // 0x6000 / 0x4000 writes have completely different semantics (mode
+    // register / upper ROM bank bits) — running the dance there would
+    // leave the cart in mode-1 (RAM banking) state, which is benign for
+    // bank-0-only SRAM access but still undesirable.
+    //
+    // FUTURE (separate sprint): proper mapper-class hierarchy mirroring
+    // Mapper.py — DMG_MBC3 implements HasRTC, MBC1/MBC5 don't. Then this
+    // gate becomes `if (mapper.hasRtc()) await mapper.exerciseRtc()`.
+    if (family === 'gbc') {
+      await this.dmgRtcExerciseAndReset(opts);
+    }
   }
 
   /**
