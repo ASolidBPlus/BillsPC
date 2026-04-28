@@ -405,6 +405,21 @@ export class FlashgbxProtocol implements CartProtocol {
       await jedec.exitChipIdMode();
       return;
     }
+    // Power + MBC re-assert: FlashGBX explicitly calls
+    // `CartPowerOn() → Resetting MBC` before EVERY write operation, even
+    // when power is already on from the prior read. Mirrors
+    // `flashgbx-write-dmg-pokemon-crystal-insidegadgets.log:243-244`.
+    //
+    // Why per-write, not just per-session: the prior read flow may have
+    // left cart-internal state machines (chip-ID latch, RAM-bank latch,
+    // RTC-register select on MBC3) in a state our setvar prelude can't
+    // touch from outside. Re-asserting POWER_ON + MBC_RESET clears it.
+    // On a clean cart this is ~110ms of noise; on a sticky third-party
+    // cart it's the difference between "writes silently fail" and
+    // "writes land".
+    await this.opAck(OP_CART_PWR_ON, opts);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await this.opAck(OP_DMG_MBC_RESET, opts);
     // DMG pre-flash setvars per `flashgbx-write-dmg-pokemon-red.log:983-987`.
     await this.setVar('PULLUPS_ENABLED', 0, opts);
     await this.setVar('STATUS_REGISTER_MASK', 0x80, opts);
