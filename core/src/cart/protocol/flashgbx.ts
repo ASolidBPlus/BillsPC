@@ -49,6 +49,7 @@ import {
   JedecFlash,
   type AgbFlashSector,
 } from './agbFlash.js';
+import type { CartWriteCmd, MapperBus } from '../mapper/index.js';
 
 const FW_TIMEOUT_MS = 3000 as const;
 const ACK_TIMEOUT_MS = 3000 as const;
@@ -361,6 +362,42 @@ export class FlashgbxProtocol implements CartProtocol {
     await this.dmgCartWrite(0x0000, enabled ? 0x0a : 0x00, opts);
   }
 
+  /**
+   * S9: run a flat list of mapper-emitted cart-write commands. Each
+   * `[address, value]` pair becomes one OP_DMG_CART_WRITE wire frame.
+   * Used by GbxCartSink to execute mapper.enableMapper() /
+   * mapper.enableRam() / mapper.selectBankRam() output uniformly.
+   */
+  async runCartWriteCommands(
+    cmds: readonly CartWriteCmd[],
+    opts: { signal?: AbortSignal } = {},
+  ): Promise<void> {
+    for (const [addr, value] of cmds) {
+      if (opts.signal?.aborted) throw new CartError('CANCELLED', 'cart writes aborted');
+      await this.dmgCartWrite(addr, value, opts);
+    }
+  }
+
+  /**
+   * S9: MapperBus adapter — binds cart-write / CLK_TOGGLE / bulk-RAM-read
+   * to the protocol's existing private primitives so a DmgMapper can drive
+   * the bus without reaching into FlashgbxProtocol internals.
+   */
+  cartBus(): MapperBus {
+    return {
+      cartWrite: (address, value, opts = {}) => this.dmgCartWrite(address, value, opts),
+      clkToggle: (count, opts = {}) => this.clkToggle(count, opts),
+      bulkReadRam: (baseAddr, length, opts = {}) =>
+        this.bulkRead({
+          accessMode: DMG_ACCESS_RAM,
+          baseAddr,
+          length,
+          opts,
+          ramPulse: true,
+        }),
+    };
+  }
+
   async readRom(address: number, length: number, opts: CartReadOptions = {}): Promise<Uint8Array> {
     if (this.currentFamily === 'gba') {
       // GBA: ADDRESS is in 16-bit words (cart bus is 16-bit), and the
@@ -406,7 +443,10 @@ export class FlashgbxProtocol implements CartProtocol {
    * crashed session that left the chip in chip-ID mode doesn't corrupt
    * our writes. Idempotent — safe to call multiple times.
    */
-  async prepareForWrite(family: CartFamily, opts: { signal?: AbortSignal } = {}): Promise<void> {
+  async prepareForWrite(
+    family: CartFamily,
+    opts: { signal?: AbortSignal; skipMapperLogic?: boolean } = {},
+  ): Promise<void> {
     if (family === 'gba') {
       // AGB pre-flash setvars per `flashgbx-write-agb-pokemon-ruby-jp.log:159-160`.
       await this.setVar('STATUS_REGISTER_MASK', 0x80, opts);
@@ -423,6 +463,11 @@ export class FlashgbxProtocol implements CartProtocol {
     await this.setVar('STATUS_REGISTER_VALUE', 0x80, opts);
     await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
     await this.setVar('DMG_READ_CS_PULSE', 0, opts);
+    // S9: when `skipMapperLogic` is set, the caller (GbxCartSink) is
+    // running the RTC dance via a DmgMapperMbc3Rtc instance and we must
+    // NOT double-dance here. Stage 4 deletes this branch entirely once
+    // every caller threads a mapper through.
+    if (opts.skipMapperLogic) return;
     // RTC unstick — only safe on MBC3+RTC carts. Gated on family='gbc'
     // because all Pokemon GBC games (Gold/Silver/Crystal) use MBC3+RTC,
     // and Pokemon DMG games (Red/Blue/Yellow) use MBC1/MBC5 where the

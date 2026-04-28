@@ -33,6 +33,8 @@ describe('public API surface', () => {
       'PCBUFFER_SLOTS_PER_BOX',
       'PCBUFFER_SLOT_BYTES',
       'TransferMatrixRefusal',
+      // S9 — DmgMapper user-facing error string:
+      'UNSUPPORTED_CART_MESSAGE',
       'WriteAndVerifySink',
       'WriteVerifyError',
       'agbFlashSectorPlan',
@@ -47,6 +49,9 @@ describe('public API surface', () => {
       'deleteMonGen2',
       'detectFormat',
       'detectGen3',
+      // S9 — DmgMapper detection:
+      'detectMapper',
+      'detectMapperOrThrow',
       'detectProtocol',
       'encodeMonGen2',
       'familyOf',

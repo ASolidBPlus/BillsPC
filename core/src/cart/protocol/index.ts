@@ -18,6 +18,7 @@
  */
 
 import type { CartIdentity, CartReadOptions, CartWriteOptions, FirmwareInfo } from '../types.js';
+import type { CartWriteCmd, MapperBus } from '../mapper/index.js';
 
 export type CartFamily = 'gb' | 'gbc' | 'gba';
 
@@ -40,7 +41,10 @@ export interface CartProtocol {
    * protocols that don't need it (insidegadgets stock OFW). The `GbxCartSink`
    * calls this once before its bank loop.
    */
-  prepareForWrite?(family: CartFamily, opts?: { signal?: AbortSignal }): Promise<void>;
+  prepareForWrite?(
+    family: CartFamily,
+    opts?: { signal?: AbortSignal; skipMapperLogic?: boolean },
+  ): Promise<void>;
   /** Set GBxCart mode + voltage for the cart family. Insidegadgets uses
    *  'G'/'g' + '5'/'3'; Lesserkuma uses 0xC0-family setup. */
   setMode(family: CartFamily, opts?: { signal?: AbortSignal }): Promise<void>;
@@ -52,6 +56,20 @@ export interface CartProtocol {
    *  firmware uses this to downgrade baud back to 1M so the next session
    *  can re-handshake without requiring the user to power-cycle the cart. */
   cleanup?(): Promise<void>;
+  /** S9 — run a flat list of mapper-emitted cart-write commands. The
+   *  GbxCartSink calls this to execute `mapper.enableRam()` /
+   *  `selectBankRam()` / `enableMapper()` output. Optional on protocols
+   *  that don't support mapper-driven writes (insidegadgets stock OFW);
+   *  if the sink is supplied a `mapper` and the protocol lacks this,
+   *  the sink throws a clear error. */
+  runCartWriteCommands?(
+    cmds: readonly CartWriteCmd[],
+    opts?: { signal?: AbortSignal },
+  ): Promise<void>;
+  /** S9 — MapperBus adapter so a DmgMapper can drive cart-write /
+   *  CLK_TOGGLE / bulk-RAM-read without reaching into protocol
+   *  internals. Optional for the same reason as `runCartWriteCommands`. */
+  cartBus?(): MapperBus;
 }
 
 export interface CartFamilyMetadata {

@@ -25,6 +25,7 @@ import { parseSave } from '../../sav/index.js';
 import { isSaveError } from '../../types/sav.js';
 import { GbxCartSink } from '../sinks/gbxCartSink.js';
 import { FlashgbxProtocol } from '../protocol/flashgbx.js';
+import { DmgMapperMbc3Rtc, DmgMapperMbc1 } from '../mapper/dmg.js';
 import type { Port } from '../types.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -40,8 +41,10 @@ const DEMO_CRYSTAL = resolve(HERE, '../../../../tests/fixtures/saves/demo-crysta
  */
 function makeSramMockPort(opts: { sramBytes: Uint8Array }): Port & {
   buffer: Uint8Array;
+  txLog: number[];
 } {
   const buffer = new Uint8Array(opts.sramBytes);
+  const txLog: number[] = [];
   const fwVars: Record<string, number> = {
     TRANSFER_SIZE: 0,
     ADDRESS: 0,
@@ -206,7 +209,10 @@ function makeSramMockPort(opts: { sramBytes: Uint8Array }): Port & {
 
   const writable = new WritableStream<Uint8Array>({
     write(chunk) {
-      for (const b of chunk) handleByte(b);
+      for (const b of chunk) {
+        txLog.push(b);
+        handleByte(b);
+      }
     },
   });
 
@@ -214,6 +220,7 @@ function makeSramMockPort(opts: { sramBytes: Uint8Array }): Port & {
     readable,
     writable,
     buffer,
+    txLog,
     async close() {
       if (pendingPull) pendingPull({ done: true });
     },
@@ -236,10 +243,72 @@ describe('round-trip cart write — Gen 2 Crystal fold-over (per PLAN §1.4 #3)'
     // buffer should equal `mutated`.
     const port = makeSramMockPort({ sramBytes: original });
     const protocol = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
-    const sink = new GbxCartSink({ protocol, family: 'gbc' });
+    // S9: drive through the mapper-aware sink path with DmgMapperMbc3Rtc
+    // (cart_type 0x10 — Crystal). The legacy fallback (no mapper) is
+    // covered by the existing flashgbx-write tests and stays in tree
+    // until Stage 4.
+    const mapper = new DmgMapperMbc3Rtc(0x10);
+    const sink = new GbxCartSink({ protocol, family: 'gbc', mapper });
     await sink.write(mutated);
 
     // The mock port's `buffer` field is the on-cart bytes after the write.
+    expect(Array.from(port.buffer)).toEqual(Array.from(mutated));
+  });
+});
+
+describe('round-trip cart write — Gen 1 MBC1 (Pokemon Red, 8 KB SRAM)', () => {
+  it('mode-1 EnableRAM sequences appear on the wire AND buffer round-trips', async () => {
+    // Synthetic 8 KB SRAM fill — Gen 1 single-bank cart.
+    const original = new Uint8Array(8 * 1024);
+    for (let i = 0; i < original.length; i++) original[i] = (i * 7) & 0xff;
+    const mutated = new Uint8Array(original);
+    mutated[0x100] = 0xaa;
+    mutated[0x200] = 0xbb;
+
+    const port = makeSramMockPort({ sramBytes: original });
+    const protocol = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
+    const mapper = new DmgMapperMbc1(0x03);
+    const sink = new GbxCartSink({ protocol, family: 'gb', mapper });
+    await sink.write(mutated);
+
+    // Wire-byte spot checks for the MBC1 mode-1 enable/disable
+    // sequences. enable: [0x6000=0x01, 0x0000=0x0a]; disable:
+    // [0x0000=0x00, 0x6000=0x00]. Each cart-write is a 6-byte frame
+    // [0xB2, addr u32 BE, value u8].
+    const frame = (addr: number, val: number): number[] => [
+      0xb2,
+      (addr >>> 24) & 0xff,
+      (addr >>> 16) & 0xff,
+      (addr >>> 8) & 0xff,
+      addr & 0xff,
+      val & 0xff,
+    ];
+    const bytes = port.txLog;
+    const findFrame = (needle: readonly number[]): number => {
+      for (let i = 0; i + needle.length <= bytes.length; i++) {
+        let ok = true;
+        for (let j = 0; j < needle.length; j++) {
+          if (bytes[i + j] !== needle[j]) {
+            ok = false;
+            break;
+          }
+        }
+        if (ok) return i;
+      }
+      return -1;
+    };
+    const enableA = findFrame(frame(0x6000, 0x01));
+    const enableB = findFrame(frame(0x0000, 0x0a));
+    const disableA = findFrame(frame(0x0000, 0x00));
+    const disableB = findFrame(frame(0x6000, 0x00));
+    // Both enable frames present, in mode-1-then-unlock order.
+    expect(enableA).toBeGreaterThanOrEqual(0);
+    expect(enableB).toBeGreaterThan(enableA);
+    // Both disable frames present, in lock-then-mode-0 order, AFTER enable.
+    expect(disableA).toBeGreaterThan(enableB);
+    expect(disableB).toBeGreaterThan(disableA);
+
+    // Buffer round-trips byte-for-byte.
     expect(Array.from(port.buffer)).toEqual(Array.from(mutated));
   });
 });

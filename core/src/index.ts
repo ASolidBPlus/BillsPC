@@ -77,7 +77,12 @@ export {
   parseCartHeader,
   InsidegadgetsProtocol,
   FlashgbxProtocol,
+  // S9 — DmgMapper hierarchy.
+  detectMapper,
+  detectMapperOrThrow,
+  UNSUPPORTED_CART_MESSAGE,
 } from './cart/index.js';
+export type { DmgMapper, MapperBus, CartWriteCmd } from './cart/index.js';
 
 // Sprint 7b — cart-write side: composable sinks + JEDEC Flash helper +
 // transfer-matrix planner. The SaveSink interface itself is re-exported

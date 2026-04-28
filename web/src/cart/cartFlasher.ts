@@ -29,12 +29,15 @@
 import {
   CartError,
   detectProtocol,
+  detectMapperOrThrow,
   GbxCartSink,
+  parseCartHeader,
   WriteAndVerifySink,
   WriteVerifyError,
   isCartError,
   type CartFamily,
   type CartProtocol,
+  type DmgMapper,
   type Port,
   type SaveSinkProgress,
 } from '@pokeportal/core';
@@ -171,9 +174,37 @@ export async function flashCart(
     // buffer mutates after handoff.
     backupBytesSnapshot = new Uint8Array(opts.cartCurrentBytes);
 
+    // S9: detect the DmgMapper from a fresh ROM-header read. We must
+    // do this AFTER detectProtocol (which left the firmware in a
+    // known-good state) and BEFORE constructing the sink stack.
+    // setMode + a 0x150-byte ROM read costs ~50ms but cleanly drives
+    // the cart-type byte 0x147 → DmgMapper instance. Throws verbatim
+    // UNSUPPORTED_CART message for TAMA5 / MBC2 / etc per Q2.
+    let mapper: DmgMapper | undefined;
+    if (opts.family !== 'gba') {
+      await detectedProtocol.setMode(opts.family, opts.signal ? { signal: opts.signal } : {});
+      const headerBytes = await detectedProtocol.readRom(
+        0x0000,
+        0x150,
+        opts.signal ? { signal: opts.signal } : {},
+      );
+      const header = parseCartHeader(headerBytes);
+      if (!header) {
+        throw new CartError(
+          'UNSUPPORTED_CART',
+          'cart header could not be parsed for mapper detection',
+        );
+      }
+      // detectMapperOrThrow surfaces the verbatim Q2 user-facing
+      // message; we let it propagate as a CartError to the catch block
+      // below, which routes it to the cart_flash_failed UI state.
+      mapper = detectMapperOrThrow(header.cartType);
+    }
+
     const inner = new GbxCartSink({
       protocol: detectedProtocol,
       family: opts.family,
+      ...(mapper ? { mapper } : {}),
       label: `${opts.cartLabel} write`,
     });
     const verifySink = new WriteAndVerifySink({

@@ -20,12 +20,15 @@
 import {
   CartError,
   detectProtocol,
+  detectMapperOrThrow,
   GbxCartSink,
+  parseCartHeader,
   WriteAndVerifySink,
   WriteVerifyError,
   isCartError,
   type CartFamily,
   type CartProtocol,
+  type DmgMapper,
   type Port,
   type SaveSinkProgress,
 } from '@pokeportal/core';
@@ -69,9 +72,32 @@ export async function restoreFromBackup(
         deps.writeChunkBytes;
     }
 
+    // S9: detect the DmgMapper for the cart we're restoring onto. Same
+    // approach as cartFlasher — read the ROM header and pass the
+    // resulting mapper into the sink. UNSUPPORTED_CART surfaces the
+    // verbatim Q2 user-facing message.
+    let mapper: DmgMapper | undefined;
+    if (opts.family !== 'gba') {
+      await detectedProtocol.setMode(opts.family, opts.signal ? { signal: opts.signal } : {});
+      const headerBytes = await detectedProtocol.readRom(
+        0x0000,
+        0x150,
+        opts.signal ? { signal: opts.signal } : {},
+      );
+      const header = parseCartHeader(headerBytes);
+      if (!header) {
+        throw new CartError(
+          'UNSUPPORTED_CART',
+          'cart header could not be parsed for mapper detection',
+        );
+      }
+      mapper = detectMapperOrThrow(header.cartType);
+    }
+
     const inner = new GbxCartSink({
       protocol: detectedProtocol,
       family: opts.family,
+      ...(mapper ? { mapper } : {}),
       label: `Recovery restore`,
     });
     const verifySink = new WriteAndVerifySink({

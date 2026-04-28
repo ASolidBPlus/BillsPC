@@ -35,4 +35,8 @@ export {
 } from './protocol/index.js';
 export type { CartProtocol, CartFamily, CartHeader } from './protocol/index.js';
 
+// S9 — DmgMapper hierarchy.
+export { detectMapper, detectMapperOrThrow, UNSUPPORTED_CART_MESSAGE } from './mapper/index.js';
+export type { DmgMapper, MapperBus, CartWriteCmd } from './mapper/index.js';
+
 export { setCartDebug, isCartDebug } from './protocol/debug.js';

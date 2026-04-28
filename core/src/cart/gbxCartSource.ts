@@ -78,6 +78,10 @@ export class GbxCartSource implements SaveSource {
 
     // GB / GBC SRAM. Crystal (MBC3+RTC) has 4 × 8 KB banks; we read
     // them sequentially when the header reports 32 KB.
+    // TODO(s9-followup): mapperize — Q4/RA-1 keeps the read path on
+    // the legacy single-write enable for now (HIL-validated for MBC1
+    // single-write); a future sprint mapperizes reads with its own
+    // HIL revalidation.
     await protocol.setRamEnabled(true, signalOpts);
     try {
       const totalLen = header.ramSizeBytes;
@@ -89,6 +93,7 @@ export class GbxCartSource implements SaveSource {
       const perBank = Math.min(8 * 1024, totalLen);
       let off = 0;
       for (let b = 0; b < banks; b++) {
+        // TODO(s9-followup): mapperize — see Q4/RA-1.
         if (banks > 1) await protocol.setBank(b, signalOpts);
         const want = Math.min(perBank, totalLen - off);
         const chunk = await protocol.readSram(header.kind, want, {
@@ -111,6 +116,7 @@ export class GbxCartSource implements SaveSource {
       };
     } finally {
       try {
+        // TODO(s9-followup): mapperize — see Q4/RA-1.
         await protocol.setRamEnabled(false, signalOpts);
       } catch {
         /* shutdown best-effort */
