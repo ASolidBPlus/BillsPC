@@ -80,6 +80,18 @@ Empirical results across the predicted training tiers:
 
 For casual playthrough mons, conversion is near-perfect. For broadly-trained Lv 100s, the loss is algorithmically unavoidable — the project ships the loss with full transparency rather than discarding training entirely.
 
+## Legality notes
+
+Three classes of pkhex flag the converter intentionally does not chase. Each is the user's call to fix in-game (or accept) before transferring:
+
+1. **Movesets pass through verbatim.** Whatever moves your Gen 1/2 mon currently knows are written into the Gen 3 record as-is. pkhex checks every move against the species's Gen 3 learnset (level-up + TM + tutor + egg-move) and may flag moves the species can't legally know in Gen 3. Delete or relearn the offending moves in-game first if you care about pkhex-clean output.
+
+2. **Pre-evolution-level mons fail the bred-egg origin check.** Some Pokemon can be caught in Gen 1/2 below the level their pre-evo would naturally evolve at (e.g. a wild Lv 37 Muk, where Grimer evolves at Lv 38). The Gen 3 origin profile this tool writes is "hatched from a bred egg" — and a bred egg can't legally produce a fully-evolved Muk before its evolution level. Train the mon past its evolution threshold before transferring.
+
+3. **Hatched eggs are Lv 5 in Gen 3.** A bred egg in Gen 3 hatches at Lv 5, full stop. If you transfer a Lv 4 Pidgey (or any sub-Lv-5 mon), pkhex will flag the level as inconsistent with the bred-egg origin. Level it up to 5+ in-game first.
+
+The "essence preservation" philosophy explicitly trades pkhex-clean defaults for honest data preservation — the tool will not silently change your moves or level your mon up to dodge these flags. The transferred mon WORKS in-game (the games themselves are more lenient than pkhex); the warnings are about HOME-strict legality, which is downstream of the user choosing to clean up first.
+
 ## Architecture
 
 ```
