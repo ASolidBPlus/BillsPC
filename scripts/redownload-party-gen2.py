@@ -37,12 +37,21 @@ NAME_OVERRIDES = {
     'JANGMO_O': 'jangmo_o',
     'HAKAMO_O': 'hakamo_o',
     'KOMMO_O': 'kommo_o',
+    # SoupPotato's asm has these typos in the comment column. The actual
+    # icon files in their repo use the correct spellings.
+    'MARROWAK': 'marowak',
+    'MAGANIUM': 'meganium',
 }
 
 
 def species_names() -> list[str]:
     text = ASM.read_text()
-    names = re.findall(r';\s*([A-Z_]+)\s*$', text, re.MULTILINE)
+    # NB: include digits — `PORYGON2` (ndex 233) and any other digit-bearing
+    # species names would silently drop without [0-9]. The original `[A-Z_]+`
+    # pattern shifted the entire post-Porygon2 list down by one, so
+    # file 248.png ended up holding Lugia's icon instead of Tyranitar's
+    # (and the cascade continued through Celebi).
+    names = re.findall(r';\s*([A-Z0-9_]+)\s*$', text, re.MULTILINE)
     # Skip header lines if any
     return [n for n in names if n not in ('NORMAL', 'SHINY', 'SPECIES')]
 
