@@ -1,0 +1,137 @@
+#!/usr/bin/env python3
+"""
+gen-gen1-internal-dex.py
+
+Regenerates `core/src/sav/gen1/internalDex.ts` `INTERNAL_TO_NDEX` table
+from pret/pokered's `constants/pokemon_constants.asm` (the canonical
+internal-id source). The hand-typed table that lived here before had
+~30+ wrong entries (Aerodactyl mapped to 0x86 instead of 0xab, Lapras
+to 0x58 instead of 0x13, etc.) which surfaced as wrong species names
+on Red/Blue saves.
+
+Source: kwsch/PKHeX is NOT the source — pret/pokered is the actual
+ROM-disassembly source-of-truth for Gen 1 internal indices.
+URL: https://raw.githubusercontent.com/pret/pokered/master/constants/pokemon_constants.asm
+
+Usage: `python3 scripts/gen-gen1-internal-dex.py`
+Then re-run `bun run typecheck` to confirm the regenerated table.
+"""
+
+from __future__ import annotations
+import re
+import sys
+import urllib.request
+from pathlib import Path
+
+URL = (
+    'https://raw.githubusercontent.com/pret/pokered/master/'
+    'constants/pokemon_constants.asm'
+)
+OUT = Path(__file__).resolve().parent.parent / 'core' / 'src' / 'sav' / 'gen1' / 'internalDex.ts'
+
+# Pret internal name → National Dex id. pret uses underscores in
+# multi-word names (NIDORAN_M, NIDORAN_F, FARFETCHD, MR_MIME).
+NDEX = {
+    'BULBASAUR': 1, 'IVYSAUR': 2, 'VENUSAUR': 3, 'CHARMANDER': 4, 'CHARMELEON': 5,
+    'CHARIZARD': 6, 'SQUIRTLE': 7, 'WARTORTLE': 8, 'BLASTOISE': 9, 'CATERPIE': 10,
+    'METAPOD': 11, 'BUTTERFREE': 12, 'WEEDLE': 13, 'KAKUNA': 14, 'BEEDRILL': 15,
+    'PIDGEY': 16, 'PIDGEOTTO': 17, 'PIDGEOT': 18, 'RATTATA': 19, 'RATICATE': 20,
+    'SPEAROW': 21, 'FEAROW': 22, 'EKANS': 23, 'ARBOK': 24, 'PIKACHU': 25,
+    'RAICHU': 26, 'SANDSHREW': 27, 'SANDSLASH': 28, 'NIDORAN_F': 29, 'NIDORINA': 30,
+    'NIDOQUEEN': 31, 'NIDORAN_M': 32, 'NIDORINO': 33, 'NIDOKING': 34, 'CLEFAIRY': 35,
+    'CLEFABLE': 36, 'VULPIX': 37, 'NINETALES': 38, 'JIGGLYPUFF': 39, 'WIGGLYTUFF': 40,
+    'ZUBAT': 41, 'GOLBAT': 42, 'ODDISH': 43, 'GLOOM': 44, 'VILEPLUME': 45,
+    'PARAS': 46, 'PARASECT': 47, 'VENONAT': 48, 'VENOMOTH': 49, 'DIGLETT': 50,
+    'DUGTRIO': 51, 'MEOWTH': 52, 'PERSIAN': 53, 'PSYDUCK': 54, 'GOLDUCK': 55,
+    'MANKEY': 56, 'PRIMEAPE': 57, 'GROWLITHE': 58, 'ARCANINE': 59, 'POLIWAG': 60,
+    'POLIWHIRL': 61, 'POLIWRATH': 62, 'ABRA': 63, 'KADABRA': 64, 'ALAKAZAM': 65,
+    'MACHOP': 66, 'MACHOKE': 67, 'MACHAMP': 68, 'BELLSPROUT': 69, 'WEEPINBELL': 70,
+    'VICTREEBEL': 71, 'TENTACOOL': 72, 'TENTACRUEL': 73, 'GEODUDE': 74, 'GRAVELER': 75,
+    'GOLEM': 76, 'PONYTA': 77, 'RAPIDASH': 78, 'SLOWPOKE': 79, 'SLOWBRO': 80,
+    'MAGNEMITE': 81, 'MAGNETON': 82, 'FARFETCHD': 83, 'DODUO': 84, 'DODRIO': 85,
+    'SEEL': 86, 'DEWGONG': 87, 'GRIMER': 88, 'MUK': 89, 'SHELLDER': 90,
+    'CLOYSTER': 91, 'GASTLY': 92, 'HAUNTER': 93, 'GENGAR': 94, 'ONIX': 95,
+    'DROWZEE': 96, 'HYPNO': 97, 'KRABBY': 98, 'KINGLER': 99, 'VOLTORB': 100,
+    'ELECTRODE': 101, 'EXEGGCUTE': 102, 'EXEGGUTOR': 103, 'CUBONE': 104, 'MAROWAK': 105,
+    'HITMONLEE': 106, 'HITMONCHAN': 107, 'LICKITUNG': 108, 'KOFFING': 109, 'WEEZING': 110,
+    'RHYHORN': 111, 'RHYDON': 112, 'CHANSEY': 113, 'TANGELA': 114, 'KANGASKHAN': 115,
+    'HORSEA': 116, 'SEADRA': 117, 'GOLDEEN': 118, 'SEAKING': 119, 'STARYU': 120,
+    'STARMIE': 121, 'MR_MIME': 122, 'SCYTHER': 123, 'JYNX': 124, 'ELECTABUZZ': 125,
+    'MAGMAR': 126, 'PINSIR': 127, 'TAUROS': 128, 'MAGIKARP': 129, 'GYARADOS': 130,
+    'LAPRAS': 131, 'DITTO': 132, 'EEVEE': 133, 'VAPOREON': 134, 'JOLTEON': 135,
+    'FLAREON': 136, 'PORYGON': 137, 'OMANYTE': 138, 'OMASTAR': 139, 'KABUTO': 140,
+    'KABUTOPS': 141, 'AERODACTYL': 142, 'SNORLAX': 143, 'ARTICUNO': 144, 'ZAPDOS': 145,
+    'MOLTRES': 146, 'DRATINI': 147, 'DRAGONAIR': 148, 'DRAGONITE': 149, 'MEWTWO': 150,
+    'MEW': 151,
+}
+
+# Pret entries that are NOT real species (skip these — they're game internals).
+NON_SPECIES = {'NO_MON', 'FOSSIL_KABUTOPS', 'FOSSIL_AERODACTYL', 'MON_GHOST'}
+
+
+def main() -> int:
+    text = urllib.request.urlopen(URL, timeout=15).read().decode('utf-8')
+    pat = re.compile(r'^\s*const\s+([A-Z_0-9]+)\s*;\s*\$([0-9A-Fa-f]+)')
+    table: dict[int, int] = {}
+    for line in text.splitlines():
+        m = pat.match(line)
+        if not m:
+            continue
+        name, hex_id = m.group(1), int(m.group(2), 16)
+        if name in NON_SPECIES:
+            continue
+        if name not in NDEX:
+            print(f'  warn: unknown species token "{name}" at ${hex_id:02x}', file=sys.stderr)
+            continue
+        table[hex_id] = NDEX[name]
+
+    if len(table) != 151:
+        print(f'  ERROR: parsed {len(table)} entries, expected 151', file=sys.stderr)
+        return 2
+
+    # Render TS file.
+    rows = '\n'.join(f'  0x{h:02x}: {n},' for h, n in sorted(table.items()))
+    body = f'''/**
+ * Gen 1 internal-index → National Dex translation.
+ *
+ * Gen 1 stores species by an "internal index" that is NOT the same as
+ * the national dex order — it follows the order species were programmed
+ * in by Game Freak. Gen 2 onward uses dex order natively.
+ *
+ * Generated by `scripts/gen-gen1-internal-dex.py` from pret/pokered's
+ * `constants/pokemon_constants.asm`. DO NOT hand-edit. The previous
+ * hand-typed version had ~30 wrong entries (Aerodactyl, Lapras,
+ * Dratini, Snorlax, Articuno, Zapdos, Moltres, etc.) which surfaced as
+ * wrong species names when reading Red/Blue saves.
+ *
+ * The table covers all 151 Gen 1 species. The forward map's keys are
+ * internal-index bytes; values are National Dex IDs. Internal indices
+ * not in the map are "MissingNo" slots and produce ndex 0 (which the
+ * caller surfaces as `UNKNOWN_SPECIES`).
+ */
+
+export const INTERNAL_TO_NDEX: Readonly<Record<number, number>> = {{
+{rows}
+}};
+
+/** ndex → internal index (built once at module init). */
+export const NDEX_TO_INTERNAL: Readonly<Record<number, number>> = (() => {{
+  const out: Record<number, number> = {{}};
+  for (const [internal, ndex] of Object.entries(INTERNAL_TO_NDEX)) {{
+    out[ndex] = Number(internal);
+  }}
+  return out;
+}})();
+
+/** Lookup helper. Returns 0 if internal byte has no mapping (MissingNo). */
+export function internalToNdex(internal: number): number {{
+  return INTERNAL_TO_NDEX[internal] ?? 0;
+}}
+'''
+    OUT.write_text(body, encoding='utf-8')
+    print(f'wrote {len(table)} entries to {OUT}')
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())
