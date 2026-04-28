@@ -66,3 +66,7 @@ export { InsidegadgetsProtocol } from './insidegadgets.js';
 export { FlashgbxProtocol } from './flashgbx.js';
 export { parseCartHeader } from './cartHeader.js';
 export type { CartHeader } from './cartHeader.js';
+// S9: re-export mapper surface so callers can resolve a DmgMapper from
+// the cart-header byte without reaching into ../mapper/ directly.
+export { detectMapper, detectMapperOrThrow, UNSUPPORTED_CART_MESSAGE } from '../mapper/index.js';
+export type { DmgMapper, MapperBus, CartWriteCmd } from '../mapper/index.js';
