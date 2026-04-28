@@ -133,6 +133,13 @@ function makeSramMockPort(opts: { sramBytes: Uint8Array }): Port & {
           enqueueRx([0x01]);
           txQueue.shift();
           break;
+        case 0xa9: {
+          // CLK_TOGGLE: opcode + 4-byte u32 BE count = 5 bytes, ack 0x01.
+          if (txQueue.length < 5) return;
+          enqueueRx([0x01]);
+          txQueue.splice(0, 5);
+          break;
+        }
         case 0xb2: {
           // DMG_CART_WRITE: opcode + 4-byte addr BE + 1-byte value = 6 bytes
           if (txQueue.length < 6) return;

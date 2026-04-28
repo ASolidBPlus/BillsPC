@@ -95,6 +95,7 @@ const OP_AGB_CART_READ = 0xc1;
 const OP_AGB_BOOTUP_SEQUENCE = 0xc9;
 const OP_CART_PWR_ON = 0xf2;
 const OP_CART_PWR_OFF = 0xf3;
+const OP_CLK_TOGGLE = 0xa9;
 
 /**
  * fw-variable map: name → [size_bytes, key_id]. Mirrors LK DEVICE_VAR
@@ -440,14 +441,46 @@ export class FlashgbxProtocol implements CartProtocol {
    * and lands it in the clean SRAM-bank-0 state we need.
    */
   private async dmgRtcExerciseAndReset(opts: { signal?: AbortSignal }): Promise<void> {
-    await this.dmgCartWrite(0x0000, 0x0a, opts); // EnableRAM
+    // Match `Mapper.py:268-287` (HasRTC) literally, including the per-iteration
+    // CLK_TOGGLE(60) and the 256-byte read at 0xA880 — both apparently
+    // load-bearing on the insideGadgets repro: the cart-write alone leaves the
+    // MBC in a half-state that subsequent SRAM writes can't escape from.
+    await this.dmgCartWrite(0x0000, 0x00, opts); // EnableRAM(False) — defensive
+    await this.dmgCartWrite(0x0000, 0x0a, opts); // EnableRAM(True)
+    await this.clkToggle(60, opts);
+    await this.dmgCartWrite(0x0000, 0x0a, opts); // LatchRTC: EnableRAM (re-asserted)
     await this.dmgCartWrite(0x6000, 0x00, opts); // LatchRTC reset
     await this.dmgCartWrite(0x6000, 0x01, opts); // LatchRTC set
     for (let reg = 0x08; reg <= 0x0c; reg++) {
+      await this.clkToggle(60, opts);
       await this.dmgCartWrite(0x4000, reg, opts); // select each RTC register
+      // Read 256 bytes from 0xA880 (per HasRTC) — the cart returns 256 copies
+      // of the RTC byte; reading actively exercises the cart bus.
+      await this.bulkRead({
+        accessMode: DMG_ACCESS_RAM,
+        baseAddr: 0xa880,
+        length: 0x100,
+        opts,
+        ramPulse: true,
+      });
     }
     await this.dmgCartWrite(0x0000, 0x00, opts); // DisableRAM
     await this.dmgCartWrite(0x4000, 0x00, opts); // reset to SRAM bank 0
+  }
+
+  /**
+   * Toggle the cart's CLK pin `count` times. Per `LK_Device.py:659-664`
+   * (FW ≥ 12) — CLK_TOGGLE opcode + u32 BE count + ack. FlashGBX uses
+   * this in `Mapper.py:274` (HasRTC) and several other RTC-related
+   * code paths to advance the cart's MBC state machine between
+   * register-write operations.
+   */
+  private async clkToggle(count: number, opts: { signal?: AbortSignal }): Promise<void> {
+    const buf = new Uint8Array(1 + 4);
+    buf[0] = OP_CLK_TOGGLE;
+    buf.set(packU32BE(count), 1);
+    await writeAll(this.port, buf);
+    await this.readAck(opts, `CLK_TOGGLE ${count}`);
   }
 
   /**

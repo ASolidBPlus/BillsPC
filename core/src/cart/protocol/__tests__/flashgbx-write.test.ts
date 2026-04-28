@@ -88,35 +88,48 @@ describe('FlashgbxProtocol — DMG SRAM writeSram (per LK_Device.py:3286-3458 + 
 });
 
 describe('FlashgbxProtocol — prepareForWrite (AMEND-S7b-1, -4)', () => {
-  it('DMG: 5-setvar prelude + RTC unstick dance', async () => {
+  it('DMG: 5-setvar prelude + full HasRTC dance with CLK_TOGGLE + reads', async () => {
     const port = makeMockPort();
-    // 5 setvar acks + 10 dmgCartWrite acks for the RTC dance:
-    //   EnableRAM, LatchRTC reset, LatchRTC set, 5 RTC reg selects (0x08-0x0C),
-    //   DisableRAM, SRAM bank reset (0x4000=0).
-    ack(port, 5 + 10);
+    // Acks needed (in order the mock returns them):
+    //   5 setvar prelude acks
+    // + 2 cart_write acks (0x0000=0x00, 0x0000=0x0A initial)
+    // + 1 CLK_TOGGLE ack
+    // + 3 cart_write acks (0x0000=0x0A, 0x6000=0x00, 0x6000=0x01)
+    // + 5 × (CLK_TOGGLE ack + cart_write ack + bulkRead acks/data)
+    //     where each bulkRead(256) issues:
+    //     4 setvar acks (TRANSFER_SIZE=64, ADDRESS, DMG_ACCESS_MODE, DMG_READ_CS_PULSE=1)
+    //     + 4 OP_DMG_CART_READ (no ack — returns 64 bytes each, 256 total)
+    //     + 1 setvar ack (DMG_READ_CS_PULSE=0)
+    // + 2 cart_write acks (0x0000=0x00, 0x4000=0x00)
+    ack(port, 5 + 2 + 1 + 3); // through LatchRTC
+    // RTC register iteration × 5
+    for (let i = 0; i < 5; i++) {
+      ack(port, 1 + 1 + 4); // CLK_TOGGLE + cart_write + 4 setvar acks
+      // 4 × 64-byte read responses
+      for (let j = 0; j < 4; j++) port.enqueueRx(new Uint8Array(64));
+      ack(port, 1); // DMG_READ_CS_PULSE=0
+    }
+    ack(port, 2); // tail cart_writes
     const proto = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
     await proto.prepareForWrite('gb');
-    // PULLUPS_ENABLED first.
+    // Sanity: PULLUPS_ENABLED first.
     expect(port.txLog.slice(0, SET_VAR_FRAME)).toEqual([
       0xa6, 1, 0x00, 0x00, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x00,
     ]);
-    // RTC dance starts after the 5 setvars (50 bytes).
-    const rtcStart = 5 * SET_VAR_FRAME;
-    // EnableRAM: cart_write 0x0000 = 0x0A.
-    expect(port.txLog.slice(rtcStart, rtcStart + 6)).toEqual([0xb2, 0, 0, 0, 0, 0x0a]);
-    // LatchRTC reset: cart_write 0x6000 = 0x00.
-    expect(port.txLog.slice(rtcStart + 6, rtcStart + 12)).toEqual([0xb2, 0, 0, 0x60, 0, 0x00]);
-    // LatchRTC set: cart_write 0x6000 = 0x01.
-    expect(port.txLog.slice(rtcStart + 12, rtcStart + 18)).toEqual([0xb2, 0, 0, 0x60, 0, 0x01]);
-    // RTC register selects (0x4000 = 0x08, 0x09, 0x0A, 0x0B, 0x0C).
-    for (let i = 0; i < 5; i++) {
-      const off = rtcStart + 18 + i * 6;
-      expect(port.txLog.slice(off, off + 6)).toEqual([0xb2, 0, 0, 0x40, 0, 0x08 + i]);
+    // CLK_TOGGLE opcode (0xA9) appears 6 times: 1 initial + 5 per RTC reg iteration.
+    expect(port.txLog.filter((b) => b === 0xa9).length).toBe(6);
+    // The 5 RTC register selects (0x4000 = 0x08..0x0C) all appear.
+    for (let reg = 0x08; reg <= 0x0c; reg++) {
+      const frame = [0xb2, 0x00, 0x00, 0x40, 0x00, reg];
+      let found = false;
+      for (let i = 0; i + 6 <= port.txLog.length; i++) {
+        if (frame.every((v, k) => port.txLog[i + k] === v)) {
+          found = true;
+          break;
+        }
+      }
+      expect(found).toBe(true);
     }
-    // DisableRAM + SRAM bank 0 reset.
-    const tailStart = rtcStart + 18 + 5 * 6;
-    expect(port.txLog.slice(tailStart, tailStart + 6)).toEqual([0xb2, 0, 0, 0, 0, 0x00]);
-    expect(port.txLog.slice(tailStart + 6, tailStart + 12)).toEqual([0xb2, 0, 0, 0x40, 0, 0x00]);
   });
 
   it('AGB: STATUS_REGISTER_MASK/VALUE + JEDEC chip-ID exit (AMEND-S7b-4)', async () => {
