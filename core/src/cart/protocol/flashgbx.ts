@@ -411,6 +411,44 @@ export class FlashgbxProtocol implements CartProtocol {
     await this.setVar('STATUS_REGISTER_VALUE', 0x80, opts);
     await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
     await this.setVar('DMG_READ_CS_PULSE', 0, opts);
+    // Wake-up probe — see dmgFlashChipIdExit doc.
+    await this.dmgFlashChipIdExit(opts);
+  }
+
+  /**
+   * FlashGBX-style "wake the flash chip out of chip-ID mode" probe.
+   *
+   * On a real Nintendo MBC3+RAM cart this is harmless noise: writes to
+   * 0x4000 transiently clobber the RAM-bank register with junk values
+   * (0x90 / 0xF0 / 0xFF), then the trailing 0x4000=0x00 resets it.
+   *
+   * On a third-party MBC3 implementation backed by a re-programmable
+   * NOR flash chip (e.g. insideGadgets Crystal repro cart, observed
+   * 2026-04-28), the flash chip can power up stuck in JEDEC chip-ID
+   * mode. In that mode the chip silently drops SRAM writes and the
+   * data bus floats — every readback byte comes back 0xF3 (or whatever
+   * the bus floats to), and the cart's SRAM is never updated. Writing
+   * 0xF0 (CFI exit) and 0xFF (JEDEC exit) to register 0x4000 restores
+   * normal "read array" mode and unblocks subsequent SRAM writes.
+   *
+   * The intermediate 2-byte ROM read at 0x4000 mirrors FlashGBX's
+   * detection probe (it captures the manufacturer/device ID on flash
+   * carts; we discard the bytes). We keep it in the sequence because
+   * it leaves the firmware's DMG_ACCESS_MODE in a consistent state and
+   * matches the wire trace exactly — diverging here would re-introduce
+   * "works in FlashGBX, fails for us" risk.
+   *
+   * Mirrors `flashgbx-write-dmg-pokemon-crystal-insidegadgets.log:255-264`.
+   */
+  private async dmgFlashChipIdExit(opts: { signal?: AbortSignal }): Promise<void> {
+    await this.dmgCartWrite(0x2000, 0x00, opts); // ROM bank → 0
+    await this.dmgCartWrite(0x4000, 0x90, opts); // JEDEC chip-ID enter
+    // 2-byte ROM read at 0x4000 — drains chip-ID response on flash carts.
+    await this.bulkRead({ accessMode: DMG_ACCESS_ROM, baseAddr: 0x4000, length: 2, opts });
+    await this.dmgCartWrite(0x4000, 0xf0, opts); // CFI exit ID mode
+    await this.dmgCartWrite(0x4000, 0xff, opts); // JEDEC exit ID mode
+    await this.dmgCartWrite(0x2000, 0x01, opts); // restore ROM bank 1
+    await this.dmgCartWrite(0x4000, 0x00, opts); // clear RAM bank reg
   }
 
   async writeSram(

@@ -87,13 +87,20 @@ describe('FlashgbxProtocol — DMG SRAM writeSram (per AMEND-S7b-1, -3)', () => 
 });
 
 describe('FlashgbxProtocol — prepareForWrite (AMEND-S7b-1, -4)', () => {
-  it('DMG: issues PULLUPS_ENABLED + STATUS_REGISTER_MASK/VALUE + DMG_WRITE_CS_PULSE + DMG_READ_CS_PULSE', async () => {
+  it('DMG: issues PULLUPS_ENABLED + STATUS_REGISTER_MASK/VALUE + DMG_WRITE_CS_PULSE + DMG_READ_CS_PULSE + chip-ID exit probe', async () => {
     const port = makeMockPort();
-    ack(port, 5);
+    // Order matters — the mock returns chunks in FIFO order:
+    //   5 setvar prelude acks
+    // + 2 cart_write probe acks (0x2000=0x00, 0x4000=0x90)
+    // + 4 setvar acks for the 2-byte ROM read (TRANSFER_SIZE=64 →
+    //   ADDRESS → DMG_ACCESS_MODE → TRANSFER_SIZE=2)
+    // + 2 ROM-read data bytes
+    // + 4 trailing cart_write acks (0x4000=0xF0, 0xFF; 0x2000=0x1; 0x4000=0)
+    ack(port, 5 + 2 + 4);
+    port.enqueueRx(bytes(0x00, 0x00));
+    ack(port, 4);
     const proto = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
     await proto.prepareForWrite('gb');
-    // 5 SET_VARs × 10 bytes = 50.
-    expect(port.txLog.length).toBe(5 * SET_VAR_FRAME);
     // PULLUPS_ENABLED (size=1, key=0x000E, value=0).
     expect(port.txLog.slice(0, SET_VAR_FRAME)).toEqual([
       0xa6, 1, 0x00, 0x00, 0x00, 0x0e, 0x00, 0x00, 0x00, 0x00,
@@ -102,6 +109,21 @@ describe('FlashgbxProtocol — prepareForWrite (AMEND-S7b-1, -4)', () => {
     expect(port.txLog.slice(SET_VAR_FRAME, SET_VAR_FRAME * 2)).toEqual([
       0xa6, 2, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x80,
     ]);
+    // After the 5 setvars (50 bytes), the chip-ID exit probe issues:
+    //   _cart_write 0x2000=0x00, 0x4000=0x90, [2-byte ROM read],
+    //   0x4000=0xF0, 0x4000=0xFF, 0x2000=0x01, 0x4000=0x00.
+    // OP_DMG_CART_WRITE opcode is 0xB2 (1 + 4-byte addr + 1 value = 6 bytes per write).
+    const probeStart = 5 * SET_VAR_FRAME;
+    // First probe write: 0x2000 = 0x00.
+    expect(port.txLog.slice(probeStart, probeStart + 6)).toEqual([
+      0xb2, 0x00, 0x00, 0x20, 0x00, 0x00,
+    ]);
+    // Second probe write: 0x4000 = 0x90 (JEDEC chip-ID enter).
+    expect(port.txLog.slice(probeStart + 6, probeStart + 12)).toEqual([
+      0xb2, 0x00, 0x00, 0x40, 0x00, 0x90,
+    ]);
+    // OP_DMG_CART_READ (0xB1) should appear exactly once (the 2-byte chip-ID read).
+    expect(port.txLog.filter((b) => b === 0xb1).length).toBe(1);
   });
 
   it('AGB: STATUS_REGISTER_MASK/VALUE + JEDEC chip-ID exit (AMEND-S7b-4)', async () => {
