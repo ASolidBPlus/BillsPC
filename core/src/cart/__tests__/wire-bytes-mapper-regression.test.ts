@@ -5,7 +5,7 @@
  * `__fixtures__/crystal-rtc-write-bytes.json`, but driven through the
  * NEW S9 mapper-aware path:
  *
- *   prepareForWrite('gbc', { skipMapperLogic: true })   // 5 setvars
+ *   prepareForWrite('gbc')                              // 5 setvars
  *   mapper.exerciseRtc(protocol.cartBus())              // HasRTC dance
  *   runCartWriteCommands(mapper.enableRam(true))        // MBC3: [0x0000=0x0a]
  *   runCartWriteCommands(mapper.selectBankRam(0))       // [0x4000=0x00]
@@ -45,7 +45,7 @@ describe('S9 wire-byte regression — mapper-driven Crystal path matches pre-S9 
       for (let r = 0; r < 4; r++) port.enqueueRx(new Uint8Array(64));
       queueAck(1); // DMG_READ_CS_PULSE=0 cleanup
     };
-    // prepareForWrite (skipMapperLogic): 5 setvar acks only.
+    // prepareForWrite ('gbc'): 5 setvar acks only (no family-gated RTC dance after S9 Stage 4).
     queueAck(5);
     // mapper.exerciseRtc:
     //   pre-loop: 5 cart-writes + 1 clk = 6 acks
@@ -66,7 +66,7 @@ describe('S9 wire-byte regression — mapper-driven Crystal path matches pre-S9 
 
     const protocol = new FlashgbxProtocol(port, { setVarDelayMs: 0 });
     const mapper = new DmgMapperMbc3Rtc(0x10);
-    await protocol.prepareForWrite('gbc', { skipMapperLogic: true });
+    await protocol.prepareForWrite('gbc');
     await mapper.exerciseRtc(protocol.cartBus());
     await protocol.runCartWriteCommands!(mapper.enableRam(true));
     await protocol.runCartWriteCommands!(mapper.selectBankRam(0));

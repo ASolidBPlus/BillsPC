@@ -442,11 +442,13 @@ export class FlashgbxProtocol implements CartProtocol {
    * issue the JEDEC chip-ID **exit** sequence on AGB so a previous
    * crashed session that left the chip in chip-ID mode doesn't corrupt
    * our writes. Idempotent — safe to call multiple times.
+   *
+   * S9 Stage 4: the family='gbc' RTC dance has been removed; mapper-aware
+   * callers (GbxCartSink with a DmgMapperMbc3Rtc) drive it via
+   * `mapper.exerciseRtc(protocol.cartBus())` instead. This method is now
+   * the wire-level prelude only — no mapper-specific behaviour.
    */
-  async prepareForWrite(
-    family: CartFamily,
-    opts: { signal?: AbortSignal; skipMapperLogic?: boolean } = {},
-  ): Promise<void> {
+  async prepareForWrite(family: CartFamily, opts: { signal?: AbortSignal } = {}): Promise<void> {
     if (family === 'gba') {
       // AGB pre-flash setvars per `flashgbx-write-agb-pokemon-ruby-jp.log:159-160`.
       await this.setVar('STATUS_REGISTER_MASK', 0x80, opts);
@@ -463,84 +465,13 @@ export class FlashgbxProtocol implements CartProtocol {
     await this.setVar('STATUS_REGISTER_VALUE', 0x80, opts);
     await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
     await this.setVar('DMG_READ_CS_PULSE', 0, opts);
-    // S9: when `skipMapperLogic` is set, the caller (GbxCartSink) is
-    // running the RTC dance via a DmgMapperMbc3Rtc instance and we must
-    // NOT double-dance here. Stage 4 deletes this branch entirely once
-    // every caller threads a mapper through.
-    if (opts.skipMapperLogic) return;
-    // RTC unstick — only safe on MBC3+RTC carts. Gated on family='gbc'
-    // because all Pokemon GBC games (Gold/Silver/Crystal) use MBC3+RTC,
-    // and Pokemon DMG games (Red/Blue/Yellow) use MBC1/MBC5 where the
-    // 0x6000 / 0x4000 writes have completely different semantics (mode
-    // register / upper ROM bank bits) — running the dance there would
-    // leave the cart in mode-1 (RAM banking) state, which is benign for
-    // bank-0-only SRAM access but still undesirable.
-    //
-    // FUTURE (separate sprint): proper mapper-class hierarchy mirroring
-    // Mapper.py — DMG_MBC3 implements HasRTC, MBC1/MBC5 don't. Then this
-    // gate becomes `if (mapper.hasRtc()) await mapper.exerciseRtc()`.
-    if (family === 'gbc') {
-      await this.dmgRtcExerciseAndReset(opts);
-    }
-  }
-
-  /**
-   * MBC3 RTC unstick: walk the bank register through every defined value
-   * (RAM banks 0-3 → RTC registers S/M/H/DL/DH at 0x08-0x0C → reset to 0)
-   * to force the MBC's state machine out of any "stuck in RTC mode" or
-   * "stuck on a non-zero RAM bank" state inherited from the prior game
-   * session. Mirrors `Mapper.py:263-287` (HasRTC) which FlashGBX runs
-   * during cart detection.
-   *
-   * Why we need it on the WRITE path specifically: when a Pokemon Crystal
-   * game powers down, it leaves the MBC3 with the RTC-Day-High register
-   * (0x4000 = 0x0C) selected so the on-cart RTC keeps ticking off the
-   * battery. On stock Nintendo MBC3 silicon, our subsequent `0x4000 = 0`
-   * (setBank(0)) cleanly transitions back to SRAM-bank-0 mode. On
-   * insideGadgets's third-party MBC3 reimplementation it apparently
-   * doesn't — and ALL writes to 0xA000-0xBFFF then silently go to the
-   * 1-byte RTC register instead of the 8 KB SRAM cell array. Symptom:
-   * cart's actual SRAM is completely unchanged after a "successful"
-   * write op, fresh-read returns the original SAV intact.
-   *
-   * Cycling through every RTC register and then writing 0 explicitly to
-   * 0x4000 walks the cart's state machine through every reachable state
-   * and lands it in the clean SRAM-bank-0 state we need.
-   */
-  private async dmgRtcExerciseAndReset(opts: { signal?: AbortSignal }): Promise<void> {
-    // Match `Mapper.py:268-287` (HasRTC) literally, including the per-iteration
-    // CLK_TOGGLE(60) and the 256-byte read at 0xA880 — both apparently
-    // load-bearing on the insideGadgets repro: the cart-write alone leaves the
-    // MBC in a half-state that subsequent SRAM writes can't escape from.
-    await this.dmgCartWrite(0x0000, 0x00, opts); // EnableRAM(False) — defensive
-    await this.dmgCartWrite(0x0000, 0x0a, opts); // EnableRAM(True)
-    await this.clkToggle(60, opts);
-    await this.dmgCartWrite(0x0000, 0x0a, opts); // LatchRTC: EnableRAM (re-asserted)
-    await this.dmgCartWrite(0x6000, 0x00, opts); // LatchRTC reset
-    await this.dmgCartWrite(0x6000, 0x01, opts); // LatchRTC set
-    for (let reg = 0x08; reg <= 0x0c; reg++) {
-      await this.clkToggle(60, opts);
-      await this.dmgCartWrite(0x4000, reg, opts); // select each RTC register
-      // Read 256 bytes from 0xA880 (per HasRTC) — the cart returns 256 copies
-      // of the RTC byte; reading actively exercises the cart bus.
-      await this.bulkRead({
-        accessMode: DMG_ACCESS_RAM,
-        baseAddr: 0xa880,
-        length: 0x100,
-        opts,
-        ramPulse: true,
-      });
-    }
-    await this.dmgCartWrite(0x0000, 0x00, opts); // DisableRAM
-    await this.dmgCartWrite(0x4000, 0x00, opts); // reset to SRAM bank 0
   }
 
   /**
    * Toggle the cart's CLK pin `count` times. Per `LK_Device.py:659-664`
-   * (FW ≥ 12) — CLK_TOGGLE opcode + u32 BE count + ack. FlashGBX uses
-   * this in `Mapper.py:274` (HasRTC) and several other RTC-related
-   * code paths to advance the cart's MBC state machine between
-   * register-write operations.
+   * (FW ≥ 12) — CLK_TOGGLE opcode + u32 BE count + ack. Used by
+   * `DmgMapperMbc3Rtc.exerciseRtc` via the `MapperBus` adapter returned
+   * by `cartBus()`.
    */
   private async clkToggle(count: number, opts: { signal?: AbortSignal }): Promise<void> {
     const buf = new Uint8Array(1 + 4);
@@ -548,42 +479,6 @@ export class FlashgbxProtocol implements CartProtocol {
     buf.set(packU32BE(count), 1);
     await writeAll(this.port, buf);
     await this.readAck(opts, `CLK_TOGGLE ${count}`);
-  }
-
-  /**
-   * FlashGBX-style "wake the flash chip out of chip-ID mode" probe.
-   *
-   * On a real Nintendo MBC3+RAM cart this is harmless noise: writes to
-   * 0x4000 transiently clobber the RAM-bank register with junk values
-   * (0x90 / 0xF0 / 0xFF), then the trailing 0x4000=0x00 resets it.
-   *
-   * On a third-party MBC3 implementation backed by a re-programmable
-   * NOR flash chip (e.g. insideGadgets Crystal repro cart, observed
-   * 2026-04-28), the flash chip can power up stuck in JEDEC chip-ID
-   * mode. In that mode the chip silently drops SRAM writes and the
-   * data bus floats — every readback byte comes back 0xF3 (or whatever
-   * the bus floats to), and the cart's SRAM is never updated. Writing
-   * 0xF0 (CFI exit) and 0xFF (JEDEC exit) to register 0x4000 restores
-   * normal "read array" mode and unblocks subsequent SRAM writes.
-   *
-   * The intermediate 2-byte ROM read at 0x4000 mirrors FlashGBX's
-   * detection probe (it captures the manufacturer/device ID on flash
-   * carts; we discard the bytes). We keep it in the sequence because
-   * it leaves the firmware's DMG_ACCESS_MODE in a consistent state and
-   * matches the wire trace exactly — diverging here would re-introduce
-   * "works in FlashGBX, fails for us" risk.
-   *
-   * Mirrors `flashgbx-write-dmg-pokemon-crystal-insidegadgets.log:255-264`.
-   */
-  private async dmgFlashChipIdExit(opts: { signal?: AbortSignal }): Promise<void> {
-    await this.dmgCartWrite(0x2000, 0x00, opts); // ROM bank → 0
-    await this.dmgCartWrite(0x4000, 0x90, opts); // JEDEC chip-ID enter
-    // 2-byte ROM read at 0x4000 — drains chip-ID response on flash carts.
-    await this.bulkRead({ accessMode: DMG_ACCESS_ROM, baseAddr: 0x4000, length: 2, opts });
-    await this.dmgCartWrite(0x4000, 0xf0, opts); // CFI exit ID mode
-    await this.dmgCartWrite(0x4000, 0xff, opts); // JEDEC exit ID mode
-    await this.dmgCartWrite(0x2000, 0x01, opts); // restore ROM bank 1
-    await this.dmgCartWrite(0x4000, 0x00, opts); // clear RAM bank reg
   }
 
   async writeSram(

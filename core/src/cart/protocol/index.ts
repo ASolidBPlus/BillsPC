@@ -41,10 +41,7 @@ export interface CartProtocol {
    * protocols that don't need it (insidegadgets stock OFW). The `GbxCartSink`
    * calls this once before its bank loop.
    */
-  prepareForWrite?(
-    family: CartFamily,
-    opts?: { signal?: AbortSignal; skipMapperLogic?: boolean },
-  ): Promise<void>;
+  prepareForWrite?(family: CartFamily, opts?: { signal?: AbortSignal }): Promise<void>;
   /** Set GBxCart mode + voltage for the cart family. Insidegadgets uses
    *  'G'/'g' + '5'/'3'; Lesserkuma uses 0xC0-family setup. */
   setMode(family: CartFamily, opts?: { signal?: AbortSignal }): Promise<void>;

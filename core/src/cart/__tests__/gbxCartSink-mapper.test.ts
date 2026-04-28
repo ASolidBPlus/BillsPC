@@ -156,16 +156,6 @@ describe('GbxCartSink — mapper-driven DMG path (RTC mapper)', () => {
     const enableTrue = calls.find((c) => c.op === 'enableRam' && c.args?.[0] === true)!;
     expect(enableFalse!.seq).toBeGreaterThan(enableTrue.seq);
   });
-
-  it('passes skipMapperLogic to protocol.prepareForWrite (no double RTC dance)', async () => {
-    const { protocol, calls } = makeStubProtocol();
-    const { mapper } = makeFakeMapper({ hasRtc: true, cartTypeByte: 0x10 });
-    const sink = new GbxCartSink({ protocol, family: 'gbc', mapper });
-    await sink.write(new Uint8Array(8 * 1024));
-    const prep = calls.find((c) => c.op === 'prepareForWrite')!;
-    const opts = prep.args![1] as { skipMapperLogic?: boolean };
-    expect(opts.skipMapperLogic).toBe(true);
-  });
 });
 
 describe('GbxCartSink — mapper-driven DMG path (non-RTC mapper)', () => {
@@ -189,13 +179,11 @@ describe('GbxCartSink — mapper-driven DMG path (non-RTC mapper)', () => {
   });
 });
 
-describe('GbxCartSink — legacy fallback (no mapper supplied)', () => {
-  it('falls through to setBank / setRamEnabled when mapper is absent', async () => {
-    const { protocol, calls } = makeStubProtocol();
+describe('GbxCartSink — DMG without mapper (S9 Stage 4: now an error)', () => {
+  it('throws UNSUPPORTED_CART when DMG cart wired without a mapper', async () => {
+    const { protocol } = makeStubProtocol();
     const sink = new GbxCartSink({ protocol, family: 'gbc' });
-    await sink.write(new Uint8Array(8 * 1024));
-    expect(calls.filter((c) => c.op === 'setRamEnabled')).toHaveLength(2);
-    expect(calls.filter((c) => c.op === 'runCartWriteCommands')).toHaveLength(0);
+    await expect(sink.write(new Uint8Array(8 * 1024))).rejects.toThrow(/mapper required/);
   });
 });
 

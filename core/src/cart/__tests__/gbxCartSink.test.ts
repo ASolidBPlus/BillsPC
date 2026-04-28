@@ -1,12 +1,19 @@
 /**
  * S7b — `GbxCartSink` tests. Drives a stub CartProtocol that logs each
  * call so we can pin the per-family write sequence.
+ *
+ * S9 Stage 4: the legacy `setRamEnabled`/`setBank` path is removed;
+ * mapper is required for DMG. These tests now thread a stub mapper
+ * through and assert the mapper-driven sequence. The mapper-orchestration
+ * unit tests live in `gbxCartSink-mapper.test.ts`; this file covers
+ * the family-shape and signal/progress wiring.
  */
 
 import { describe, it, expect, vi } from 'vitest';
 import { GbxCartSink } from '../sinks/gbxCartSink.js';
 import { CartError } from '../types.js';
 import type { CartProtocol, CartFamily } from '../protocol/index.js';
+import type { CartWriteCmd, DmgMapper, MapperBus } from '../mapper/index.js';
 
 interface Call {
   readonly op: string;
@@ -42,60 +49,107 @@ function makeStubProtocol(opts: { failOn?: string } = {}): {
       'prepareForWrite',
       async () => undefined,
     ) as CartProtocol['prepareForWrite'],
+    runCartWriteCommands: wrap(
+      'runCartWriteCommands',
+      async () => undefined,
+    ) as CartProtocol['runCartWriteCommands'],
+    cartBus: () => {
+      calls.push({ op: 'cartBus' });
+      const bus: MapperBus = {
+        async cartWrite() {},
+        async clkToggle() {},
+        async bulkReadRam(_a, length) {
+          return new Uint8Array(length);
+        },
+      };
+      return bus;
+    },
   };
   return { protocol, calls };
 }
 
+function makeStubMapper(opts: { hasRtc?: boolean } = {}): DmgMapper {
+  return {
+    name: 'StubMapper',
+    cartTypeByte: 0x03,
+    ramBankSize: 0x2000,
+    enableMapper(): readonly CartWriteCmd[] {
+      return [];
+    },
+    enableRam(enabled: boolean): readonly CartWriteCmd[] {
+      return [[0x0000, enabled ? 0x0a : 0x00]];
+    },
+    selectBankRam(index: number): readonly CartWriteCmd[] {
+      return [[0x4000, index]];
+    },
+    hasRtc(): boolean {
+      return opts.hasRtc ?? false;
+    },
+    async exerciseRtc(): Promise<void> {
+      /* no-op for stub */
+    },
+  };
+}
+
 describe('GbxCartSink — DMG path', () => {
   it.each<CartFamily>(['gb', 'gbc'])(
-    'drives setMode → prepareForWrite → setRamEnabled(true) → bank loop → setRamEnabled(false) for %s',
+    'drives setMode → prepareForWrite → enableRam(true) → bank loop → enableRam(false) for %s',
     async (family) => {
       const { protocol, calls } = makeStubProtocol();
-      const sink = new GbxCartSink({ protocol, family });
+      const sink = new GbxCartSink({ protocol, family, mapper: makeStubMapper() });
       const data = new Uint8Array(8 * 1024).fill(0x42); // single bank
       await sink.write(data);
-      const ops = calls.map((c) => c.op);
-      expect(ops).toEqual([
-        'setMode',
-        'prepareForWrite',
-        'setRamEnabled',
-        'writeSram',
-        'setRamEnabled',
-      ]);
-      // setRamEnabled was called as enable(true) then disable(false).
-      const ramCalls = calls.filter((c) => c.op === 'setRamEnabled');
-      expect(ramCalls[0]!.args![0]).toBe(true);
-      expect(ramCalls[1]!.args![0]).toBe(false);
+      // protocol.setRamEnabled / setBank are NEVER called (mapper-driven).
+      expect(calls.filter((c) => c.op === 'setRamEnabled')).toHaveLength(0);
+      expect(calls.filter((c) => c.op === 'setBank')).toHaveLength(0);
+      // The high-level shape: setMode + prepareForWrite + enableMapper +
+      // enableRam(true) + writeSram + enableRam(false). With single bank
+      // (8 KB), no selectBankRam call. enableMapper is empty for stub
+      // but runCartWriteCommands is still invoked once for it.
+      expect(calls.filter((c) => c.op === 'setMode')).toHaveLength(1);
+      expect(calls.filter((c) => c.op === 'prepareForWrite')).toHaveLength(1);
+      expect(calls.filter((c) => c.op === 'writeSram')).toHaveLength(1);
+      // 3 runCartWriteCommands calls: enableMapper + enableRam(true) + enableRam(false).
+      expect(calls.filter((c) => c.op === 'runCartWriteCommands')).toHaveLength(3);
     },
   );
 
   it('runs the bank loop for 32 KB Gen 2 / 32 KB Gen 1 carts (4 banks)', async () => {
     const { protocol, calls } = makeStubProtocol();
-    const sink = new GbxCartSink({ protocol, family: 'gbc' });
+    const sink = new GbxCartSink({ protocol, family: 'gbc', mapper: makeStubMapper() });
     await sink.write(new Uint8Array(32 * 1024));
-    const banks = calls.filter((c) => c.op === 'setBank');
-    expect(banks.map((c) => c.args![0])).toEqual([0, 1, 2, 3]);
     const writes = calls.filter((c) => c.op === 'writeSram');
     expect(writes).toHaveLength(4);
     for (const w of writes) {
       expect((w.args![1] as Uint8Array).length).toBe(8 * 1024);
     }
+    // 4 banks → 4 selectBankRam calls (each delivered via runCartWriteCommands).
+    // Total runCartWriteCommands: enableMapper + enableRam(true) + 4×selectBankRam + enableRam(false) = 7.
+    expect(calls.filter((c) => c.op === 'runCartWriteCommands')).toHaveLength(7);
   });
 
-  it('does not call setBank for a single-bank 8 KB write', async () => {
+  it('does not call selectBankRam for a single-bank 8 KB write', async () => {
     const { protocol, calls } = makeStubProtocol();
-    const sink = new GbxCartSink({ protocol, family: 'gb' });
+    const sink = new GbxCartSink({ protocol, family: 'gb', mapper: makeStubMapper() });
     await sink.write(new Uint8Array(8 * 1024));
-    expect(calls.filter((c) => c.op === 'setBank')).toHaveLength(0);
+    // 3 runCartWriteCommands calls only: enableMapper + enableRam(true) + enableRam(false).
+    expect(calls.filter((c) => c.op === 'runCartWriteCommands')).toHaveLength(3);
   });
 
-  it('still calls setRamEnabled(false) after a writeSram failure (cleanup)', async () => {
+  it('still calls enableRam(false) cleanup after a writeSram failure', async () => {
     const { protocol, calls } = makeStubProtocol({ failOn: 'writeSram' });
+    const sink = new GbxCartSink({ protocol, family: 'gb', mapper: makeStubMapper() });
+    await expect(sink.write(new Uint8Array(8 * 1024))).rejects.toThrow(CartError);
+    // Even on failure, the finally block fires the disable. So we still
+    // see enableMapper + enableRam(true) + enableRam(false) = 3.
+    expect(calls.filter((c) => c.op === 'runCartWriteCommands')).toHaveLength(3);
+  });
+
+  it('throws UNSUPPORTED_CART when DMG cart is wired without a mapper', async () => {
+    const { protocol } = makeStubProtocol();
     const sink = new GbxCartSink({ protocol, family: 'gb' });
     await expect(sink.write(new Uint8Array(8 * 1024))).rejects.toThrow(CartError);
-    const ram = calls.filter((c) => c.op === 'setRamEnabled');
-    expect(ram).toHaveLength(2);
-    expect(ram[1]!.args![0]).toBe(false);
+    await expect(sink.write(new Uint8Array(8 * 1024))).rejects.toThrow(/mapper required/);
   });
 });
 
@@ -108,6 +162,7 @@ describe('GbxCartSink — AGB path', () => {
     expect(calls.map((c) => c.op)).toEqual(['setMode', 'prepareForWrite', 'writeSram']);
     expect(calls.filter((c) => c.op === 'setBank')).toHaveLength(0);
     expect(calls.filter((c) => c.op === 'setRamEnabled')).toHaveLength(0);
+    expect(calls.filter((c) => c.op === 'runCartWriteCommands')).toHaveLength(0);
     const writeCall = calls.find((c) => c.op === 'writeSram');
     expect((writeCall!.args![1] as Uint8Array).length).toBe(128 * 1024);
   });
@@ -134,7 +189,7 @@ describe('GbxCartSink — signal/onProgress wiring', () => {
     ): Promise<void> => {
       opts?.onProgress?.({ bytesWritten: bytes.length, bytesTotal: bytes.length });
     };
-    const sink = new GbxCartSink({ protocol, family: 'gbc' });
+    const sink = new GbxCartSink({ protocol, family: 'gbc', mapper: makeStubMapper() });
     const seen: Array<{ bytesWritten: number; bytesTotal: number }> = [];
     await sink.write(new Uint8Array(32 * 1024), {
       onProgress: (p) => seen.push(p),
@@ -163,7 +218,7 @@ describe('GbxCartSink — protocol with no prepareForWrite', () => {
     const { protocol, calls } = makeStubProtocol();
     const noPrep: CartProtocol = { ...protocol };
     delete (noPrep as { prepareForWrite?: unknown }).prepareForWrite;
-    const sink = new GbxCartSink({ protocol: noPrep, family: 'gb' });
+    const sink = new GbxCartSink({ protocol: noPrep, family: 'gb', mapper: makeStubMapper() });
     await sink.write(new Uint8Array(8 * 1024));
     expect(calls.filter((c) => c.op === 'prepareForWrite')).toHaveLength(0);
     // The remaining sequence still lands.

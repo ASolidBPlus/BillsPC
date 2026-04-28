@@ -20,6 +20,7 @@ import { flashCart } from '../cart/cartFlasher.js';
 import { BackupSink } from '../cart/backupSink.js';
 import {
   CartError,
+  detectMapperOrThrow,
   GbxCartSink,
   WriteAndVerifySink,
   type CartFamily,
@@ -37,6 +38,15 @@ function stubProtocol(opts: { readback: Uint8Array }): CartProtocol {
     setBank: async () => undefined,
     setRamEnabled: async () => undefined,
     prepareForWrite: async () => undefined,
+    // S9 Stage 4: required for mapper-driven DMG writes.
+    runCartWriteCommands: async () => undefined,
+    cartBus: () => ({
+      async cartWrite() {},
+      async clkToggle() {},
+      async bulkReadRam(_a, length) {
+        return new Uint8Array(length);
+      },
+    }),
   };
 }
 
@@ -47,7 +57,9 @@ describe('cart-write flow — AMEND-S7b-7 ordering invariant', () => {
     const family: CartFamily = 'gb';
 
     const protocol = stubProtocol({ readback: new Uint8Array(data) });
-    const innerSink = new GbxCartSink({ protocol, family });
+    // S9 Stage 4: DMG sinks require a mapper. cartType 0x03 = MBC1 (Pokemon Red).
+    const mapper = detectMapperOrThrow(0x03);
+    const innerSink = new GbxCartSink({ protocol, family, mapper });
     // Spy on the inner write.
     const origInnerWrite = innerSink.write.bind(innerSink);
     innerSink.write = (async (b, o) => {
@@ -86,7 +98,11 @@ describe('cart-write flow — verify-mismatch surfaces recoveryAvailable', () =>
     // port lifecycle) and instead drive the sink stack directly. This
     // exercises the same composition: BackupSink → WriteAndVerifySink →
     // GbxCartSink.
-    const innerSink = new GbxCartSink({ protocol, family: 'gb' });
+    const innerSink = new GbxCartSink({
+      protocol,
+      family: 'gb',
+      mapper: detectMapperOrThrow(0x03),
+    });
     const verifySink = new WriteAndVerifySink({ inner: innerSink, protocol, family: 'gb' });
     const sink = new BackupSink(verifySink, data, 'POKEMON-RED.backup-pre-x.sav', {
       savePicker: async () => ({
@@ -110,7 +126,11 @@ describe('cart-write flow — user-refused backup short-circuits inner write', (
   it('inner write is NEVER called when savePicker throws BACKUP_FAILED', async () => {
     let innerWriteCalls = 0;
     const protocol = stubProtocol({ readback: new Uint8Array(8 * 1024) });
-    const innerSink = new GbxCartSink({ protocol, family: 'gb' });
+    const innerSink = new GbxCartSink({
+      protocol,
+      family: 'gb',
+      mapper: detectMapperOrThrow(0x03),
+    });
     const origInnerWrite = innerSink.write.bind(innerSink);
     innerSink.write = (async (b, o) => {
       innerWriteCalls++;
