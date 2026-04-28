@@ -54,11 +54,15 @@ describe('shiny indicator (PLAN_EVAL S5 A8)', () => {
     const tile = root.querySelector('.box-tile[data-slot="1"]')!;
     expect(tile.classList.contains('is-shiny')).toBe(true);
     // Sanity: the species under that tile is Raichu (#26 → ndex 26). The
-    // overworld sprite is now a div with a background-image URL (needed for
-    // walking-frame animation) rather than an <img>.
-    const ow = tile.querySelector('.ow-sprite') as HTMLElement | null;
-    expect(ow).not.toBeNull();
-    expect(ow!.style.backgroundImage).toContain('sprites/overworld/26.png');
+    // sprite is rendered as <div class="party-icon-gen2"><img class=
+    // "party-icon-img" src="..."></div> — wrapper clips a 2-frame
+    // strip, inner img animates via top-position. Asserting on the
+    // inner img src.
+    const partyIcon = tile.querySelector('.party-icon-gen2') as HTMLElement | null;
+    expect(partyIcon).not.toBeNull();
+    const innerImg = partyIcon!.querySelector('img.party-icon-img') as HTMLImageElement | null;
+    expect(innerImg).not.toBeNull();
+    expect(innerImg!.getAttribute('src')).toContain('sprites/party-gen2/26.png');
   });
 
   it('opening SPARKY shows ★ in both Gen 1/2 and Gen 3 status headers', async () => {

@@ -97,4 +97,51 @@ describe('BackupSink', () => {
     const out = backupFilename('POKEMON RED (32 KB)', 12345, fixed);
     expect(out).toMatch(/^POKEMON-RED-32-KB-12345\.backup-pre-\d{14}\.sav$/);
   });
+
+  // AMEND-S7b-9: file-size verification after close.
+  it('throws BACKUP_FAILED if verifySize reports 0 bytes (truncated download)', async () => {
+    const inner = new RecordingSink();
+    const sink = new BackupSink(inner, new Uint8Array(32 * 1024), 'cart.backup-pre.sav', {
+      savePicker: async () => ({
+        writable: {
+          async write() {},
+          async close() {},
+        },
+        // Simulate a browser truncating the download.
+        verifySize: async () => 0,
+      }),
+    });
+    await expect(sink.write(new Uint8Array(32 * 1024))).rejects.toThrow(CartError);
+    expect(inner.calls.length).toBe(0);
+  });
+
+  it('throws BACKUP_FAILED if verifySize reports a length mismatch', async () => {
+    const inner = new RecordingSink();
+    const sink = new BackupSink(inner, new Uint8Array(32 * 1024), 'cart.backup-pre.sav', {
+      savePicker: async () => ({
+        writable: {
+          async write() {},
+          async close() {},
+        },
+        verifySize: async () => 16 * 1024,
+      }),
+    });
+    await expect(sink.write(new Uint8Array(32 * 1024))).rejects.toThrow(/size mismatch/);
+    expect(inner.calls.length).toBe(0);
+  });
+
+  it('proceeds when verifySize matches preWriteBytes.length exactly', async () => {
+    const inner = new RecordingSink();
+    const sink = new BackupSink(inner, new Uint8Array(32 * 1024), 'cart.backup-pre.sav', {
+      savePicker: async () => ({
+        writable: {
+          async write() {},
+          async close() {},
+        },
+        verifySize: async () => 32 * 1024,
+      }),
+    });
+    await sink.write(new Uint8Array(32 * 1024));
+    expect(inner.calls.length).toBe(1);
+  });
 });

@@ -29,7 +29,7 @@ export interface Gen3Intermediate {
     readonly spe: number;
   };
   readonly nature: number; // 0..24
-  readonly abilitySlot: 0;
+  readonly abilitySlot: 0 | 1;
   readonly moves: readonly [number, number, number, number];
   readonly pp: readonly [number, number, number, number];
   readonly ppUps: readonly [number, number, number, number];

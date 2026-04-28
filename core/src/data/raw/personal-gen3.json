@@ -4,6 +4,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 65,
+    "ability1": 65,
     "base": {
       "hp": 45,
       "atk": 49,
@@ -18,6 +19,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 65,
+    "ability1": 65,
     "base": {
       "hp": 60,
       "atk": 62,
@@ -32,6 +34,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 65,
+    "ability1": 65,
     "base": {
       "hp": 80,
       "atk": 82,
@@ -46,6 +49,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 66,
+    "ability1": 66,
     "base": {
       "hp": 39,
       "atk": 52,
@@ -60,6 +64,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 66,
+    "ability1": 66,
     "base": {
       "hp": 58,
       "atk": 64,
@@ -74,6 +79,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 66,
+    "ability1": 66,
     "base": {
       "hp": 78,
       "atk": 84,
@@ -88,6 +94,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 67,
+    "ability1": 67,
     "base": {
       "hp": 44,
       "atk": 48,
@@ -102,6 +109,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 67,
+    "ability1": 67,
     "base": {
       "hp": 59,
       "atk": 63,
@@ -116,6 +124,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 67,
+    "ability1": 67,
     "base": {
       "hp": 79,
       "atk": 83,
@@ -130,6 +139,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 19,
+    "ability1": 19,
     "base": {
       "hp": 45,
       "atk": 30,
@@ -144,6 +154,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 61,
+    "ability1": 61,
     "base": {
       "hp": 50,
       "atk": 20,
@@ -158,6 +169,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 14,
+    "ability1": 14,
     "base": {
       "hp": 60,
       "atk": 45,
@@ -172,6 +184,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 19,
+    "ability1": 19,
     "base": {
       "hp": 40,
       "atk": 35,
@@ -186,6 +199,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 61,
+    "ability1": 61,
     "base": {
       "hp": 45,
       "atk": 25,
@@ -200,6 +214,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 68,
+    "ability1": 68,
     "base": {
       "hp": 65,
       "atk": 80,
@@ -214,6 +229,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 51,
+    "ability1": 51,
     "base": {
       "hp": 40,
       "atk": 45,
@@ -228,6 +244,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 51,
+    "ability1": 51,
     "base": {
       "hp": 63,
       "atk": 60,
@@ -242,6 +259,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 51,
+    "ability1": 51,
     "base": {
       "hp": 83,
       "atk": 80,
@@ -256,6 +274,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 50,
+    "ability1": 62,
     "base": {
       "hp": 30,
       "atk": 56,
@@ -270,6 +289,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 50,
+    "ability1": 62,
     "base": {
       "hp": 55,
       "atk": 81,
@@ -284,6 +304,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 51,
+    "ability1": 51,
     "base": {
       "hp": 40,
       "atk": 60,
@@ -298,6 +319,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 51,
+    "ability1": 51,
     "base": {
       "hp": 65,
       "atk": 90,
@@ -312,6 +334,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 61,
     "base": {
       "hp": 35,
       "atk": 60,
@@ -326,6 +349,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 61,
     "base": {
       "hp": 60,
       "atk": 85,
@@ -340,6 +364,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 9,
+    "ability1": 9,
     "base": {
       "hp": 35,
       "atk": 55,
@@ -354,6 +379,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 9,
+    "ability1": 9,
     "base": {
       "hp": 60,
       "atk": 90,
@@ -368,6 +394,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 8,
+    "ability1": 8,
     "base": {
       "hp": 50,
       "atk": 75,
@@ -382,6 +409,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 8,
+    "ability1": 8,
     "base": {
       "hp": 75,
       "atk": 100,
@@ -396,6 +424,7 @@
     "genderRatio": 254,
     "baseFriendship": 70,
     "ability0": 38,
+    "ability1": 38,
     "base": {
       "hp": 55,
       "atk": 47,
@@ -410,6 +439,7 @@
     "genderRatio": 254,
     "baseFriendship": 70,
     "ability0": 38,
+    "ability1": 38,
     "base": {
       "hp": 70,
       "atk": 62,
@@ -424,6 +454,7 @@
     "genderRatio": 254,
     "baseFriendship": 70,
     "ability0": 38,
+    "ability1": 38,
     "base": {
       "hp": 90,
       "atk": 82,
@@ -438,6 +469,7 @@
     "genderRatio": 0,
     "baseFriendship": 70,
     "ability0": 38,
+    "ability1": 38,
     "base": {
       "hp": 46,
       "atk": 57,
@@ -452,6 +484,7 @@
     "genderRatio": 0,
     "baseFriendship": 70,
     "ability0": 38,
+    "ability1": 38,
     "base": {
       "hp": 61,
       "atk": 72,
@@ -466,6 +499,7 @@
     "genderRatio": 0,
     "baseFriendship": 70,
     "ability0": 38,
+    "ability1": 38,
     "base": {
       "hp": 81,
       "atk": 92,
@@ -480,6 +514,7 @@
     "genderRatio": 191,
     "baseFriendship": 140,
     "ability0": 56,
+    "ability1": 56,
     "base": {
       "hp": 70,
       "atk": 45,
@@ -494,6 +529,7 @@
     "genderRatio": 191,
     "baseFriendship": 140,
     "ability0": 56,
+    "ability1": 56,
     "base": {
       "hp": 95,
       "atk": 70,
@@ -508,6 +544,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 18,
+    "ability1": 18,
     "base": {
       "hp": 38,
       "atk": 41,
@@ -522,6 +559,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 18,
+    "ability1": 18,
     "base": {
       "hp": 73,
       "atk": 76,
@@ -536,6 +574,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 56,
+    "ability1": 56,
     "base": {
       "hp": 115,
       "atk": 45,
@@ -550,6 +589,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 56,
+    "ability1": 56,
     "base": {
       "hp": 140,
       "atk": 70,
@@ -564,6 +604,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 39,
+    "ability1": 39,
     "base": {
       "hp": 40,
       "atk": 45,
@@ -578,6 +619,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 39,
+    "ability1": 39,
     "base": {
       "hp": 75,
       "atk": 80,
@@ -592,6 +634,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 45,
       "atk": 50,
@@ -606,6 +649,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 60,
       "atk": 65,
@@ -620,6 +664,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 75,
       "atk": 80,
@@ -634,6 +679,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 27,
+    "ability1": 27,
     "base": {
       "hp": 35,
       "atk": 70,
@@ -648,6 +694,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 27,
+    "ability1": 27,
     "base": {
       "hp": 60,
       "atk": 95,
@@ -662,6 +709,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 14,
+    "ability1": 14,
     "base": {
       "hp": 60,
       "atk": 55,
@@ -676,6 +724,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 19,
+    "ability1": 19,
     "base": {
       "hp": 70,
       "atk": 65,
@@ -690,6 +739,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 8,
+    "ability1": 71,
     "base": {
       "hp": 10,
       "atk": 55,
@@ -704,6 +754,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 8,
+    "ability1": 71,
     "base": {
       "hp": 35,
       "atk": 80,
@@ -718,6 +769,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 53,
+    "ability1": 53,
     "base": {
       "hp": 40,
       "atk": 45,
@@ -732,6 +784,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 7,
+    "ability1": 7,
     "base": {
       "hp": 65,
       "atk": 70,
@@ -746,6 +799,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 6,
+    "ability1": 13,
     "base": {
       "hp": 50,
       "atk": 52,
@@ -760,6 +814,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 6,
+    "ability1": 13,
     "base": {
       "hp": 80,
       "atk": 82,
@@ -774,6 +829,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 72,
+    "ability1": 72,
     "base": {
       "hp": 40,
       "atk": 80,
@@ -788,6 +844,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 72,
+    "ability1": 72,
     "base": {
       "hp": 65,
       "atk": 105,
@@ -802,6 +859,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 18,
     "base": {
       "hp": 55,
       "atk": 70,
@@ -816,6 +874,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 18,
     "base": {
       "hp": 90,
       "atk": 110,
@@ -830,6 +889,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 11,
+    "ability1": 6,
     "base": {
       "hp": 40,
       "atk": 50,
@@ -844,6 +904,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 11,
+    "ability1": 6,
     "base": {
       "hp": 65,
       "atk": 65,
@@ -858,6 +919,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 11,
+    "ability1": 6,
     "base": {
       "hp": 90,
       "atk": 85,
@@ -872,6 +934,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 28,
+    "ability1": 39,
     "base": {
       "hp": 25,
       "atk": 20,
@@ -886,6 +949,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 28,
+    "ability1": 39,
     "base": {
       "hp": 40,
       "atk": 35,
@@ -900,6 +964,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 28,
+    "ability1": 39,
     "base": {
       "hp": 55,
       "atk": 50,
@@ -914,6 +979,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 62,
+    "ability1": 62,
     "base": {
       "hp": 70,
       "atk": 80,
@@ -928,6 +994,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 62,
+    "ability1": 62,
     "base": {
       "hp": 80,
       "atk": 100,
@@ -942,6 +1009,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 62,
+    "ability1": 62,
     "base": {
       "hp": 90,
       "atk": 130,
@@ -956,6 +1024,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 50,
       "atk": 75,
@@ -970,6 +1039,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 65,
       "atk": 90,
@@ -984,6 +1054,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 80,
       "atk": 105,
@@ -998,6 +1069,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 29,
+    "ability1": 64,
     "base": {
       "hp": 40,
       "atk": 40,
@@ -1012,6 +1084,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 29,
+    "ability1": 64,
     "base": {
       "hp": 80,
       "atk": 70,
@@ -1026,6 +1099,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 69,
+    "ability1": 5,
     "base": {
       "hp": 40,
       "atk": 80,
@@ -1040,6 +1114,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 69,
+    "ability1": 5,
     "base": {
       "hp": 55,
       "atk": 95,
@@ -1054,6 +1129,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 69,
+    "ability1": 5,
     "base": {
       "hp": 80,
       "atk": 110,
@@ -1068,6 +1144,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 50,
+    "ability1": 18,
     "base": {
       "hp": 50,
       "atk": 85,
@@ -1082,6 +1159,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 50,
+    "ability1": 18,
     "base": {
       "hp": 65,
       "atk": 100,
@@ -1096,6 +1174,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 12,
+    "ability1": 20,
     "base": {
       "hp": 90,
       "atk": 65,
@@ -1110,6 +1189,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 12,
+    "ability1": 20,
     "base": {
       "hp": 95,
       "atk": 75,
@@ -1124,6 +1204,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 42,
+    "ability1": 5,
     "base": {
       "hp": 25,
       "atk": 35,
@@ -1138,6 +1219,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 42,
+    "ability1": 5,
     "base": {
       "hp": 50,
       "atk": 60,
@@ -1152,6 +1234,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 51,
+    "ability1": 39,
     "base": {
       "hp": 52,
       "atk": 65,
@@ -1166,6 +1249,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 50,
+    "ability1": 48,
     "base": {
       "hp": 35,
       "atk": 85,
@@ -1180,6 +1264,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 50,
+    "ability1": 48,
     "base": {
       "hp": 60,
       "atk": 110,
@@ -1194,6 +1279,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 47,
     "base": {
       "hp": 65,
       "atk": 45,
@@ -1208,6 +1294,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 47,
     "base": {
       "hp": 90,
       "atk": 70,
@@ -1222,6 +1309,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 1,
+    "ability1": 60,
     "base": {
       "hp": 80,
       "atk": 80,
@@ -1236,6 +1324,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 1,
+    "ability1": 60,
     "base": {
       "hp": 105,
       "atk": 105,
@@ -1250,6 +1339,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 75,
+    "ability1": 75,
     "base": {
       "hp": 30,
       "atk": 65,
@@ -1264,6 +1354,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 75,
+    "ability1": 75,
     "base": {
       "hp": 50,
       "atk": 95,
@@ -1278,6 +1369,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 30,
       "atk": 35,
@@ -1292,6 +1384,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 45,
       "atk": 50,
@@ -1306,6 +1399,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 60,
       "atk": 65,
@@ -1320,6 +1414,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 69,
+    "ability1": 5,
     "base": {
       "hp": 35,
       "atk": 45,
@@ -1334,6 +1429,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 15,
+    "ability1": 15,
     "base": {
       "hp": 60,
       "atk": 48,
@@ -1348,6 +1444,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 15,
+    "ability1": 15,
     "base": {
       "hp": 85,
       "atk": 73,
@@ -1362,6 +1459,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 52,
+    "ability1": 75,
     "base": {
       "hp": 30,
       "atk": 105,
@@ -1376,6 +1474,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 52,
+    "ability1": 75,
     "base": {
       "hp": 55,
       "atk": 130,
@@ -1390,6 +1489,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 43,
+    "ability1": 9,
     "base": {
       "hp": 40,
       "atk": 30,
@@ -1404,6 +1504,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 43,
+    "ability1": 9,
     "base": {
       "hp": 60,
       "atk": 50,
@@ -1418,6 +1519,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 60,
       "atk": 40,
@@ -1432,6 +1534,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 95,
       "atk": 95,
@@ -1446,6 +1549,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 69,
+    "ability1": 31,
     "base": {
       "hp": 50,
       "atk": 50,
@@ -1460,6 +1564,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 69,
+    "ability1": 31,
     "base": {
       "hp": 60,
       "atk": 80,
@@ -1474,6 +1579,7 @@
     "genderRatio": 0,
     "baseFriendship": 70,
     "ability0": 7,
+    "ability1": 7,
     "base": {
       "hp": 50,
       "atk": 120,
@@ -1488,6 +1594,7 @@
     "genderRatio": 0,
     "baseFriendship": 70,
     "ability0": 51,
+    "ability1": 51,
     "base": {
       "hp": 50,
       "atk": 105,
@@ -1502,6 +1609,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 20,
+    "ability1": 12,
     "base": {
       "hp": 90,
       "atk": 55,
@@ -1516,6 +1624,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 40,
       "atk": 65,
@@ -1530,6 +1639,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 65,
       "atk": 90,
@@ -1544,6 +1654,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 31,
+    "ability1": 69,
     "base": {
       "hp": 80,
       "atk": 85,
@@ -1558,6 +1669,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 31,
+    "ability1": 69,
     "base": {
       "hp": 105,
       "atk": 130,
@@ -1572,6 +1684,7 @@
     "genderRatio": 254,
     "baseFriendship": 140,
     "ability0": 30,
+    "ability1": 32,
     "base": {
       "hp": 250,
       "atk": 5,
@@ -1586,6 +1699,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 65,
       "atk": 55,
@@ -1600,6 +1714,7 @@
     "genderRatio": 254,
     "baseFriendship": 70,
     "ability0": 48,
+    "ability1": 48,
     "base": {
       "hp": 105,
       "atk": 95,
@@ -1614,6 +1729,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 33,
     "base": {
       "hp": 30,
       "atk": 40,
@@ -1628,6 +1744,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 38,
+    "ability1": 38,
     "base": {
       "hp": 55,
       "atk": 65,
@@ -1642,6 +1759,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 41,
     "base": {
       "hp": 45,
       "atk": 67,
@@ -1656,6 +1774,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 41,
     "base": {
       "hp": 80,
       "atk": 92,
@@ -1670,6 +1789,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 35,
+    "ability1": 30,
     "base": {
       "hp": 30,
       "atk": 45,
@@ -1684,6 +1804,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 35,
+    "ability1": 30,
     "base": {
       "hp": 60,
       "atk": 75,
@@ -1698,6 +1819,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 43,
+    "ability1": 43,
     "base": {
       "hp": 40,
       "atk": 45,
@@ -1712,6 +1834,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 68,
+    "ability1": 68,
     "base": {
       "hp": 70,
       "atk": 110,
@@ -1726,6 +1849,7 @@
     "genderRatio": 254,
     "baseFriendship": 70,
     "ability0": 12,
+    "ability1": 12,
     "base": {
       "hp": 65,
       "atk": 50,
@@ -1740,6 +1864,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 9,
+    "ability1": 9,
     "base": {
       "hp": 65,
       "atk": 83,
@@ -1754,6 +1879,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 49,
+    "ability1": 49,
     "base": {
       "hp": 65,
       "atk": 95,
@@ -1768,6 +1894,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 52,
+    "ability1": 52,
     "base": {
       "hp": 65,
       "atk": 125,
@@ -1782,6 +1909,7 @@
     "genderRatio": 0,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 22,
     "base": {
       "hp": 75,
       "atk": 100,
@@ -1796,6 +1924,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 33,
     "base": {
       "hp": 20,
       "atk": 10,
@@ -1810,6 +1939,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 22,
     "base": {
       "hp": 95,
       "atk": 125,
@@ -1824,6 +1954,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 11,
+    "ability1": 75,
     "base": {
       "hp": 130,
       "atk": 85,
@@ -1838,6 +1969,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 7,
+    "ability1": 7,
     "base": {
       "hp": 48,
       "atk": 48,
@@ -1852,6 +1984,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 50,
+    "ability1": 50,
     "base": {
       "hp": 55,
       "atk": 55,
@@ -1866,6 +1999,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 11,
+    "ability1": 11,
     "base": {
       "hp": 130,
       "atk": 65,
@@ -1880,6 +2014,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 10,
+    "ability1": 10,
     "base": {
       "hp": 65,
       "atk": 65,
@@ -1894,6 +2029,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 18,
+    "ability1": 18,
     "base": {
       "hp": 65,
       "atk": 130,
@@ -1908,6 +2044,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 36,
+    "ability1": 36,
     "base": {
       "hp": 65,
       "atk": 60,
@@ -1922,6 +2059,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 75,
     "base": {
       "hp": 35,
       "atk": 40,
@@ -1936,6 +2074,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 75,
     "base": {
       "hp": 70,
       "atk": 60,
@@ -1950,6 +2089,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 4,
     "base": {
       "hp": 30,
       "atk": 80,
@@ -1964,6 +2104,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 4,
     "base": {
       "hp": 60,
       "atk": 115,
@@ -1978,6 +2119,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 69,
+    "ability1": 46,
     "base": {
       "hp": 80,
       "atk": 105,
@@ -1992,6 +2134,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 17,
+    "ability1": 47,
     "base": {
       "hp": 160,
       "atk": 110,
@@ -2006,6 +2149,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 90,
       "atk": 85,
@@ -2020,6 +2164,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 90,
       "atk": 90,
@@ -2034,6 +2179,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 90,
       "atk": 100,
@@ -2048,6 +2194,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 61,
+    "ability1": 61,
     "base": {
       "hp": 41,
       "atk": 64,
@@ -2062,6 +2209,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 61,
+    "ability1": 61,
     "base": {
       "hp": 61,
       "atk": 84,
@@ -2076,6 +2224,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 39,
+    "ability1": 39,
     "base": {
       "hp": 91,
       "atk": 134,
@@ -2090,6 +2239,7 @@
     "genderRatio": 255,
     "baseFriendship": 0,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 106,
       "atk": 110,
@@ -2104,6 +2254,7 @@
     "genderRatio": 255,
     "baseFriendship": 100,
     "ability0": 28,
+    "ability1": 28,
     "base": {
       "hp": 100,
       "atk": 100,
@@ -2118,6 +2269,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 65,
+    "ability1": 65,
     "base": {
       "hp": 45,
       "atk": 49,
@@ -2132,6 +2284,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 65,
+    "ability1": 65,
     "base": {
       "hp": 60,
       "atk": 62,
@@ -2146,6 +2299,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 65,
+    "ability1": 65,
     "base": {
       "hp": 80,
       "atk": 82,
@@ -2160,6 +2314,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 66,
+    "ability1": 66,
     "base": {
       "hp": 39,
       "atk": 52,
@@ -2174,6 +2329,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 66,
+    "ability1": 66,
     "base": {
       "hp": 58,
       "atk": 64,
@@ -2188,6 +2344,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 66,
+    "ability1": 66,
     "base": {
       "hp": 78,
       "atk": 84,
@@ -2202,6 +2359,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 67,
+    "ability1": 67,
     "base": {
       "hp": 50,
       "atk": 65,
@@ -2216,6 +2374,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 67,
+    "ability1": 67,
     "base": {
       "hp": 65,
       "atk": 80,
@@ -2230,6 +2389,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 67,
+    "ability1": 67,
     "base": {
       "hp": 85,
       "atk": 105,
@@ -2244,6 +2404,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 50,
+    "ability1": 51,
     "base": {
       "hp": 35,
       "atk": 46,
@@ -2258,6 +2419,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 50,
+    "ability1": 51,
     "base": {
       "hp": 85,
       "atk": 76,
@@ -2272,6 +2434,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 15,
+    "ability1": 51,
     "base": {
       "hp": 60,
       "atk": 30,
@@ -2286,6 +2449,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 15,
+    "ability1": 51,
     "base": {
       "hp": 100,
       "atk": 50,
@@ -2300,6 +2464,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 68,
+    "ability1": 48,
     "base": {
       "hp": 40,
       "atk": 20,
@@ -2314,6 +2479,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 68,
+    "ability1": 48,
     "base": {
       "hp": 55,
       "atk": 35,
@@ -2328,6 +2494,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 68,
+    "ability1": 15,
     "base": {
       "hp": 40,
       "atk": 60,
@@ -2342,6 +2509,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 68,
+    "ability1": 15,
     "base": {
       "hp": 70,
       "atk": 90,
@@ -2356,6 +2524,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 39,
+    "ability1": 39,
     "base": {
       "hp": 85,
       "atk": 90,
@@ -2370,6 +2539,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 10,
+    "ability1": 35,
     "base": {
       "hp": 75,
       "atk": 38,
@@ -2384,6 +2554,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 10,
+    "ability1": 35,
     "base": {
       "hp": 125,
       "atk": 58,
@@ -2398,6 +2569,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 9,
+    "ability1": 9,
     "base": {
       "hp": 20,
       "atk": 40,
@@ -2412,6 +2584,7 @@
     "genderRatio": 191,
     "baseFriendship": 140,
     "ability0": 56,
+    "ability1": 56,
     "base": {
       "hp": 50,
       "atk": 25,
@@ -2426,6 +2599,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 56,
+    "ability1": 56,
     "base": {
       "hp": 90,
       "atk": 30,
@@ -2440,6 +2614,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 55,
+    "ability1": 32,
     "base": {
       "hp": 35,
       "atk": 20,
@@ -2454,6 +2629,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 55,
+    "ability1": 32,
     "base": {
       "hp": 55,
       "atk": 40,
@@ -2468,6 +2644,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 28,
+    "ability1": 48,
     "base": {
       "hp": 40,
       "atk": 50,
@@ -2482,6 +2659,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 28,
+    "ability1": 48,
     "base": {
       "hp": 65,
       "atk": 75,
@@ -2496,6 +2674,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 9,
+    "ability1": 9,
     "base": {
       "hp": 55,
       "atk": 40,
@@ -2510,6 +2689,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 9,
+    "ability1": 9,
     "base": {
       "hp": 70,
       "atk": 55,
@@ -2524,6 +2704,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 9,
+    "ability1": 9,
     "base": {
       "hp": 90,
       "atk": 75,
@@ -2538,6 +2719,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 75,
       "atk": 80,
@@ -2552,6 +2734,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 37,
     "base": {
       "hp": 70,
       "atk": 20,
@@ -2566,6 +2749,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 37,
     "base": {
       "hp": 100,
       "atk": 50,
@@ -2580,6 +2764,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 5,
+    "ability1": 69,
     "base": {
       "hp": 70,
       "atk": 100,
@@ -2594,6 +2779,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 11,
+    "ability1": 6,
     "base": {
       "hp": 90,
       "atk": 75,
@@ -2608,6 +2794,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 35,
       "atk": 35,
@@ -2622,6 +2809,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 55,
       "atk": 45,
@@ -2636,6 +2824,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 75,
       "atk": 55,
@@ -2650,6 +2839,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 50,
+    "ability1": 53,
     "base": {
       "hp": 55,
       "atk": 70,
@@ -2664,6 +2854,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 30,
       "atk": 30,
@@ -2678,6 +2869,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 75,
       "atk": 75,
@@ -2692,6 +2884,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 3,
+    "ability1": 14,
     "base": {
       "hp": 65,
       "atk": 65,
@@ -2706,6 +2899,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 6,
+    "ability1": 11,
     "base": {
       "hp": 55,
       "atk": 45,
@@ -2720,6 +2914,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 6,
+    "ability1": 11,
     "base": {
       "hp": 95,
       "atk": 85,
@@ -2734,6 +2929,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 28,
+    "ability1": 28,
     "base": {
       "hp": 65,
       "atk": 65,
@@ -2748,6 +2944,7 @@
     "genderRatio": 31,
     "baseFriendship": 35,
     "ability0": 28,
+    "ability1": 28,
     "base": {
       "hp": 95,
       "atk": 65,
@@ -2762,6 +2959,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 15,
+    "ability1": 15,
     "base": {
       "hp": 60,
       "atk": 85,
@@ -2776,6 +2974,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 12,
+    "ability1": 20,
     "base": {
       "hp": 95,
       "atk": 75,
@@ -2790,6 +2989,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 60,
       "atk": 60,
@@ -2804,6 +3004,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 48,
       "atk": 72,
@@ -2818,6 +3019,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 23,
+    "ability1": 23,
     "base": {
       "hp": 190,
       "atk": 33,
@@ -2832,6 +3034,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 39,
+    "ability1": 48,
     "base": {
       "hp": 70,
       "atk": 80,
@@ -2846,6 +3049,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 5,
+    "ability1": 5,
     "base": {
       "hp": 50,
       "atk": 65,
@@ -2860,6 +3064,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 5,
+    "ability1": 5,
     "base": {
       "hp": 75,
       "atk": 90,
@@ -2874,6 +3079,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 32,
+    "ability1": 50,
     "base": {
       "hp": 100,
       "atk": 70,
@@ -2888,6 +3094,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 52,
+    "ability1": 8,
     "base": {
       "hp": 65,
       "atk": 75,
@@ -2902,6 +3109,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 69,
+    "ability1": 5,
     "base": {
       "hp": 75,
       "atk": 85,
@@ -2916,6 +3124,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 50,
     "base": {
       "hp": 60,
       "atk": 80,
@@ -2930,6 +3139,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 22,
     "base": {
       "hp": 90,
       "atk": 120,
@@ -2944,6 +3154,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 38,
+    "ability1": 33,
     "base": {
       "hp": 65,
       "atk": 95,
@@ -2958,6 +3169,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 68,
+    "ability1": 68,
     "base": {
       "hp": 70,
       "atk": 130,
@@ -2972,6 +3184,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 5,
+    "ability1": 5,
     "base": {
       "hp": 20,
       "atk": 10,
@@ -2986,6 +3199,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 68,
+    "ability1": 62,
     "base": {
       "hp": 80,
       "atk": 125,
@@ -3000,6 +3214,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 39,
+    "ability1": 51,
     "base": {
       "hp": 55,
       "atk": 95,
@@ -3014,6 +3229,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 53,
+    "ability1": 53,
     "base": {
       "hp": 60,
       "atk": 80,
@@ -3028,6 +3244,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 62,
+    "ability1": 62,
     "base": {
       "hp": 90,
       "atk": 130,
@@ -3042,6 +3259,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 40,
+    "ability1": 49,
     "base": {
       "hp": 40,
       "atk": 40,
@@ -3056,6 +3274,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 40,
+    "ability1": 49,
     "base": {
       "hp": 50,
       "atk": 50,
@@ -3070,6 +3289,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 12,
+    "ability1": 12,
     "base": {
       "hp": 50,
       "atk": 50,
@@ -3084,6 +3304,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 12,
+    "ability1": 12,
     "base": {
       "hp": 100,
       "atk": 100,
@@ -3098,6 +3319,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 55,
+    "ability1": 30,
     "base": {
       "hp": 55,
       "atk": 55,
@@ -3112,6 +3334,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 55,
+    "ability1": 55,
     "base": {
       "hp": 35,
       "atk": 65,
@@ -3126,6 +3349,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 21,
+    "ability1": 21,
     "base": {
       "hp": 75,
       "atk": 105,
@@ -3140,6 +3364,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 72,
+    "ability1": 55,
     "base": {
       "hp": 45,
       "atk": 55,
@@ -3154,6 +3379,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 11,
     "base": {
       "hp": 65,
       "atk": 40,
@@ -3168,6 +3394,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 51,
+    "ability1": 5,
     "base": {
       "hp": 65,
       "atk": 80,
@@ -3182,6 +3409,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 48,
+    "ability1": 18,
     "base": {
       "hp": 45,
       "atk": 60,
@@ -3196,6 +3424,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 48,
+    "ability1": 18,
     "base": {
       "hp": 75,
       "atk": 90,
@@ -3210,6 +3439,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 33,
     "base": {
       "hp": 75,
       "atk": 95,
@@ -3224,6 +3454,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 53,
+    "ability1": 53,
     "base": {
       "hp": 90,
       "atk": 60,
@@ -3238,6 +3469,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 5,
+    "ability1": 5,
     "base": {
       "hp": 90,
       "atk": 120,
@@ -3252,6 +3484,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 36,
+    "ability1": 36,
     "base": {
       "hp": 85,
       "atk": 80,
@@ -3266,6 +3499,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 22,
     "base": {
       "hp": 73,
       "atk": 95,
@@ -3280,6 +3514,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 20,
+    "ability1": 20,
     "base": {
       "hp": 55,
       "atk": 20,
@@ -3294,6 +3529,7 @@
     "genderRatio": 0,
     "baseFriendship": 70,
     "ability0": 62,
+    "ability1": 62,
     "base": {
       "hp": 35,
       "atk": 35,
@@ -3308,6 +3544,7 @@
     "genderRatio": 0,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 22,
     "base": {
       "hp": 50,
       "atk": 95,
@@ -3322,6 +3559,7 @@
     "genderRatio": 254,
     "baseFriendship": 70,
     "ability0": 12,
+    "ability1": 12,
     "base": {
       "hp": 45,
       "atk": 30,
@@ -3336,6 +3574,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 9,
+    "ability1": 9,
     "base": {
       "hp": 45,
       "atk": 63,
@@ -3350,6 +3589,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 49,
+    "ability1": 49,
     "base": {
       "hp": 45,
       "atk": 75,
@@ -3364,6 +3604,7 @@
     "genderRatio": 254,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 47,
     "base": {
       "hp": 95,
       "atk": 80,
@@ -3378,6 +3619,7 @@
     "genderRatio": 254,
     "baseFriendship": 140,
     "ability0": 30,
+    "ability1": 32,
     "base": {
       "hp": 255,
       "atk": 10,
@@ -3392,6 +3634,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 90,
       "atk": 85,
@@ -3406,6 +3649,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 115,
       "atk": 115,
@@ -3420,6 +3664,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 100,
       "atk": 75,
@@ -3434,6 +3679,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 62,
+    "ability1": 62,
     "base": {
       "hp": 50,
       "atk": 64,
@@ -3448,6 +3694,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 61,
+    "ability1": 61,
     "base": {
       "hp": 70,
       "atk": 84,
@@ -3462,6 +3709,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 45,
+    "ability1": 45,
     "base": {
       "hp": 100,
       "atk": 134,
@@ -3476,6 +3724,7 @@
     "genderRatio": 255,
     "baseFriendship": 0,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 106,
       "atk": 90,
@@ -3490,6 +3739,7 @@
     "genderRatio": 255,
     "baseFriendship": 0,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 106,
       "atk": 130,
@@ -3504,6 +3754,7 @@
     "genderRatio": 255,
     "baseFriendship": 100,
     "ability0": 30,
+    "ability1": 30,
     "base": {
       "hp": 100,
       "atk": 100,
@@ -3518,6 +3769,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 65,
+    "ability1": 65,
     "base": {
       "hp": 40,
       "atk": 45,
@@ -3532,6 +3784,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 65,
+    "ability1": 65,
     "base": {
       "hp": 50,
       "atk": 65,
@@ -3546,6 +3799,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 65,
+    "ability1": 65,
     "base": {
       "hp": 70,
       "atk": 85,
@@ -3560,6 +3814,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 66,
+    "ability1": 66,
     "base": {
       "hp": 45,
       "atk": 60,
@@ -3574,6 +3829,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 66,
+    "ability1": 66,
     "base": {
       "hp": 60,
       "atk": 85,
@@ -3588,6 +3844,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 66,
+    "ability1": 66,
     "base": {
       "hp": 80,
       "atk": 120,
@@ -3602,6 +3859,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 67,
+    "ability1": 67,
     "base": {
       "hp": 50,
       "atk": 70,
@@ -3616,6 +3874,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 67,
+    "ability1": 67,
     "base": {
       "hp": 70,
       "atk": 85,
@@ -3630,6 +3889,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 67,
+    "ability1": 67,
     "base": {
       "hp": 100,
       "atk": 110,
@@ -3644,6 +3904,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 50,
+    "ability1": 50,
     "base": {
       "hp": 35,
       "atk": 55,
@@ -3658,6 +3919,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 22,
     "base": {
       "hp": 70,
       "atk": 90,
@@ -3672,6 +3934,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 53,
+    "ability1": 53,
     "base": {
       "hp": 38,
       "atk": 30,
@@ -3686,6 +3949,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 53,
+    "ability1": 53,
     "base": {
       "hp": 78,
       "atk": 70,
@@ -3700,6 +3964,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 19,
+    "ability1": 19,
     "base": {
       "hp": 45,
       "atk": 45,
@@ -3714,6 +3979,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 61,
+    "ability1": 61,
     "base": {
       "hp": 50,
       "atk": 35,
@@ -3728,6 +3994,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 68,
+    "ability1": 68,
     "base": {
       "hp": 60,
       "atk": 70,
@@ -3742,6 +4009,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 61,
+    "ability1": 61,
     "base": {
       "hp": 50,
       "atk": 35,
@@ -3756,6 +4024,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 19,
+    "ability1": 19,
     "base": {
       "hp": 60,
       "atk": 50,
@@ -3770,6 +4039,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 44,
     "base": {
       "hp": 40,
       "atk": 30,
@@ -3784,6 +4054,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 44,
     "base": {
       "hp": 60,
       "atk": 50,
@@ -3798,6 +4069,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 44,
     "base": {
       "hp": 80,
       "atk": 70,
@@ -3812,6 +4084,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 48,
     "base": {
       "hp": 40,
       "atk": 40,
@@ -3826,6 +4099,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 48,
     "base": {
       "hp": 70,
       "atk": 70,
@@ -3840,6 +4114,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 48,
     "base": {
       "hp": 90,
       "atk": 100,
@@ -3854,6 +4129,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 62,
+    "ability1": 62,
     "base": {
       "hp": 40,
       "atk": 55,
@@ -3868,6 +4144,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 62,
+    "ability1": 62,
     "base": {
       "hp": 60,
       "atk": 85,
@@ -3882,6 +4159,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 51,
+    "ability1": 51,
     "base": {
       "hp": 40,
       "atk": 30,
@@ -3896,6 +4174,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 51,
+    "ability1": 51,
     "base": {
       "hp": 60,
       "atk": 50,
@@ -3910,6 +4189,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 28,
+    "ability1": 36,
     "base": {
       "hp": 28,
       "atk": 25,
@@ -3924,6 +4204,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 28,
+    "ability1": 36,
     "base": {
       "hp": 38,
       "atk": 35,
@@ -3938,6 +4219,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 28,
+    "ability1": 36,
     "base": {
       "hp": 68,
       "atk": 65,
@@ -3952,6 +4234,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 33,
     "base": {
       "hp": 40,
       "atk": 30,
@@ -3966,6 +4249,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 22,
+    "ability1": 22,
     "base": {
       "hp": 70,
       "atk": 60,
@@ -3980,6 +4264,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 27,
+    "ability1": 27,
     "base": {
       "hp": 60,
       "atk": 40,
@@ -3994,6 +4279,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 27,
+    "ability1": 27,
     "base": {
       "hp": 60,
       "atk": 130,
@@ -4008,6 +4294,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 54,
+    "ability1": 54,
     "base": {
       "hp": 60,
       "atk": 60,
@@ -4022,6 +4309,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 72,
+    "ability1": 72,
     "base": {
       "hp": 80,
       "atk": 80,
@@ -4036,6 +4324,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 54,
+    "ability1": 54,
     "base": {
       "hp": 150,
       "atk": 160,
@@ -4050,6 +4339,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 14,
+    "ability1": 14,
     "base": {
       "hp": 31,
       "atk": 45,
@@ -4064,6 +4354,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 3,
+    "ability1": 3,
     "base": {
       "hp": 61,
       "atk": 90,
@@ -4078,6 +4369,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 25,
+    "ability1": 25,
     "base": {
       "hp": 1,
       "atk": 90,
@@ -4092,6 +4384,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 43,
+    "ability1": 43,
     "base": {
       "hp": 64,
       "atk": 51,
@@ -4106,6 +4399,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 43,
+    "ability1": 43,
     "base": {
       "hp": 84,
       "atk": 71,
@@ -4120,6 +4414,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 43,
+    "ability1": 43,
     "base": {
       "hp": 104,
       "atk": 91,
@@ -4134,6 +4429,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 62,
     "base": {
       "hp": 72,
       "atk": 60,
@@ -4148,6 +4444,7 @@
     "genderRatio": 63,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 62,
     "base": {
       "hp": 144,
       "atk": 120,
@@ -4162,6 +4459,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 37,
     "base": {
       "hp": 50,
       "atk": 20,
@@ -4176,6 +4474,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 5,
+    "ability1": 42,
     "base": {
       "hp": 30,
       "atk": 45,
@@ -4190,6 +4489,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 56,
+    "ability1": 56,
     "base": {
       "hp": 50,
       "atk": 45,
@@ -4204,6 +4504,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 56,
+    "ability1": 56,
     "base": {
       "hp": 70,
       "atk": 65,
@@ -4218,6 +4519,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 51,
+    "ability1": 51,
     "base": {
       "hp": 50,
       "atk": 75,
@@ -4232,6 +4534,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 52,
+    "ability1": 22,
     "base": {
       "hp": 50,
       "atk": 85,
@@ -4246,6 +4549,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 5,
+    "ability1": 69,
     "base": {
       "hp": 50,
       "atk": 70,
@@ -4260,6 +4564,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 5,
+    "ability1": 69,
     "base": {
       "hp": 60,
       "atk": 90,
@@ -4274,6 +4579,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 5,
+    "ability1": 69,
     "base": {
       "hp": 70,
       "atk": 110,
@@ -4288,6 +4594,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 74,
+    "ability1": 74,
     "base": {
       "hp": 30,
       "atk": 40,
@@ -4302,6 +4609,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 74,
+    "ability1": 74,
     "base": {
       "hp": 60,
       "atk": 60,
@@ -4316,6 +4624,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 9,
+    "ability1": 31,
     "base": {
       "hp": 40,
       "atk": 45,
@@ -4330,6 +4639,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 9,
+    "ability1": 31,
     "base": {
       "hp": 70,
       "atk": 75,
@@ -4344,6 +4654,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 57,
+    "ability1": 57,
     "base": {
       "hp": 60,
       "atk": 50,
@@ -4358,6 +4669,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 58,
+    "ability1": 58,
     "base": {
       "hp": 60,
       "atk": 40,
@@ -4372,6 +4684,7 @@
     "genderRatio": 0,
     "baseFriendship": 70,
     "ability0": 35,
+    "ability1": 68,
     "base": {
       "hp": 65,
       "atk": 73,
@@ -4386,6 +4699,7 @@
     "genderRatio": 254,
     "baseFriendship": 70,
     "ability0": 12,
+    "ability1": 12,
     "base": {
       "hp": 65,
       "atk": 47,
@@ -4400,6 +4714,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 30,
+    "ability1": 38,
     "base": {
       "hp": 50,
       "atk": 60,
@@ -4414,6 +4729,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 64,
+    "ability1": 60,
     "base": {
       "hp": 70,
       "atk": 43,
@@ -4428,6 +4744,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 64,
+    "ability1": 60,
     "base": {
       "hp": 100,
       "atk": 73,
@@ -4442,6 +4759,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 24,
+    "ability1": 24,
     "base": {
       "hp": 45,
       "atk": 90,
@@ -4456,6 +4774,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 24,
+    "ability1": 24,
     "base": {
       "hp": 70,
       "atk": 120,
@@ -4470,6 +4789,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 41,
+    "ability1": 12,
     "base": {
       "hp": 130,
       "atk": 70,
@@ -4484,6 +4804,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 41,
+    "ability1": 12,
     "base": {
       "hp": 170,
       "atk": 90,
@@ -4498,6 +4819,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 12,
+    "ability1": 12,
     "base": {
       "hp": 60,
       "atk": 60,
@@ -4512,6 +4834,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 40,
+    "ability1": 40,
     "base": {
       "hp": 70,
       "atk": 100,
@@ -4526,6 +4849,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 73,
+    "ability1": 73,
     "base": {
       "hp": 70,
       "atk": 85,
@@ -4540,6 +4864,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 20,
     "base": {
       "hp": 60,
       "atk": 25,
@@ -4554,6 +4879,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 20,
     "base": {
       "hp": 80,
       "atk": 45,
@@ -4568,6 +4894,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 20,
+    "ability1": 20,
     "base": {
       "hp": 60,
       "atk": 60,
@@ -4582,6 +4909,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 52,
+    "ability1": 71,
     "base": {
       "hp": 45,
       "atk": 100,
@@ -4596,6 +4924,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 50,
       "atk": 70,
@@ -4610,6 +4939,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 80,
       "atk": 100,
@@ -4624,6 +4954,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 8,
+    "ability1": 8,
     "base": {
       "hp": 50,
       "atk": 85,
@@ -4638,6 +4969,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 8,
+    "ability1": 8,
     "base": {
       "hp": 70,
       "atk": 115,
@@ -4652,6 +4984,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 30,
+    "ability1": 30,
     "base": {
       "hp": 45,
       "atk": 40,
@@ -4666,6 +4999,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 30,
+    "ability1": 30,
     "base": {
       "hp": 75,
       "atk": 70,
@@ -4680,6 +5014,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 17,
+    "ability1": 17,
     "base": {
       "hp": 73,
       "atk": 115,
@@ -4694,6 +5029,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 61,
+    "ability1": 61,
     "base": {
       "hp": 73,
       "atk": 100,
@@ -4708,6 +5044,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 70,
       "atk": 55,
@@ -4722,6 +5059,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 70,
       "atk": 95,
@@ -4736,6 +5074,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 12,
+    "ability1": 12,
     "base": {
       "hp": 50,
       "atk": 48,
@@ -4750,6 +5089,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 12,
+    "ability1": 12,
     "base": {
       "hp": 110,
       "atk": 78,
@@ -4764,6 +5104,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 52,
+    "ability1": 75,
     "base": {
       "hp": 43,
       "atk": 80,
@@ -4778,6 +5119,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 52,
+    "ability1": 75,
     "base": {
       "hp": 63,
       "atk": 120,
@@ -4792,6 +5134,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 40,
       "atk": 40,
@@ -4806,6 +5149,7 @@
     "genderRatio": 255,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 60,
       "atk": 70,
@@ -4820,6 +5164,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 21,
+    "ability1": 21,
     "base": {
       "hp": 66,
       "atk": 41,
@@ -4834,6 +5179,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 21,
+    "ability1": 21,
     "base": {
       "hp": 86,
       "atk": 81,
@@ -4848,6 +5194,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 4,
+    "ability1": 4,
     "base": {
       "hp": 45,
       "atk": 95,
@@ -4862,6 +5209,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 4,
+    "ability1": 4,
     "base": {
       "hp": 75,
       "atk": 125,
@@ -4876,6 +5224,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 33,
     "base": {
       "hp": 20,
       "atk": 15,
@@ -4890,6 +5239,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 63,
+    "ability1": 63,
     "base": {
       "hp": 95,
       "atk": 60,
@@ -4904,6 +5254,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 59,
+    "ability1": 59,
     "base": {
       "hp": 70,
       "atk": 70,
@@ -4918,6 +5269,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 16,
+    "ability1": 16,
     "base": {
       "hp": 60,
       "atk": 90,
@@ -4932,6 +5284,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 15,
+    "ability1": 15,
     "base": {
       "hp": 44,
       "atk": 75,
@@ -4946,6 +5299,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 15,
+    "ability1": 15,
     "base": {
       "hp": 64,
       "atk": 115,
@@ -4960,6 +5314,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 20,
       "atk": 40,
@@ -4974,6 +5329,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 40,
       "atk": 70,
@@ -4988,6 +5344,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 34,
+    "ability1": 34,
     "base": {
       "hp": 99,
       "atk": 68,
@@ -5002,6 +5359,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 65,
       "atk": 50,
@@ -5016,6 +5374,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 65,
       "atk": 130,
@@ -5030,6 +5389,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 23,
+    "ability1": 23,
     "base": {
       "hp": 95,
       "atk": 23,
@@ -5044,6 +5404,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 39,
+    "ability1": 39,
     "base": {
       "hp": 50,
       "atk": 50,
@@ -5058,6 +5419,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 39,
+    "ability1": 39,
     "base": {
       "hp": 80,
       "atk": 80,
@@ -5072,6 +5434,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 47,
     "base": {
       "hp": 70,
       "atk": 40,
@@ -5086,6 +5449,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 47,
     "base": {
       "hp": 90,
       "atk": 60,
@@ -5100,6 +5464,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 47,
+    "ability1": 47,
     "base": {
       "hp": 110,
       "atk": 80,
@@ -5114,6 +5479,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 75,
+    "ability1": 75,
     "base": {
       "hp": 35,
       "atk": 64,
@@ -5128,6 +5494,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 33,
     "base": {
       "hp": 55,
       "atk": 104,
@@ -5142,6 +5509,7 @@
     "genderRatio": 127,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 33,
     "base": {
       "hp": 55,
       "atk": 84,
@@ -5156,6 +5524,7 @@
     "genderRatio": 31,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 69,
     "base": {
       "hp": 100,
       "atk": 90,
@@ -5170,6 +5539,7 @@
     "genderRatio": 191,
     "baseFriendship": 70,
     "ability0": 33,
+    "ability1": 33,
     "base": {
       "hp": 43,
       "atk": 30,
@@ -5184,6 +5554,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 69,
+    "ability1": 69,
     "base": {
       "hp": 45,
       "atk": 75,
@@ -5198,6 +5569,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 69,
+    "ability1": 69,
     "base": {
       "hp": 65,
       "atk": 95,
@@ -5212,6 +5584,7 @@
     "genderRatio": 127,
     "baseFriendship": 35,
     "ability0": 22,
+    "ability1": 22,
     "base": {
       "hp": 95,
       "atk": 135,
@@ -5226,6 +5599,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 29,
+    "ability1": 29,
     "base": {
       "hp": 40,
       "atk": 55,
@@ -5240,6 +5614,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 29,
+    "ability1": 29,
     "base": {
       "hp": 60,
       "atk": 75,
@@ -5254,6 +5629,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 29,
+    "ability1": 29,
     "base": {
       "hp": 80,
       "atk": 135,
@@ -5268,6 +5644,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 29,
+    "ability1": 29,
     "base": {
       "hp": 80,
       "atk": 100,
@@ -5282,6 +5659,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 29,
+    "ability1": 29,
     "base": {
       "hp": 80,
       "atk": 50,
@@ -5296,6 +5674,7 @@
     "genderRatio": 255,
     "baseFriendship": 35,
     "ability0": 29,
+    "ability1": 29,
     "base": {
       "hp": 80,
       "atk": 75,
@@ -5310,6 +5689,7 @@
     "genderRatio": 254,
     "baseFriendship": 90,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 80,
       "atk": 80,
@@ -5324,6 +5704,7 @@
     "genderRatio": 0,
     "baseFriendship": 90,
     "ability0": 26,
+    "ability1": 26,
     "base": {
       "hp": 80,
       "atk": 90,
@@ -5338,6 +5719,7 @@
     "genderRatio": 255,
     "baseFriendship": 0,
     "ability0": 2,
+    "ability1": 2,
     "base": {
       "hp": 100,
       "atk": 100,
@@ -5352,6 +5734,7 @@
     "genderRatio": 255,
     "baseFriendship": 0,
     "ability0": 70,
+    "ability1": 70,
     "base": {
       "hp": 100,
       "atk": 150,
@@ -5366,6 +5749,7 @@
     "genderRatio": 255,
     "baseFriendship": 0,
     "ability0": 76,
+    "ability1": 76,
     "base": {
       "hp": 105,
       "atk": 150,
@@ -5380,6 +5764,7 @@
     "genderRatio": 255,
     "baseFriendship": 100,
     "ability0": 32,
+    "ability1": 32,
     "base": {
       "hp": 100,
       "atk": 100,
@@ -5394,6 +5779,7 @@
     "genderRatio": 255,
     "baseFriendship": 0,
     "ability0": 46,
+    "ability1": 46,
     "base": {
       "hp": 50,
       "atk": 150,

@@ -20,11 +20,28 @@
 import { CartError, type SaveSink, type SaveSinkOptions } from '@pokeportal/core';
 
 export interface BackupSinkDeps {
-  /** Override `showSaveFilePicker` for testing. */
-  readonly savePicker?: (filename: string) => Promise<FileSystemWritableLike | null>;
+  /**
+   * Override `showSaveFilePicker` for testing. May return either:
+   *   - A `FileSystemWritableLike` (legacy S7a shape; no size verify).
+   *   - A `FileSystemHandleAndWritable` (S7b shape; opt-in size verify
+   *     per AMEND-S7b-9).
+   */
+  readonly savePicker?: (
+    filename: string,
+  ) => Promise<FileSystemWritableLike | FileSystemHandleAndWritable | null>;
   /** Fallback path: trigger an `<a download>` then return a promise that
    *  resolves true if the user confirmed the file landed. */
   readonly fallbackDownload?: (filename: string, bytes: Uint8Array) => Promise<boolean>;
+}
+
+function adoptHandle(
+  raw: FileSystemWritableLike | FileSystemHandleAndWritable | null,
+): FileSystemHandleAndWritable | null {
+  if (!raw) return null;
+  if (typeof (raw as FileSystemHandleAndWritable).writable === 'object') {
+    return raw as FileSystemHandleAndWritable;
+  }
+  return { writable: raw as FileSystemWritableLike };
 }
 
 interface FileSystemWritableLike {
@@ -32,8 +49,23 @@ interface FileSystemWritableLike {
   close(): Promise<void>;
 }
 
+/**
+ * Per AMEND-S7b-9: after `close()`, the backup must be verified — read
+ * back the file's size and assert it matches the source bytes length.
+ * Browsers occasionally truncate downloads silently. The picker returns
+ * BOTH the writable AND a way to re-stat the resulting file.
+ */
+export interface FileSystemHandleAndWritable {
+  readonly writable: FileSystemWritableLike;
+  /** Optional post-close size verification — returns the resulting file's
+   *  byte length (read via `getFile().size`). Tests + the legacy code
+   *  path that can't readback omit this. */
+  readonly verifySize?: () => Promise<number>;
+}
+
 interface FileSystemFileHandleLike {
   createWritable(): Promise<FileSystemWritableLike>;
+  getFile(): Promise<{ size: number }>;
 }
 
 interface SaveFilePickerWindow extends Window {
@@ -62,13 +94,27 @@ export class BackupSink implements SaveSink {
     const picker = this.deps.savePicker ?? defaultSavePicker;
     let handled = false;
     try {
-      const writable = await picker(this.backupFilename);
-      if (writable) {
+      const result = await picker(this.backupFilename);
+      const handle = adoptHandle(result);
+      if (handle) {
         try {
-          await writable.write(this.preWriteBytes);
-          await writable.close();
+          await handle.writable.write(this.preWriteBytes);
+          await handle.writable.close();
+          // AMEND-S7b-9 — re-stat the file post-close. Browsers
+          // occasionally truncate downloads silently; a 0-byte backup
+          // would leave the user without recourse on a write failure.
+          if (handle.verifySize) {
+            const actualSize = await handle.verifySize();
+            if (actualSize !== this.preWriteBytes.length) {
+              throw new CartError(
+                'BACKUP_FAILED',
+                `backup file size mismatch: wrote ${this.preWriteBytes.length}, got ${actualSize}`,
+              );
+            }
+          }
           handled = true;
         } catch (e) {
+          if (e instanceof CartError) throw e;
           throw new CartError('BACKUP_FAILED', `picker write failed: ${(e as Error).message}`);
         }
       }
@@ -95,11 +141,20 @@ export class BackupSink implements SaveSink {
   }
 }
 
-async function defaultSavePicker(filename: string): Promise<FileSystemWritableLike | null> {
+async function defaultSavePicker(
+  filename: string,
+): Promise<FileSystemHandleAndWritable | null> {
   const w = globalThis as unknown as SaveFilePickerWindow;
   if (typeof w.showSaveFilePicker !== 'function') return null;
   const handle = await w.showSaveFilePicker({ suggestedName: filename });
-  return handle.createWritable();
+  const writable = await handle.createWritable();
+  return {
+    writable,
+    verifySize: async () => {
+      const f = await handle.getFile();
+      return f.size;
+    },
+  };
 }
 
 async function defaultFallback(filename: string, bytes: Uint8Array): Promise<boolean> {

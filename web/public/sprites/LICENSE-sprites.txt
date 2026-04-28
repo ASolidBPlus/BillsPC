@@ -1,12 +1,17 @@
 Sprite sources for PokeTimeCapsule
 ===================================
 
-Front sprites (gen1, gen2, gen3):
+Front sprites (gen1, gen2, gen3, gen3-shiny, crystal-shiny, crystal-anim-shiny):
   Source: https://github.com/PokeAPI/sprites
   Subpaths used:
-    gen1/  -> sprites/pokemon/versions/generation-i/yellow/<n>.png
-    gen2/  -> sprites/pokemon/versions/generation-ii/crystal/<n>.png
-    gen3/  -> sprites/pokemon/versions/generation-iii/emerald/<n>.png
+    gen1/                -> sprites/pokemon/versions/generation-i/yellow/<n>.png
+    gen2/                -> sprites/pokemon/versions/generation-ii/crystal/<n>.png
+    gen3/                -> sprites/pokemon/versions/generation-iii/emerald/<n>.png
+    gen3-shiny/          -> sprites/pokemon/versions/generation-iii/emerald/shiny/<n>.png
+    crystal-shiny/       -> sprites/pokemon/versions/generation-ii/crystal/shiny/<n>.png
+    crystal-anim-shiny/  -> sprites/pokemon/versions/generation-ii/crystal/animated/shiny/<n>.gif
+                            (Unown #201 falls back to the static shiny PNG —
+                             PokeAPI doesn't ship an animated shiny variant)
 
 Overworld follower sprites (HGSS-style, GBA-tooled):
   Source: https://github.com/TaTaTaZJJ/pokemon-overworld-for-gba (base/ directory)

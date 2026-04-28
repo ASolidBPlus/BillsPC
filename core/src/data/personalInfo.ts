@@ -15,8 +15,13 @@ export interface PersonalInfo {
   readonly genderRatio: number;
   /** Species base friendship (used for Gen 1 sources that lack the field). */
   readonly baseFriendship: number;
-  /** Primary ability (slot 0) — always used per HANDOFF §4.14. */
+  /** Primary ability (slot 0). */
   readonly ability0: number;
+  /** Secondary ability (slot 1). For 1-ability species, equals `ability0`
+   *  (per pkhex `PersonalInfo3.HasSecondAbility = Ability1 != Ability2`).
+   *  Convert checks `ability0 !== ability1` to decide whether to allow
+   *  abilityBit=1; otherwise pins to slot 0 to satisfy pkhex legality. */
+  readonly ability1: number;
   /**
    * Gen 3 species base stats. Field order is the canonical
    * `hp, atk, def, spa, spd, spe` (matches `Gen3Intermediate.ivs`/`evs`),

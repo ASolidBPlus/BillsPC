@@ -31,7 +31,7 @@ describe('box browser render (jsdom)', () => {
     document.body.appendChild(root);
   });
 
-  it('renders the box-browser DOM with Crystal Clear-style overworld sprites for the party', async () => {
+  it('renders the box-browser DOM with SoupPotato party-icon sprites for the party', async () => {
     const controller = createController(root);
     const bytes = new Uint8Array(readFileSync(CRYSTAL));
     await handleFileSelected(
@@ -53,13 +53,18 @@ describe('box browser render (jsdom)', () => {
     const occupied = root.querySelectorAll('.box-tile.is-occupied');
     expect(occupied.length).toBe(6);
 
-    // Each occupied tile carries an overworld sprite (rendered as a div with a
-    // background-image so CSS keyframes can cycle the walking-frame animation).
-    const sprites = root.querySelectorAll('.box-tile.is-occupied .ow-sprite');
+    // Each occupied tile carries a SoupPotato party-icon sprite. Per
+    // the iOS Safari fix, the sprite is rendered as <div class="party-
+    // icon-gen2"><img class="party-icon-img" src="..."></div> — the
+    // wrapper clips a 2-frame strip and the inner img animates via
+    // top-position to swap frames (background-image broke retina
+    // image-rendering on iOS).
+    const sprites = root.querySelectorAll('.box-tile.is-occupied .party-icon-gen2');
     expect(sprites.length).toBe(6);
     for (const s of Array.from(sprites)) {
-      const bg = (s as HTMLElement).style.backgroundImage;
-      expect(bg).toMatch(/sprites\/overworld\/\d+\.png/);
+      const inner = s.querySelector('img.party-icon-img') as HTMLImageElement | null;
+      expect(inner).not.toBeNull();
+      expect(inner!.getAttribute('src')).toMatch(/sprites\/party-gen2\/\d+\.png/);
     }
   });
 

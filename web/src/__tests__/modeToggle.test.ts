@@ -17,7 +17,7 @@ describe('mode toggle (S7a)', () => {
 
   it('mode_changed → upload after cart is non-destructive (no state lost)', () => {
     const s1 = reducer(INITIAL_STATE, { type: 'mode_changed', mode: 'cart' });
-    const s2 = reducer(s1, { type: 'cart_connect_failed', reason: 'X', message: 'y' });
+    const s2 = reducer(s1, { type: 'cart_connect_failed', side: 'source', reason: 'X', message: 'y' });
     const s3 = reducer(s2, { type: 'mode_changed', mode: 'upload' });
     expect(s3.mode).toBe('upload');
     // Cart-error state is preserved across mode switches.

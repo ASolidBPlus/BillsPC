@@ -14,7 +14,22 @@ import { gen2Shiny, getSpecies, decodeGen12 } from '@pokeportal/core/internal';
 import { dialog } from './dialog.js';
 import { el } from './dom.js';
 import { spriteImg } from './sprites.js';
-import type { MonRef } from '../state.js';
+import { monRefKey, type MonRef } from '../state.js';
+
+/**
+ * S8v2.2 — modifier-key payload forwarded from the tile click handler to
+ * the workbench / reducer so the selection toggle action can resolve to
+ * `replace` / `add` / `range` mode without inspecting raw `MouseEvent`.
+ *
+ * Legacy callers (`renderSourcePane` for the non-v2 default UI) pass
+ * `onMonOpen(ref)` with a single arg; the second arg is optional so
+ * legacy code keeps compiling.
+ */
+export interface SelectModifiers {
+  readonly meta: boolean;
+  readonly ctrl: boolean;
+  readonly shift: boolean;
+}
 
 export const BROWSER_ROWS = 5;
 export const BROWSER_COLS = 4;
@@ -33,7 +48,30 @@ export interface BoxBrowserProps {
   readonly entries: readonly BrowserEntry[];
   readonly onCursorMove: (drow: -1 | 0 | 1, dcol: -1 | 0 | 1) => void;
   readonly onBoxChange: (delta: -1 | 1) => void;
-  readonly onMonOpen: (ref: MonRef) => void;
+  /** S8v2.2 — modifier keys forwarded for the v2 selection model.
+   *  Legacy callers ignore the second arg (per Risk #6). */
+  readonly onMonOpen: (ref: MonRef, modKeys?: SelectModifiers) => void;
+  /** S8v2.2 — refs in the current selection. When set, matching tiles
+   *  render with `is-selected`. Optional so legacy callers don't have
+   *  to pass it. */
+  readonly selection?: ReadonlyArray<MonRef>;
+  /** S8v2.2 — refs already pushed into the staging store (matched by
+   *  monRefKey). Matching tiles render with `is-staged` overlay. */
+  readonly stagedRefs?: ReadonlyArray<MonRef>;
+  /** S8v2.2 — map from `monRefKey(ref)` → transfer-box slot index for
+   *  staged refs. Source tiles use this to render a `→ T<slot>` corner
+   *  badge (mirror of the dest-side `→ B1/S03` placed-badge). */
+  readonly stagedTransferSlotByRefKey?: ReadonlyMap<string, number>;
+  /**
+   * AMEND-S8v2.1-6 — when true, the browser renders without the
+   * dialog-frame chrome (no border / shadow / padding). Used by the v2
+   * workbench to embed the box browser INSIDE the `.gen2-box-wrap`
+   * frame so the loaded source pane reads as a sub-element of the
+   * Gen 2 box rather than a nested dialog. Co-located with the
+   * component to decouple v2 layout from internal box-browser DOM
+   * structure.
+   */
+  readonly embedded?: boolean;
 }
 
 /** Render the box title bar e.g. `◀ BOX 3 ▶` or `◀ PARTY ▶`. */
@@ -45,7 +83,9 @@ function boxLabel(save: SaveContents, boxIndex: number): string {
 }
 
 export function boxBrowser(props: BoxBrowserProps): HTMLElement {
-  const wrap = dialog({ class: 'box-browser' });
+  const wrap = props.embedded
+    ? el('div', { class: 'box-browser is-embedded' })
+    : dialog({ class: 'box-browser' });
   // Title row.
   const title = el('div', { class: 'box-title' });
   const prev = el(
@@ -73,18 +113,35 @@ export function boxBrowser(props: BoxBrowserProps): HTMLElement {
     Math.min(BROWSER_ROWS, Math.max(Math.ceil((highestSlot + 1) / BROWSER_COLS), minRowsForCursor)),
   );
 
+  // S8v2.2 — pre-compute selection / staged-ref keysets for O(1) tile
+  // lookup during render. Selection sizes are bounded (≤ 30) so a Set
+  // isn't strictly required, but it keeps the inner-loop check trivial.
+  const selectionKeys = new Set<string>();
+  if (props.selection) {
+    for (const r of props.selection) selectionKeys.add(monRefKey(r));
+  }
+  const stagedKeys = new Set<string>();
+  if (props.stagedRefs) {
+    for (const r of props.stagedRefs) stagedKeys.add(monRefKey(r));
+  }
+
   const grid = el('div', { class: 'box-grid' });
   for (let row = 0; row < visibleRows; row++) {
     for (let col = 0; col < BROWSER_COLS; col++) {
       const slot = row * BROWSER_COLS + col;
       const entry = bySlot.get(slot);
       const isCursor = row === props.cursor.row && col === props.cursor.col;
+      const entryKey = entry ? monRefKey(entry.ref) : null;
+      const isSelected = entryKey !== null && selectionKeys.has(entryKey);
+      const isStaged = entryKey !== null && stagedKeys.has(entryKey);
       const tile = el('div', {
         class:
           'box-tile' +
           (entry ? ' is-occupied' : ' is-empty') +
           (isCursor ? ' is-cursor' : '') +
-          (entry && gen2Shiny(entry.mon.dvs) ? ' is-shiny' : ''),
+          (entry && gen2Shiny(entry.mon.dvs) ? ' is-shiny' : '') +
+          (isSelected ? ' is-selected' : '') +
+          (isStaged ? ' is-staged' : ''),
         'data-row': String(row),
         'data-col': String(col),
         'data-slot': String(slot),
@@ -92,9 +149,30 @@ export function boxBrowser(props: BoxBrowserProps): HTMLElement {
       if (entry) {
         const ndex = entry.mon.speciesGen2Id;
         const speciesName = getSpecies(ndex)?.name ?? `species-${ndex}`;
-        tile.append(spriteImg(ndex, 'overworld', speciesName));
+        tile.append(spriteImg(ndex, 'party-gen2', speciesName, props.save.format));
         tile.append(monTooltip(entry.mon, speciesName, props.save.format));
-        tile.addEventListener('click', () => props.onMonOpen(entry.ref));
+        // S8v2.2 — `→ T<n>` badge mirrors the transfer-box placed badge
+        if (isStaged && props.stagedTransferSlotByRefKey && entryKey !== null) {
+          const tslot = props.stagedTransferSlotByRefKey.get(entryKey);
+          if (tslot !== undefined) {
+            tile.append(
+              el(
+                'span',
+                { class: 'source-tile-staged-badge' },
+                `→ T${String(tslot + 1).padStart(2, '0')}`,
+              ),
+            );
+          }
+        }
+        // S8v2.2 — forward modifier keys for the v2 selection model.
+        // Legacy callers receive the unused second arg (and ignore it).
+        tile.addEventListener('click', (ev: MouseEvent) => {
+          props.onMonOpen(entry.ref, {
+            meta: ev.metaKey,
+            ctrl: ev.ctrlKey,
+            shift: ev.shiftKey,
+          });
+        });
       }
       grid.append(tile);
     }

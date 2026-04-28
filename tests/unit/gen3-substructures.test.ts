@@ -106,7 +106,7 @@ describe('Misc substructure', () => {
     expect(decoded.metLocation).toBe(146);
     expect(decoded.metLevel).toBe(0); // PKHeX-correct for hatched eggs
     expect(decoded.isEgg).toBe(false);
-    expect(decoded.abilityBit).toBe(0);
+    expect(decoded.abilityBit).toBe(it.abilitySlot); // §4.14 — abilitySlot = pid & 1
     expect(decoded.ribbonsAndObedience).toBe(0);
   });
 
@@ -121,7 +121,7 @@ describe('Misc substructure', () => {
     expect((word >>> 20) & 0x1f).toBe(it.ivs.spa);
     expect((word >>> 25) & 0x1f).toBe(it.ivs.spd);
     expect((word >>> 30) & 0x1).toBe(0); // isEgg
-    expect((word >>> 31) & 0x1).toBe(0); // abilityBit
+    expect((word >>> 31) & 0x1).toBe(it.abilitySlot); // §4.14 — abilitySlot = pid & 1
   });
 
   it('originsInfo packs metLevel 0, originGame FRLG (4), ball Pokeball (4)', () => {

@@ -189,6 +189,18 @@ export class InsidegadgetsProtocol implements CartProtocol {
     return this.bulkRead(0xa000, length, /* gba= */ false, opts);
   }
 
+  /**
+   * S7b — no-op on stock OFW. Per AMEND-S7b-1/-4 the LK firmware needs a
+   * pre-write register prelude + JEDEC chip-ID exit; OFW has no analogue
+   * (the stock Flash-write firmware path doesn't expose a register
+   * interface). Defined for protocol symmetry so the GbxCartSink doesn't
+   * have to special-case OFW.
+   */
+  async prepareForWrite(family: CartFamily, opts: { signal?: AbortSignal } = {}): Promise<void> {
+    void family;
+    void opts;
+  }
+
   async writeSram(
     family: CartFamily,
     bytes: Uint8Array,
@@ -196,6 +208,18 @@ export class InsidegadgetsProtocol implements CartProtocol {
   ): Promise<void> {
     const total = bytes.length;
     if (family === 'gba') {
+      // S7b: 128 KB AGB Flash writes through stock OFW are not supported
+      // — the stock firmware's 'w' opcode targets flat SRAM; Flash-cart
+      // erase/program needs JEDEC plumbing the OFW doesn't expose
+      // cleanly. Direct user to LK CFW (`cart-write-baud=1m` URL flag is
+      // a separate bisection lever per AMEND-S7b-19; the firmware swap
+      // is the actual fix).
+      if (total > 0x10000) {
+        throw new CartError(
+          'UNSUPPORTED_FIRMWARE',
+          'AGB Flash writes (128 KB) require Lesserkuma CFW (L12+). Stock OFW is read-only for >64 KB carts in this tool.',
+        );
+      }
       // Per-page 64-byte SRAM writes via 'w'.
       const PAGE = 64;
       for (let off = 0; off < total; off += PAGE) {
@@ -215,7 +239,10 @@ export class InsidegadgetsProtocol implements CartProtocol {
       }
       return;
     }
-    // GB per-byte SRAM write via 'W'. Slow but matches stock firmware.
+    // GB per-byte SRAM write via 'W'. Slow but matches stock firmware. The
+    // S7b cart-mode UI gates DMG writes to LK firmware only (per PLAN §1.3
+    // OOS) so this path mostly exists for the conformance swap-test +
+    // anyone running a stock-only board for development.
     await setStartAddress(this.reader, this.port, 0xa000);
     for (let off = 0; off < total; off++) {
       if (opts.signal?.aborted) throw new CartError('CANCELLED', 'write aborted');

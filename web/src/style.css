@@ -29,7 +29,14 @@
   --gbc-accent-green: #58a058;
   --gbc-accent-yellow: #d8a838;
   --pc-blue: #5878a8;
-  background: var(--gbc-bg);
+  /* Page background — Gen 3 PC interface ("BILL'S PC") aesthetic. The
+     in-game RSE PC screen uses a soft blue-purple gradient with subtle
+     CRT-style scanlines. Every container that should read as "the
+     inside of a UI box" must set its own background — the page bg
+     itself is decorative. */
+  --page-bg-top: #4a5d8a;
+  --page-bg-bottom: #2a3458;
+  background: var(--page-bg-bottom);
   color: var(--gbc-text);
   color-scheme: light;
 }
@@ -48,21 +55,62 @@
   font-display: optional;
   font-weight: 400;
 }
+/* "Pokemon Emerald" by aztecwarrior28 (FontStruct, 2021) — fan-made
+   recreation of the GBA in-game font. Used by the FR/LG-style AFTER
+   stat panel; the GBA font is a smooth bitmap with characteristically
+   thin strokes that no system sans-serif comes close to matching. */
+@font-face {
+  font-family: 'PokemonGBA';
+  src: url('../public/fonts/pokemon-emerald.woff2') format('woff2');
+  /* swap not optional — the GBA font is THE point of the FR/LG panel,
+     we'd rather flash the fallback briefly than skip it entirely. */
+  font-display: swap;
+  font-weight: 400;
+}
 
 body {
   margin: 0;
-  padding: 1.25rem;
+  padding: 0;
   min-height: 100vh;
+  display: block;
+  box-sizing: border-box;
   font-family: 'PokemonGB', 'Courier New', monospace;
   font-size: 16px;
   line-height: 1.5;
-  background: var(--gbc-bg);
+  /* Gen 3 PC: soft blue-purple gradient (top→bottom) under faint CRT
+     scanlines. Scanlines are 1px-on-3px-off for a barely-perceptible
+     "PC monitor" texture without being distracting. */
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 3px,
+      rgba(0, 0, 0, 0.07) 3px,
+      rgba(0, 0, 0, 0.07) 4px
+    ),
+    linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-bottom) 100%);
+  background-attachment: fixed;
   color: var(--gbc-text);
 }
 
 #app {
-  max-width: 880px;
+  /* The v2 workbench is naturally ~1200px wide × ~950px tall. Use CSS
+     `zoom` with min() of viewport ratios to scale the WHOLE app to
+     fit any viewport — no scrollbars, no manual breakpoint tuning,
+     no clipped legal footer. min(1, ...) caps at 1 so the app never
+     magnifies beyond its design size on huge displays. `zoom`
+     adjusts the layout box (unlike `transform: scale`) so scrollbars
+     don't appear when zoomed down. */
+  --app-design-w: 1200;
+  --app-design-h: 950;
+  --w-ratio: calc(100vw / var(--app-design-w));
+  --h-ratio: calc(100vh / var(--app-design-h));
+  zoom: min(1, var(--w-ratio), var(--h-ratio));
+  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
   display: grid;
   gap: 1rem;
   outline: none;
@@ -83,6 +131,164 @@ h1 {
   background: var(--gbc-bg);
   border: 4px solid var(--gbc-border-outer);
   padding: 12px 16px;
+  /* Crisp pixel-art shadow so the card sits visibly on the dark page bg
+     instead of looking like a flat sticker. */
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* Bill's intro — modeled on the Pokémon Stadium NPC dialog layout
+   (Stadium Oak speaking from the PC research center). ONE Gen 2
+   dialog frame containing both the portrait and the speech text.
+   The portrait sits at the LEFT inside the dialog and PROTRUDES out
+   of the top edge — Bill's image extends above the frame top so it
+   reads like the character is leaning into the dialog from above. */
+.bill-intro {
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  justify-self: center;
+  max-width: 880px;
+  position: relative;
+  /* Top room for the portrait's protruding overshoot — without this
+     padding, the parent grid's gap clips the portrait's top. */
+  margin-top: 40px;
+  /* Add the page-level drop shadow on top of the .gen2-dialog inset
+     shadow chrome. */
+  box-shadow:
+    inset 0 0 0 2px var(--gbc-bg),
+    inset 0 0 0 4px var(--gbc-border-outer),
+    inset 0 0 0 6px var(--gbc-bg),
+    4px 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.bill-portrait {
+  width: 120px;
+  height: auto;
+  display: block;
+  flex: 0 0 auto;
+  /* The portrait itself protrudes upward — negative top margin lifts
+     the image above the dialog frame top so Bill's head extends out
+     of the frame, like the Stadium NPC dialog. */
+  margin-top: -40px;
+  /* Pixel drop-shadow under the portrait for separation from the
+     frame interior. */
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.45));
+}
+
+.bill-speech {
+  flex: 1;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.bill-speech .gen2-line + .gen2-line {
+  margin-top: 0.5em;
+}
+
+/* "Press A to continue" cursor — the blinking ▼ that sits at the end
+   of every in-game dialog box when the speaker has more lines OR
+   waits for input. Reuses the existing cursor-blink keyframes from
+   the menu cursor. */
+.dialog-cursor {
+  display: inline-block;
+  margin-left: 8px;
+  color: var(--gbc-text);
+  animation: cursor-blink 0.6s steps(2, start) infinite;
+}
+
+/* GS BALL mention in Bill's intro — weight + shiny gold accent
+   matches the Gen 2 shiny-aura colour (--gbc-accent-yellow), nodding
+   to the GS Ball's mythical-item status. */
+.gs-ball-mention {
+  font-weight: bold;
+  color: var(--gbc-accent-yellow);
+  letter-spacing: 1px;
+}
+
+/* Legal footer — fan-project disclaimer + sprite credits. Sits below
+   the workbench in muted small text; intentionally low-contrast so it
+   doesn't compete with the workbench above. */
+.legal-footer {
+  margin-top: 16px;
+  padding: 8px 16px;
+  max-width: 880px;
+  justify-self: center;
+  text-align: center;
+  font-size: 0.5rem;
+  line-height: 1.6;
+  color: rgba(216, 224, 236, 0.7);
+  font-family: 'PokemonGB', 'Courier New', monospace;
+}
+
+.legal-footer p {
+  margin: 0 0 6px;
+}
+
+.legal-footer p:last-child {
+  margin-bottom: 0;
+}
+
+/* AI-generated-code + backup warning gets a slightly higher contrast +
+   amber tint so users actually read it before processing a save. */
+.legal-footer .legal-warn {
+  color: var(--gbc-accent-yellow);
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.legal-footer a {
+  color: rgba(216, 224, 236, 0.95);
+  text-decoration: underline;
+}
+
+.legal-footer a:hover {
+  color: var(--gbc-accent-yellow);
+}
+
+/* Debug bar — only rendered when `?debug=1` is in the URL. Floats
+   below the workbench, above the footer. Loud yellow border so it's
+   obvious this is a non-production affordance. */
+.debug-bar {
+  margin: 24px auto 0;
+  padding: 12px 16px;
+  border: 3px dashed var(--gbc-accent-yellow);
+  background: rgba(216, 168, 56, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  max-width: 880px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  font-size: 0.65rem;
+}
+
+.debug-bar-label {
+  color: var(--gbc-accent-yellow);
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.debug-bar-btn {
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  background: var(--gbc-bg);
+  border: 2px solid var(--gbc-border-outer);
+  padding: 8px 14px;
+  font-size: 0.65rem;
+  cursor: pointer;
+  color: var(--gbc-text);
+  letter-spacing: 1px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.debug-bar-btn:hover {
+  background: #fff8e0;
+}
+
+.debug-bar-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
 }
 
 .drop-zone {
@@ -152,6 +358,33 @@ h1 {
     inset 0 0 0 2px var(--gbc-bg),
     inset 0 0 0 4px var(--gbc-accent-red),
     inset 0 0 0 6px var(--gbc-bg);
+}
+
+/* Modal wrapper for cart-flash dialogs — mirrors the cart-loading
+   overlay aesthetic (semi-opaque navy backdrop, flex-centered content)
+   so flash dialogs feel like the cart-reading loader rather than a
+   loose Gen 2 box rendered in-flow at the bottom of the page. The dialog
+   factories return their content already wrapped in `.flash-modal-backdrop`. */
+.flash-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 42, 61, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+}
+
+.flash-modal-backdrop > .gen2-dialog {
+  max-width: min(560px, 90vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow:
+    inset 0 0 0 2px var(--gbc-bg),
+    inset 0 0 0 4px var(--gbc-border-outer),
+    inset 0 0 0 6px var(--gbc-bg),
+    4px 4px 0 rgba(0, 0, 0, 0.5);
 }
 
 /*
@@ -232,6 +465,96 @@ img.sprite,
   transform: scale(1.4);
   transform-origin: center bottom;
 }
+
+/* SoupPotato (Sour Crystal) Gen 1/2 party icons — 16×32 vertical
+   2-frame strip, scaled 2× to 32×64 display. Animated by stepping
+   background-position between the two frames at the same in-game
+   bounce cadence as the GSC party menu (~0.4s per frame). */
+/* Wrappers clip a 2-frame vertical sprite strip; the inner <img> is
+   double-height and slides up/down to swap frames. <img>-based
+   rendering is required because iOS Safari blurs background-image
+   sprites at retina device-pixel ratio even with image-rendering:
+   pixelated set. */
+.party-icon-gen2,
+.party-icon-gen3 {
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  position: relative;
+}
+
+.party-icon-gen3 {
+  /* Bigger display for Gen 3 to fill the wider dest-box-grid cells. */
+  width: 48px;
+  height: 48px;
+}
+
+.party-icon-img {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  /* Chromium-only fix: img inside a flex-centered absolute-position
+     wrapper renders 1-2px of frame_b above frame_a even with
+     overflow:hidden on the wrapper. Animating via `transform:
+     translate3d` (GPU layer) instead of `top` (CPU repaint) isolates
+     the img clip and removes the artifact. Firefox already gets
+     either right; Chrome benefits from the GPU layer. */
+  will-change: transform;
+}
+
+/* Explicit pixel dimensions (NOT percentage) so the img height is
+   independent of the wrapper's flex-item resolved size. Earlier
+   attempt used `height: 200%` which can resolve incorrectly inside a
+   `display: flex` parent → showed frame_b clipping above frame_a in
+   some cells. */
+.party-icon-gen2 .party-icon-img {
+  /* Source PNG was patched to insert a 1-px transparent gutter row
+     between frames (16×33 source → 32×66 display) — so any 1-px
+     subpixel-rounding leak at the wrapper's overflow:hidden boundary
+     reveals empty space instead of the next frame's pixels (the
+     "fire under Typhlosion" artifact). */
+  width: 32px;
+  height: 66px;
+  animation: party-icon-bounce-gen2 0.5s steps(1) infinite;
+}
+
+.party-icon-gen3 .party-icon-img {
+  /* Same 1-px source gutter trick as gen2, scaled 1.5× to display
+     (32×65 source → 48×97.5 — round down to 97 px display). */
+  width: 48px;
+  height: 97px;
+  animation: party-icon-bounce-gen3 0.5s steps(1) infinite;
+}
+
+@keyframes party-icon-bounce-gen2 {
+  /* Frame 1 sits at y=34 of the 66-px display strip (after the 2-px
+     gutter row from the source PNG's 1-px gutter scaled 2×). */
+  0%, 49% { transform: translate3d(0, 0, 0); }
+  50%, 100% { transform: translate3d(0, -34px, 0); }
+}
+
+@keyframes party-icon-bounce-gen3 {
+  /* Frame 1 sits at y=49 of the 97-px display strip. */
+  0%, 49% { transform: translate3d(0, 0, 0); }
+  50%, 100% { transform: translate3d(0, -49px, 0); }
+}
+
+/* RBY (Gen 1) source carts pre-date the GSC colour palette, so render
+   the SoupPotato icons in pure greyscale on those saves. Apply filter
+   to the inner img (not the wrapper) so it composites cleanly on iOS
+   Safari without triggering the background-image blur path. */
+.party-icon-gen2.is-monochrome .party-icon-img {
+  filter: grayscale(1);
+}
+
+/* The legacy `is-big` legendary scale-up rule (used by the HGSS
+   overworld pack to size up Snorlax/Dragonite walkers) does NOT apply
+   to the new party-icon classes — those sprites are authored at uniform
+   menu-icon scale and the 1.4× upscale just bursts the box-tile. We
+   intentionally have no `.party-icon-gen{2,3}.is-big` rule. */
 
 /* Gen 2 menu — same chrome as dialog plus per-row layout. */
 .gen2-menu {
@@ -699,6 +1022,11 @@ img.sprite,
 .dest-box-grid {
   grid-template-columns: repeat(6, 64px);
   gap: 0; /* in-game PC has no inter-tile gutter — wallpaper reads as one surface */
+  /* Same drop-shadow as the gen 2 box so the two pane visuals share the
+     "physical CRT/PC monitor" depth treatment. */
+  box-shadow:
+    4px 4px 0 rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
   /* In-game Gen 3 wallpaper. PKHeX assets are 156×116; we stretch them
      to fit the grid (the game itself rescales similarly). The wallpaper
      is set inline per-box. A linear-gradient wash on top desaturates
@@ -859,4 +1187,2503 @@ button.secondary {
 
 .cart-debug__msg.error {
   color: red;
+}
+
+/* =========================================================================
+   S8v2 workbench layout — symmetric two-pane workbench with Trading Pipe
+   chrome. Per the user's mock: two identical dotted-border panes side by
+   side, action buttons below each, "TRADING PIPE" visual element straddling
+   the gap. Active when `?ui=v2` is set (S8v1 layout still default).
+   ========================================================================= */
+
+.workbench {
+  display: grid;
+  /* Both panes are sized to fit the Gen 3 box visual exactly (6×64 +
+     2×2 border + 2×6 padding ≈ 400px). Trading pipe gets the middle
+     column. min-content on the side columns prevents the panes from
+     squeezing the trading pipe when the page is wide. */
+  grid-template-columns: min-content auto min-content;
+  justify-content: center;
+  gap: 32px;
+  align-items: start;
+  gap: 0;
+  margin-top: 1rem;
+  position: relative;
+}
+
+/* Two-column workbench needs ~1140px (400 pane + 32 gap + ~270 trading
+   pipe + 32 gap + 400 pane + body padding). Below that the auto-column
+   trading pipe gets squeezed and the panes start clipping the viewport
+   edges, so collapse to a single column with the trading pipe hidden.
+   Bumped from 720px (the legacy breakpoint, which assumed the smaller
+   S7b layout) to 1200px so the v2 workbench stops bursting the
+   viewport on narrower desktop windows / tablet portrait. */
+@media (max-width: 1200px) {
+  .workbench {
+    grid-template-columns: 1fr;
+  }
+  .workbench .trading-pipe {
+    display: none;
+  }
+}
+
+/* Below 480px (small phones) the panes themselves shrink past their
+   400px min-width — let the box visuals scale down via overflow-x
+   scroll so the user never sees a hard-clipped pane. */
+@media (max-width: 480px) {
+  .wb-pane {
+    min-width: 0;
+    overflow-x: auto;
+  }
+}
+
+.wb-pane {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  /* Force both panes to the same minimum outer dimensions (matches the
+     dest-box-grid's 6×64 + 6px padding + 2px border = 400px wide,
+     5×64 + 12 + 4 = 336 tall). The smaller gen 2 source content
+     centers inside via .wb-pane-box-host's flex-center, so SOURCE
+     and DESTINATION panes always line up regardless of which role is
+     active. */
+  min-width: 400px;
+  padding: 0 4px;
+  justify-items: center;
+}
+
+.wb-pane-box-host {
+  /* Parent grid item is wider than the inner gen2-box-wrap (372px)
+     when in source-loaded role; centering keeps the visual aligned
+     with the right pane. */
+  justify-self: center;
+}
+
+.wb-pane-label {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  font-weight: bold;
+  /* Light label against the dark page bg — legacy was --gbc-dark-gray
+     which disappears on dark navy. */
+  color: #d8e0ec;
+  text-align: center;
+  padding: 4px 0 8px;
+}
+
+/* LEFT pane "box host" — no chrome of its own; the gen-aware box visual
+   inside provides all the visual frame. Just a positioning context for
+   the absolutely-placed Load CTA overlay. */
+.wb-pane-box-host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Load Cart / Load SAV CTAs floating on top of the gen-aware box visual.
+   The CTAs are themselves opaque so they remain readable against any
+   wallpaper; only their container is transparent + absolutely placed
+   so the box visual reads through everything that isn't a button. */
+.wb-empty-cta-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  pointer-events: none; /* let clicks fall through to the box behind */
+}
+
+.wb-empty-cta-overlay .wb-empty-cta {
+  pointer-events: auto; /* but the buttons themselves are still clickable */
+}
+
+/* Unified workbench button chrome — every interactive control in the
+   workbench (LEFT pane Load CTAs, both panes' action stacks, the
+   RIGHT pane's file-input label) shares the same chunky GSC-style
+   4px-bordered button with a pixel drop-shadow + press-down :active.
+   The blue `.primary` variant overrides background + text colour but
+   keeps the rest of the chrome. */
+.wb-empty-cta,
+.wb-pane-actions button,
+.wb-pane-actions label,
+.wb-load-tempbox-sav,
+.wb-import-transfer-json {
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  background: var(--gbc-bg);
+  border: 3px solid var(--gbc-border-outer);
+  padding: 8px 16px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  text-align: center;
+  color: var(--gbc-text);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+  display: block;
+  letter-spacing: 1px;
+  transition: transform 0.05s ease, box-shadow 0.05s ease;
+}
+
+/* Debug-only buttons get a dashed border + muted background so they're
+   visually distinct from real-feature buttons. */
+.wb-import-transfer-json {
+  border-style: dashed;
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 0.6rem;
+  opacity: 0.8;
+}
+
+/* The two LEFT-pane first-load CTAs are the loudest visual on screen;
+   bump padding/font slightly to make them feel like the primary CTAs
+   they are. */
+.wb-empty-cta {
+  font-size: 0.85rem;
+  padding: 14px 28px;
+  min-width: 180px;
+}
+
+.wb-empty-cta:hover,
+.wb-pane-actions button:hover:not(:disabled),
+.wb-pane-actions label:hover,
+.wb-load-tempbox-sav:hover,
+.wb-import-transfer-json:hover {
+  background: #fff8e0;
+}
+
+.wb-empty-cta:active,
+.wb-pane-actions button:active:not(:disabled),
+.wb-pane-actions label:active,
+.wb-load-tempbox-sav:active,
+.wb-import-transfer-json:active {
+  /* Press effect — button sinks into its shadow on click. */
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.wb-empty-cta input[type='file'] {
+  display: none;
+}
+
+.wb-pane-actions {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 10px;
+  padding: 0 8px;
+}
+
+.wb-pane-actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  /* Disabled buttons don't get the press-down on click. */
+  transform: none;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.wb-pane-actions button.primary {
+  background: var(--pc-blue, #4868d8);
+  color: #ffffff;
+  border-color: var(--gbc-border-outer);
+}
+
+.wb-pane-actions button.primary:hover:not(:disabled) {
+  background: #5e80c4;
+}
+
+/* Gen 2 PC box visual — uses the canonical .gen2-dialog frame from
+   PLAN §3.2 (4px outer black border + triple-inset shadows = the
+   classic GSC "double-bordered" dialog). The inner header tab uses
+   the same frame at smaller scale for the "BOX 1" label. Drop-shadow
+   gives CRT depth against the dark page bg. */
+.gen2-box-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Inherit chrome from .gen2-dialog (applied via class composition
+     in the markup): the same triple-inset border that the rest of
+     the app uses for Gen 2 frames. */
+  background: var(--gbc-bg);
+  border: 4px solid var(--gbc-border-outer);
+  box-shadow:
+    inset 0 0 0 2px var(--gbc-bg),
+    inset 0 0 0 4px var(--gbc-border-outer),
+    inset 0 0 0 6px var(--gbc-bg),
+    4px 4px 0 rgba(0, 0, 0, 0.55);
+  padding: 16px 18px;
+  gap: 12px;
+  width: max-content;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: var(--gbc-text);
+}
+
+/* Blank empty-state Gen 2 box — no header, no grid, no pokeball
+   glyphs. Just the framed white interior at the same size as the
+   populated state so the LEFT pane stays aligned with the RIGHT
+   (TRANSFER BOX) pane regardless of load status. */
+.gen2-box-wrap--blank {
+  width: 356px;
+  height: 308px;
+}
+
+/* "BOX 1" header — small framed sub-window at the top of the box,
+   mirroring the GSC reference's BOX label tab. Reuses the same
+   triple-inset border treatment at a smaller scale. */
+.gen2-box-header {
+  font-size: 0.7rem;
+  letter-spacing: 4px;
+  text-align: center;
+  padding: 8px 28px;
+  background: var(--gbc-bg);
+  border: 3px solid var(--gbc-border-outer);
+  box-shadow:
+    inset 0 0 0 1px var(--gbc-bg),
+    inset 0 0 0 3px var(--gbc-border-outer),
+    inset 0 0 0 4px var(--gbc-bg);
+  color: var(--gbc-text);
+}
+
+.gen2-box-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 80px);
+  grid-auto-rows: 56px;
+  gap: 0;
+  padding: 4px;
+  background: transparent;
+}
+
+/* No cell chrome — empty cells in GSC PC are truly empty, just blank
+   space at the slot position. The pokeball glyph floats inside without
+   borders/separators. */
+.gen2-box-tile {
+  background: transparent;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.gen2-box-tile .gen2-pokeball {
+  opacity: 0.55;
+}
+
+/* When the legacy boxBrowser is embedded inside .gen2-box-wrap (loaded
+   source state, AMEND-S8v2.1-6), override its grid sizing so the
+   loaded-source view is the SAME outer dimensions as the empty Gen 2
+   placeholder above. Without this the embedded grid uses 4×64 + 12px
+   gaps (legacy 292px width) which is narrower than the dest-box-grid
+   (400px) and the panes visually mis-align.
+
+   `grid-template-rows: repeat(5, 56px)` forces the grid to ALWAYS
+   reserve 5 rows even when the legacy boxBrowser only emits enough
+   tiles to cover the highest occupied slot (e.g. 7 mons → only 2 rows
+   of children). Empty rows render as blank space so the box footprint
+   stays constant. */
+.gen2-box-wrap .box-grid {
+  grid-template-columns: repeat(4, 80px);
+  grid-template-rows: repeat(5, 56px);
+  grid-auto-rows: 56px;
+  gap: 0;
+  padding: 4px;
+}
+
+.gen2-box-wrap .box-tile {
+  width: 80px;
+  height: 56px;
+}
+
+/* Empty-state Gen 3 box visual used in the TRANSFER BOX (RIGHT pane,
+   always Gen 3) and in the LEFT pane when the role is DESTINATION.
+   Reuses the same .dest-box-grid sizing/wallpaper machinery as the
+   loaded destBoxBrowser, but with no per-box wallpaper override so it
+   falls back to the wallpaper-01 (forest) art set inline by the v2
+   workbench renderer. */
+.gen3-empty-box-grid {
+  align-self: center;
+}
+
+/* Trading pipe — pixel-art Game Boy Color (or GBA) + Game Boy Advance
+   console sprites with the link cable arching between them. Both
+   consoles are clickable buttons; clicking either swaps the LEFT pane
+   role (same trigger as the SWITCH button below the LEFT pane).
+   Sprites by AloneAgainstPixels (DeviantArt) — see
+   web/public/sprites/consoles/SOURCE.md. */
+.trading-pipe {
+  align-self: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+  /* Reserve room above the console row for the absolutely-positioned
+     cable arch. */
+  padding-top: 70px;
+  gap: 14px;
+}
+
+/* Commit button sits below the consoles in the trading-pipe lane. */
+.tp-commit-btn {
+  margin-top: 4px;
+  min-width: 160px;
+  white-space: nowrap;
+}
+
+/* Console row: GBC slot (60) + gap (50) + GBA slot (140) = 250 wide.
+   Cable absolutely positioned above; cable left endpoint lands at
+   GBC slot center (x=30 in row), right endpoint at GBA slot center
+   (x=60+50+70 = 180 in row) — i.e. at each SPRITE center, since each
+   slot now matches its sprite's width. */
+.tp-console-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 50px;
+}
+
+/* Console "slot" — width sized per-kind (GBC portrait is narrow, GBA
+   landscape is wide); height is sprite-driven so there's no empty
+   space above the sprite for the cable to plug into. Both sprite
+   imgs are scaled to the same height (80px) so their TOPS align —
+   letting the cable plug into both at the same y. */
+.tp-console {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  /* Pivot at top-center so the wobble swings the BODY of the console
+     while the cable plug at the top stays put — the cable doesn't
+     visually detach from the console while it wiggles. */
+  transform-origin: 50% 0;
+}
+
+/* Hover wobble — subtle 1.5deg sway, ~0.6s tempo. Indicates the
+   console is interactive (opens the theme picker) without breaking
+   the cable connection. */
+.tp-console:hover {
+  animation: console-wobble 0.6s ease-in-out infinite;
+}
+
+@keyframes console-wobble {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-1.5deg);
+  }
+  75% {
+    transform: rotate(1.5deg);
+  }
+}
+
+/* Slot widths match each sprite's actual rendered width (no excess
+   whitespace inside slots). GBC sprite at 80px tall = ~51px wide,
+   GBA sprite at 80px tall = ~135px wide. Cable is absolutely
+   positioned and computed to land at each sprite's center, so the
+   asymmetric slot widths don't break alignment. */
+.tp-console-gbc {
+  width: 60px;
+}
+
+.tp-console-gba {
+  width: 140px;
+}
+
+.tp-console-color {
+  position: relative;
+  z-index: 1;
+  /* Soft drop-shadow so the consoles read as physical objects sitting
+     on the workbench surface instead of floating decals. */
+  filter: drop-shadow(2px 3px 0 rgba(0, 0, 0, 0.45));
+}
+
+/* "Powered-on" screen — a white rectangle painted at the exact pixel
+   coords of each console's screen (which is transparent in the
+   source PNG since we floodfilled it out). Sits at z-index 0 so the
+   coloured sprite renders on top: the rect only shows through the
+   transparent screen hole, giving a powered-on LCD look. */
+.tp-console-gbc::after {
+  content: '';
+  position: absolute;
+  /* GBC sprite (33×52) screen at pixel rect (7,5)..(25,21). Img scaled
+     to 80px height (scale ≈ 1.54), centered in 60px slot. Slot-relative
+     screen position: left = (60-51)/2 + 7×1.54 ≈ 15; top = 5×1.54 ≈ 8;
+     w = 18×1.54 ≈ 28; h = 16×1.54 ≈ 25. */
+  left: 15px;
+  top: 8px;
+  width: 28px;
+  height: 25px;
+  background: #f4f4f4;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.tp-console-gba::after {
+  content: '';
+  position: absolute;
+  /* GBA sprite (54×32) screen at pixel rect (14,7)..(40,23). Img scaled
+     to 80px height (scale 2.5), centered in 140px slot. Slot-relative:
+     left = (140-135)/2 + 14×2.5 ≈ 38; top = 7×2.5 ≈ 18; w = 26×2.5 = 65;
+     h = 16×2.5 = 40. */
+  left: 38px;
+  top: 18px;
+  width: 65px;
+  height: 40px;
+  background: #f4f4f4;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* No hover-brightness on the colored sprite — that brightened only the
+   img layer, leaving the off-white screen ::after unchanged, which
+   relatively pushed the white screen to the visual forefront. The
+   `cursor: pointer` already signals interactivity. */
+
+.tp-console:focus-visible {
+  outline: 2px solid var(--gbc-accent-yellow, #d8a838);
+  outline-offset: 2px;
+}
+
+.tp-console img {
+  display: block;
+  /* Sprite sources are tiny pixel art (33×52 GBC, 54×32 GBA); render
+     pixelated so they don't get smoothed when scaled. Both scaled to
+     the same height (80px) so their tops align — the cable plugs into
+     both at the same y. Width is auto = aspect-preserved (~51px GBC
+     portrait, ~135px GBA landscape, but constrained by 80px slot
+     width via max-width — GBA may compress slightly, that's fine). */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  height: 80px;
+  width: auto;
+  max-width: none;
+}
+
+/* Cable sits in the flex column directly above the console row. SVG
+   bottom edge meets console row top edge exactly; small negative
+   margin-bottom so the cable endpoints (at SVG bottom) overlap a few
+   pixels into the console tops, making the cable "plug into" the
+   consoles instead of just touching them. */
+/* Cable absolutely positioned inside .trading-pipe so its endpoints
+   align with each sprite's center, regardless of the row's flex
+   layout. The `left` offset depends on the LEFT slot kind: GBC slot
+   half-width = 30, GBA slot half-width = 70. The SVG's intrinsic
+   width matches the LEFT-to-RIGHT center distance — set inline by
+   the renderCable() call to match cableWidthFor(). */
+.tp-cable-svg {
+  display: block;
+  position: absolute;
+  top: 0;
+  height: 70px;
+  z-index: 1;
+  pointer-events: none;
+  /* Plug connectors (drawn at endpoints inside the cable SVG) extend
+     beyond the bottom edge of the viewBox into the console area —
+     overflow:visible lets them render. */
+  overflow: visible;
+}
+
+.tp-left-gbc .tp-cable-svg {
+  left: 30px; /* half of 60px GBC slot */
+}
+
+.tp-left-gba .tp-cable-svg {
+  left: 70px; /* half of 140px GBA slot */
+}
+
+/* Theme picker — modal overlay opened on console click. Lets the user
+   pick which colour variant of the GBC or GBA spritesheet to use, and
+   surfaces the artist attribution. */
+/* Theme picker — restyled to match the v2 chrome (Gen 2 triple-inset
+   dialog frame, pixel-shadows on buttons, GS-Ball gold accent for
+   selected state). Same component as before; just pure CSS update. */
+.theme-picker-overlay {
+  position: fixed;
+  inset: 0;
+  /* Match the page bg gradient at higher opacity so the modal reads
+     as the same "Bill's PC interior" theme, not a generic gray. */
+  background: rgba(30, 42, 61, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.theme-picker-inner {
+  background: var(--gbc-bg);
+  border: 4px solid var(--gbc-border-outer);
+  /* Same triple-inset chrome as .gen2-dialog + the page-level pixel
+     drop-shadow used everywhere else in v2. */
+  box-shadow:
+    inset 0 0 0 2px var(--gbc-bg),
+    inset 0 0 0 4px var(--gbc-border-outer),
+    inset 0 0 0 6px var(--gbc-bg),
+    4px 4px 0 rgba(0, 0, 0, 0.5);
+  padding: 24px 28px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: var(--gbc-text);
+}
+
+.theme-picker-title {
+  font-size: 0.85rem;
+  margin: 0;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.theme-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 96px);
+  gap: 12px;
+  justify-content: center;
+}
+
+.theme-picker-cell {
+  background: var(--gbc-bg);
+  border: 3px solid var(--gbc-border-outer);
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 96px;
+  /* Mini pixel-shadow per cell so each variant card looks like a
+     small physical "switch". */
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+  transition: transform 0.05s ease;
+}
+
+.theme-picker-cell:hover {
+  background: #fff8e0;
+}
+
+.theme-picker-cell:active {
+  /* Press effect — cell sinks into its shadow on click. */
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+.theme-picker-cell.is-selected {
+  border-color: var(--gbc-accent-yellow);
+  background: #fff8d8;
+  box-shadow:
+    inset 0 0 0 2px var(--gbc-bg),
+    2px 2px 0 var(--gbc-accent-yellow);
+}
+
+.theme-picker-cell img {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  max-height: 80px;
+  width: auto;
+  display: block;
+}
+
+.theme-picker-attribution {
+  font-size: 0.55rem;
+  line-height: 1.7;
+  /* Nested mini Gen-2 frame — same triple-inset treatment at smaller
+     scale so it reads as a sub-window inside the picker. */
+  background: var(--gbc-bg);
+  border: 3px solid var(--gbc-border-outer);
+  box-shadow:
+    inset 0 0 0 1px var(--gbc-bg),
+    inset 0 0 0 3px var(--gbc-border-outer),
+    inset 0 0 0 4px var(--gbc-bg);
+  padding: 12px 14px;
+  color: var(--gbc-text);
+}
+
+.theme-picker-attribution strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+}
+
+.theme-picker-attribution p {
+  margin: 0 0 8px;
+}
+
+.theme-picker-links a {
+  color: var(--gbc-text);
+  text-decoration: underline;
+}
+
+.theme-picker-close {
+  align-self: center;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  background: var(--gbc-bg);
+  border: 2px solid var(--gbc-border-outer);
+  padding: 10px 24px;
+  cursor: pointer;
+  font-size: 0.7rem;
+  color: var(--gbc-text);
+  /* Pixel-shadow matching .wb-pane-actions button. */
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+  letter-spacing: 1px;
+}
+
+.theme-picker-close:hover {
+  background: #fff8e0;
+}
+
+.theme-picker-close:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* Cart-read progress modal — full-viewport overlay shown while a cart
+   read is in flight. Mirrors the theme-picker overlay pattern (same
+   navy backdrop + Gen 2 dialog frame in the centre) so the workbench
+   stays untouched during the blocking operation. AMEND-S8v2.1-11. */
+.cart-loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 42, 61, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.cart-loading-inner {
+  background: var(--gbc-bg);
+  border: 4px solid var(--gbc-border-outer);
+  box-shadow:
+    inset 0 0 0 2px var(--gbc-bg),
+    inset 0 0 0 4px var(--gbc-border-outer),
+    inset 0 0 0 6px var(--gbc-bg),
+    4px 4px 0 rgba(0, 0, 0, 0.5);
+  padding: 24px 28px;
+  min-width: 320px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: var(--gbc-text);
+}
+
+.cart-loading-phase {
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Load-error modal — same overlay/chrome pattern as cart-loading. Used
+   when a SAV parse or cart read fails; replaces the previous in-pane
+   error card that rendered between gen 2 box rows and looked broken. */
+.cart-error-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 42, 61, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.cart-error-inner {
+  background: var(--gbc-bg);
+  border: 4px solid var(--gbc-border-outer);
+  box-shadow:
+    inset 0 0 0 2px var(--gbc-bg),
+    inset 0 0 0 4px var(--gbc-border-outer),
+    inset 0 0 0 6px var(--gbc-bg),
+    4px 4px 0 rgba(0, 0, 0, 0.5);
+  padding: 24px 28px;
+  min-width: 320px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: var(--gbc-text);
+  text-align: center;
+}
+
+.cart-error-title {
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  font-weight: bold;
+  color: var(--gbc-accent-red);
+}
+
+.cart-error-reason {
+  font-size: 0.7rem;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.cart-error-retry,
+.cart-error-dump {
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  background: var(--gbc-bg);
+  border: 2px solid var(--gbc-border-outer);
+  padding: 10px 18px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  color: var(--gbc-text);
+  letter-spacing: 1px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.45);
+  align-self: center;
+  min-width: 200px;
+}
+
+.cart-error-retry:hover,
+.cart-error-dump:hover {
+  background: #fff8e0;
+}
+
+.cart-error-retry:active,
+.cart-error-dump:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* In-pane overlay (NOT a modal) — covers the LEFT pane's box visual
+   while a SAV is parsing or to surface a load error. Different from
+   `.cart-loading-overlay` (which is full-viewport modal); this one is
+   confined to the LEFT pane via absolute positioning relative to
+   `.wb-pane-box-host`. */
+.wb-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.wb-loading-overlay > * {
+  pointer-events: auto;
+}
+
+.wb-loading-card,
+.wb-error-card {
+  background: var(--gbc-bg);
+  border: 4px solid var(--gbc-border-outer);
+  box-shadow:
+    inset 0 0 0 2px var(--gbc-bg),
+    inset 0 0 0 4px var(--gbc-border-outer),
+    inset 0 0 0 6px var(--gbc-bg),
+    4px 4px 0 rgba(0, 0, 0, 0.5);
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: var(--gbc-text);
+  min-width: 240px;
+  max-width: 90%;
+  text-align: center;
+}
+
+.wb-loading-phase,
+.wb-error-title {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.wb-error-title {
+  color: var(--gbc-accent-red);
+}
+
+.wb-loading-meta,
+.wb-error-reason {
+  font-size: 0.65rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.wb-error-retry,
+.wb-error-dump {
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  background: var(--gbc-bg);
+  border: 2px solid var(--gbc-border-outer);
+  padding: 8px 14px;
+  font-size: 0.65rem;
+  cursor: pointer;
+  color: var(--gbc-text);
+  letter-spacing: 1px;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+  margin-top: 4px;
+}
+
+.wb-error-retry:hover,
+.wb-error-dump:hover {
+  background: #fff8e0;
+}
+
+.wb-error-retry:active,
+.wb-error-dump:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* ---------------------------------------------------------------- */
+/* S8v2.2 — multi-select + TRANSFER BOX styling                      */
+/* ---------------------------------------------------------------- */
+
+/* Selection outline — 2-px gold inside the existing cursor frame so
+ * cursor + selection compose without clashing visually. */
+.box-tile.is-selected {
+  outline: 2px solid #f7c84a;
+  outline-offset: -2px;
+}
+
+/* Source tile already-staged corner marker — small filled triangle
+ * in the top-right so the user can see at a glance which mons are
+ * already in the transfer box. */
+.box-tile.is-staged::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 8px 8px 0;
+  border-color: transparent #4caf50 transparent transparent;
+  pointer-events: none;
+}
+
+/* Tile container needs `position: relative` for the ::after corner. */
+.box-tile {
+  position: relative;
+}
+
+/* Previewed-placement ghost overlay — dashed outline + 60% opacity
+ * sprite so the slot reads as "pending, not yet committed". Composes
+ * with `.is-empty` (per DECISION-S8v2.2-8 the slot remains visually
+ * empty in the underlying cart but carries a previewed staged mon on
+ * top). */
+.box-tile.is-previewed {
+  outline: 2px dashed #c0a040;
+  outline-offset: -2px;
+}
+
+.box-tile.is-empty.is-previewed .party-icon-gen3,
+.box-tile.is-empty.is-previewed img {
+  opacity: 0.6;
+}
+
+/* Hide the empty marker when a preview is rendered. */
+.box-tile.is-empty.is-previewed .empty-marker {
+  display: none;
+}
+
+/* Transfer-box "to-be-committed" tile — visually MATCHES the dest-box
+ * preview ghost (dashed gold outline + faded sprite). The arrow badge
+ * still differentiates which dest slot it's targeting. */
+.box-tile.is-placed {
+  outline: 2px dashed #c0a040;
+  outline-offset: -2px;
+}
+.box-tile.is-placed .party-icon-gen3,
+.box-tile.is-placed .party-icon-gen2,
+.box-tile.is-placed img {
+  opacity: 0.6;
+}
+
+/* Filled transfer-box tile is "pending source-commit" (i.e. the mon is in
+ * the transfer staging area but the source-cart delete hasn't landed
+ * yet). Render with the dashed gold outline + 60 % sprite opacity ghost
+ * treatment. S8v2.3 ships the actual cart-write step: once a slot's
+ * `sourceCommitted` flag is true the renderer adds the
+ * `.is-source-committed` class and the `:not(...)` predicate below
+ * causes the ghost to drop — the tile renders solid (per orchestrator
+ * A1: no positive visual cue, just absence of the ghost). */
+.transfer-box-grid .box-tile.is-occupied:not(.is-source-committed) {
+  outline: 2px dashed #c0a040;
+  outline-offset: -2px;
+}
+.transfer-box-grid .box-tile.is-occupied:not(.is-source-committed) .party-icon-gen3,
+.transfer-box-grid .box-tile.is-occupied:not(.is-source-committed) .party-icon-gen2,
+.transfer-box-grid .box-tile.is-occupied:not(.is-source-committed) img {
+  opacity: 0.6;
+}
+
+/* TRANSFER BOX placed-badge — small arrow tag in the corner showing
+ * the dest target slot. Same chrome reused for the SOURCE-tile staged
+ * badge (`→ T03`) so symmetry reads at a glance. */
+.transfer-tile-placed-badge,
+.source-tile-staged-badge {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  font-size: 9px;
+  font-family: monospace;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ffd76b;
+  padding: 1px 3px;
+  border-radius: 2px;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* Transfer-box banners stack — yellow card chrome above the TRANSFER
+ * BOX label, mirrors `.multi-tab-banner`. */
+.transfer-box-banners {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.transfer-box-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff7d8;
+  border: 2px solid #d4b13a;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.transfer-box-banner-text {
+  flex: 1;
+}
+
+.transfer-box-banner-dismiss {
+  margin-left: 8px;
+  background: transparent;
+  border: 1px solid #8a6d12;
+  font-size: 11px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+/* Clear-transfer confirm dialog — reuses the cart-error-overlay
+ * backdrop pattern but adds an action row at the bottom. */
+.clear-transfer-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.clear-transfer-confirm-confirm {
+  background: #c95151;
+  color: #fff;
+  border: 2px solid #303030;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+/* ============================================================
+   S8v2.2 polish — stat-screen modal (hand-built panels)
+   ============================================================ */
+
+.ss-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 42, 61, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.ss-inner {
+  /* Match the dashboard `.card` aesthetic — chunky black border on a
+     navy header strip + cream body. Same vocabulary as the workbench
+     cards, with a subtle scanline texture on the body so it doesn't
+     read as a flat blank panel. */
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 3px,
+      rgba(0, 0, 0, 0.04) 3px,
+      rgba(0, 0, 0, 0.04) 4px
+    ),
+    var(--gbc-bg);
+  border: 4px solid var(--gbc-border-outer);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+  padding: 14px 16px;
+  width: fit-content;
+  max-width: min(740px, 96vw);
+  max-height: 92vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: var(--gbc-text);
+}
+
+/* Modal title strip across the top — navy band tying the modal to the
+   dashboard's blue accent palette */
+.ss-inner::before {
+  content: 'STAT INSPECT';
+  display: block;
+  background: linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-bottom) 100%);
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 4px;
+  padding: 7px 12px;
+  margin: -14px -16px 6px;
+  border-bottom: 2px solid var(--gbc-border-outer);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.ss-panels {
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0;
+}
+
+/* "BEFORE" / "AFTER" — symmetric: icon LABEL icon, both icons same
+   fixed size so the labels align horizontally across both blocks. */
+.ss-section-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 28px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  color: var(--gbc-dark-gray);
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-bottom: 6px;
+  align-self: center;
+}
+/* Section-tag party icons — wrap in a custom-classed div and style
+   THAT instead of overriding .party-icon-img. Vite's CSS minifier was
+   aggressively merging any rule matching `.party-icon-img` into the
+   global one and dropping the wrapping `.ss-section-tag` prefix,
+   which broke the GLOBAL bounce animation in the box browser. By
+   keeping the override on a dedicated wrapper class, we never touch
+   the global .party-icon-img selector. */
+.ss-tag-icon {
+  flex: 0 0 auto;
+  display: inline-block;
+  transform: scale(0.7);
+  transform-origin: center;
+  margin: -10px -8px;
+}
+.ss-tag-icon-gen3 {
+  transform: scale(0.5);
+  margin: -16px -16px;
+}
+.ss-section-tag-text {
+  display: inline-block;
+  line-height: 1;
+}
+.ss-section-tag-mono .party-icon-gen2 {
+  filter: grayscale(1) contrast(1.05);
+}
+.ss-before-block, .ss-after-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ss-before-block, .ss-after-block { flex: 0 0 auto; }
+
+/* Both panels float on the cream surface with a subtle drop shadow —
+   no decorative frame, since the in-game art has its own visual edges. */
+.ss-before-block .rby-screen,
+.ss-before-block .gsc-screen,
+.ss-after-block .frlg-screen {
+  border: none;
+  box-shadow: 0 4px 14px rgba(40, 30, 20, 0.18);
+}
+
+/* ============================================================
+   FR/LG-styled "AFTER" panel — vendored bg_skills.png template
+   with absolute-positioned text overlays. Same approach as the
+   RBY/GSC source panels but for the Gen 3 SKILLS sub-screen.
+   ============================================================ */
+.frlg-screen {
+  /* Scale 0.656 → 336×252 display. Matches GSC panel height (252) so
+     BEFORE/AFTER align cleanly side-by-side. */
+  --frlg-scale: 0.656;
+  position: relative;
+  width: calc(512px * var(--frlg-scale));
+  height: calc(384px * var(--frlg-scale));
+  background-image: url('/sprites/stat-screens/frlg-skills-bg.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  /* Real Gen 3 / GBA in-game font — Pokemon Emerald by aztecwarrior28,
+     a faithful FontStruct recreation. Falls back to system sans for
+     missing glyphs. */
+  font-family: 'PokemonGBA', Verdana, Helvetica, sans-serif;
+  color: #303040;
+  flex: 0 0 auto;
+}
+.frlg-sprite {
+  position: absolute;
+  /* Match the lavender frame interior more closely — canonical Pikachu
+     reference shows the sprite filling most of the frame, not floating
+     in a small central box. */
+  left: calc(20px * var(--frlg-scale));
+  top: calc(70px * var(--frlg-scale));
+  width: calc(220px * var(--frlg-scale));
+  height: calc(190px * var(--frlg-scale));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.frlg-sprite img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.frlg-text {
+  position: absolute;
+  font-size: calc(28px * var(--frlg-scale));
+  letter-spacing: 0;
+  white-space: nowrap;
+  line-height: 1;
+  color: #303040;
+  font-weight: normal;
+  /* In-game GBA Pokemon text always sits with a 1-px lighter shadow
+     to the lower-right for readability against pastel backgrounds. */
+  text-shadow: 1px 1px 0 rgba(192, 184, 200, 0.85);
+}
+/* "POKéMON SKILLS" page title in the top blue bar. Position from the
+   FRLG plugin source: textpos at (8, 6) left-aligned, white. */
+.frlg-page-title {
+  left: calc(8px * var(--frlg-scale));
+  top: calc(1px * var(--frlg-scale));
+  font-size: calc(30px * var(--frlg-scale));
+  font-weight: normal;
+  color: #fff;
+  text-shadow:
+    2px 2px 0 #2a5878,
+    1px 1px 0 #2a5878;
+}
+
+/* Gender symbol in the lavender header strip — male in blue, female
+   in red. Position right-aligned to template x=246 per plugin source. */
+.frlg-gender {
+  left: calc(220px * var(--frlg-scale));
+  top: calc(36px * var(--frlg-scale));
+  font-size: calc(28px * var(--frlg-scale));
+  font-weight: bold;
+}
+.frlg-gender-m { color: #4080d0; text-shadow: 1px 1px 0 #2050a8; }
+.frlg-gender-f { color: #f08060; text-shadow: 1px 1px 0 #c83020; }
+
+/* Pokéball icon at template (211, 238) — bottom-right of sprite area.
+   Native sprite is 32×32; render at scaled native pixel size. */
+.frlg-pokeball {
+  position: absolute;
+  left: calc(211px * var(--frlg-scale));
+  top: calc(232px * var(--frlg-scale));
+  width: calc(32px * var(--frlg-scale));
+  height: calc(32px * var(--frlg-scale));
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* Shiny star icon — canonical in-game position is RIGHT NEXT to the
+   nickname (between name and gender symbol), not at the far-right
+   edge of the lavender header. The plugin source's (214, 42) puts it
+   off-screen-right; in-game it sits around x=200 so the player can
+   actually see "<name> ★ ♂". */
+.frlg-shiny-star {
+  position: absolute;
+  left: calc(200px * var(--frlg-scale));
+  top: calc(40px * var(--frlg-scale));
+  width: calc(16px * var(--frlg-scale));
+  height: calc(16px * var(--frlg-scale));
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* Shiny mons use the actual shiny-palette PNG (vendored from
+   PokeAPI/sprites' emerald/shiny set), not a fake CSS filter. */
+
+/* Lavender header strip — "Lv## NAME" in WHITE with chunky shadow,
+   matches the in-game GBA treatment (1px dark shadow lower-right) */
+.frlg-level {
+  left: calc(20px * var(--frlg-scale));
+  top: calc(36px * var(--frlg-scale));
+  font-weight: normal;
+  font-size: calc(28px * var(--frlg-scale));
+  color: #fff;
+  text-shadow:
+    2px 2px 0 #6c5878,
+    1px 1px 0 #6c5878;
+}
+.frlg-name {
+  left: calc(96px * var(--frlg-scale));
+  top: calc(36px * var(--frlg-scale));
+  font-weight: normal;
+  font-size: calc(28px * var(--frlg-scale));
+  color: #fff;
+  text-shadow:
+    2px 2px 0 #6c5878,
+    1px 1px 0 #6c5878;
+}
+
+/* Gray pill label overlays — text drawn on top of the baked gray pills */
+.frlg-pill {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'PokemonGBA', Verdana, Helvetica, sans-serif;
+  font-size: calc(24px * var(--frlg-scale));
+  font-weight: normal;
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  height: calc(20px * var(--frlg-scale));
+  letter-spacing: 0;
+}
+/* Pill positions verified by flood-fill on bg_skills.png */
+.frlg-pill-hp  { left: calc(258px * var(--frlg-scale)); top: calc(45px  * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
+.frlg-pill-atk { left: calc(258px * var(--frlg-scale)); top: calc(87px  * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
+.frlg-pill-def { left: calc(258px * var(--frlg-scale)); top: calc(119px * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
+.frlg-pill-spa { left: calc(258px * var(--frlg-scale)); top: calc(151px * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
+.frlg-pill-spd { left: calc(258px * var(--frlg-scale)); top: calc(183px * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
+.frlg-pill-spe { left: calc(258px * var(--frlg-scale)); top: calc(215px * var(--frlg-scale)); width: calc(98px * var(--frlg-scale)); }
+.frlg-pill-ability { left: calc(8px * var(--frlg-scale)); top: calc(291px * var(--frlg-scale)); width: calc(132px * var(--frlg-scale)); }
+/* EXP. POINTS pill — top half of bottom info area */
+.frlg-pill-exp { left: calc(8px * var(--frlg-scale)); top: calc(259px * var(--frlg-scale)); width: calc(132px * var(--frlg-scale)); }
+
+/* Nature tag in lavender header (right side, after the species name) */
+.frlg-nature-tag {
+  left: calc(20px * var(--frlg-scale));
+  top: calc(286px * var(--frlg-scale));
+  font-size: calc(20px * var(--frlg-scale));
+  font-weight: normal;
+  color: #b67828;
+}
+
+/* Yellow value boxes — values right-aligned inside the input-style cells */
+.frlg-val {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: calc(10px * var(--frlg-scale));
+  font-weight: normal;
+  font-size: calc(28px * var(--frlg-scale));
+  height: calc(20px * var(--frlg-scale));
+  color: #303040;
+}
+.frlg-val-hp  { left: calc(370px * var(--frlg-scale)); top: calc(45px  * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
+.frlg-val-atk { left: calc(370px * var(--frlg-scale)); top: calc(87px  * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
+.frlg-val-def { left: calc(370px * var(--frlg-scale)); top: calc(119px * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
+.frlg-val-spa { left: calc(370px * var(--frlg-scale)); top: calc(151px * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
+.frlg-val-spd { left: calc(370px * var(--frlg-scale)); top: calc(183px * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
+.frlg-val-spe { left: calc(370px * var(--frlg-scale)); top: calc(215px * var(--frlg-scale)); width: calc(135px * var(--frlg-scale)); }
+.frlg-val-ability {
+  /* "CUTE CHARM" — centered in the cream value box right of ABILITY. */
+  left: calc(150px * var(--frlg-scale));
+  top: calc(293px * var(--frlg-scale));
+  width: calc(355px * var(--frlg-scale));
+  justify-content: flex-start;
+  padding-left: calc(8px * var(--frlg-scale));
+  padding-right: 0;
+  font-size: calc(28px * var(--frlg-scale));
+  font-weight: normal;
+  color: #383850;
+}
+/* Nature line — moved into the right column under SPEED row, where
+   bg_skills has empty space between the SPEED value box and the
+   ABILITY pill area below. */
+.frlg-val-nature {
+  left: calc(258px * var(--frlg-scale));
+  top: calc(247px * var(--frlg-scale));
+  width: calc(247px * var(--frlg-scale));
+  justify-content: flex-end;
+  padding-left: 0;
+  padding-right: calc(10px * var(--frlg-scale));
+  font-size: calc(22px * var(--frlg-scale));
+  font-weight: normal;
+  color: #b67828;
+}
+.frlg-ability-desc {
+  /* Reverted to y=316 — was perfect there per user feedback */
+  left: calc(16px * var(--frlg-scale));
+  top: calc(316px * var(--frlg-scale));
+  width: calc(488px * var(--frlg-scale));
+  justify-content: flex-start;
+  padding-left: 0;
+  font-size: calc(28px * var(--frlg-scale));
+  font-weight: normal;
+  color: #383850;
+}
+
+/* Nature colour markers — red for boosted stat, blue for hindered */
+.frlg-nature-up   { color: #c83020; }
+.frlg-nature-down { color: #2a78c8; }
+
+/* HP bar fill — uses the canonical overlay_hp.png (96×18, three 6-px
+   stripes for green/yellow/red). Coords + dimensions taken straight
+   from the FRLG plugin's `[001] Summary UI.rb`:
+       imagepos = ["overlay_hp", 402, 74, 0, hpzone*6, w, 6]
+   so we render the green stripe (src y=0) at template (402, 74, 96×6).
+   Background-position selects which stripe to show — defaults to green. */
+.frlg-hpbar-fill {
+  position: absolute;
+  left: calc(402px * var(--frlg-scale));
+  top: calc(74px * var(--frlg-scale));
+  width: calc(96px * var(--frlg-scale));
+  height: calc(6px * var(--frlg-scale));
+  background-image: url('/sprites/stat-screens/frlg-overlay-hp.png');
+  background-repeat: no-repeat;
+  background-size: calc(96px * var(--frlg-scale)) calc(18px * var(--frlg-scale));
+  background-position: 0 0;
+  image-rendering: pixelated;
+}
+.frlg-hpbar-fill.hp-yellow { background-position: 0 calc(-6px * var(--frlg-scale)); }
+.frlg-hpbar-fill.hp-red    { background-position: 0 calc(-12px * var(--frlg-scale)); }
+
+/* ============================================================
+   Unified Gen 3 "after" card — header + combined stats/conversion
+   ============================================================ */
+.g3card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: #303030;
+}
+.g3card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  /* Lavender frame for the sprite area, matches FR/LG sprite frame */
+  background: transparent;
+  border: none;
+  color: #383850;
+}
+.g3card-sprite {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #fff5b8;
+  border: 3px solid #c4b0d8;
+  outline: 1px solid #5a5868;
+  outline-offset: -4px;
+}
+.g3card-sprite img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.g3card-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.g3card-name { font-size: 12px; font-weight: bold; letter-spacing: 1px; color: #383850; }
+.g3card-meta { font-size: 9px; letter-spacing: 0.5px; color: #5a5868; }
+
+.g3card-table {
+  width: auto;
+  border-collapse: collapse;
+  font-size: 11px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  margin: 0 auto;
+}
+.g3card-head-row th {
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  padding: 4px 6px 6px;
+  text-align: center;
+  color: var(--gbc-dark-gray);
+  background: transparent;
+  border-bottom: 1px solid var(--gbc-border-outer);
+}
+.g3card-h-label {
+  background: transparent !important;
+  border-bottom: 1px solid var(--gbc-border-outer) !important;
+}
+.g3card-h-group { cursor: help; }
+
+/* Pixel-art stat rows — tight spacing, dotted dividers between rows */
+.g3card-row td {
+  padding: 3px 6px;
+  background: transparent;
+  border-bottom: 1px dotted rgba(48, 48, 48, 0.25);
+  color: var(--gbc-text);
+}
+.g3card-row td.g3card-label {
+  background: transparent;
+  color: var(--gbc-dark-gray);
+  border: none;
+  border-bottom: 1px dotted rgba(48, 48, 48, 0.25);
+  text-align: left;
+  padding-left: 0;
+  font-weight: 400;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+.g3card-row-special td { background: rgba(80, 130, 180, 0.08); }
+.g3card-row.g3card-total td {
+  background: transparent;
+  color: var(--gbc-text);
+  font-weight: 400;
+  border-top: 1px solid var(--gbc-border-outer);
+  border-bottom: none;
+  padding-top: 5px;
+  color: var(--gbc-accent-yellow);
+}
+.g3card-row.g3card-total td.g3card-label {
+  background: transparent;
+  color: var(--gbc-accent-yellow);
+}
+
+/* Compact fixed-width columns — kill the over-spread look */
+.g3card-h-label, .g3card-label { width: 32px; font-weight: 400; letter-spacing: 0.5px; }
+.g3card-h-final { width: 36px; }
+.g3card-h-delta { width: 32px; }
+.g3card-final {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  font-size: 11px;
+  padding-right: 4px !important;
+}
+.g3card-delta {
+  text-align: left;
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  padding-left: 2px !important;
+}
+.g3card-delta-pos { color: var(--gbc-accent-green); }
+.g3card-delta-neg { color: var(--gbc-accent-red); }
+.g3card-delta-zero { color: var(--gbc-dark-gray); opacity: 0.7; }
+.g3card-nature-up { color: var(--gbc-accent-red); }
+.g3card-nature-down { color: var(--pc-blue); }
+
+.g3card-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  width: 28px;
+}
+.g3card-num-spaced { padding-left: 12px !important; width: 48px; }
+.g3card-arrow {
+  width: 14px !important;
+  text-align: center;
+  color: var(--gbc-dark-gray);
+  padding: 2px 0;
+  font-weight: 400;
+}
+
+.g3card-footer {
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 6px 0 0;
+  background: transparent;
+  border: none;
+  margin-top: 4px;
+  color: var(--gbc-text);
+  text-align: center;
+}
+.g3card-nature {
+  font-weight: 400;
+  cursor: help;
+  border-bottom: 1px dotted var(--gbc-dark-gray);
+  color: var(--pc-blue);
+}
+
+.g3card-warning {
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--gbc-text);
+  background: rgba(216, 168, 56, 0.12);
+  border-left: 3px solid var(--gbc-accent-yellow);
+  padding: 6px 10px;
+  margin-top: 6px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================
+   GSC stat screen — image-template overlay. Same approach as RBY:
+   vendored gsc-stats-template-clean.png with positioned text overlays.
+   ============================================================ */
+.gsc-screen {
+  /* Scale 1.75 → 280×252 display. Matches the FRLG panel's 252-px
+     height exactly so BEFORE and AFTER align. */
+  --gsc-scale: 1.75;
+  position: relative;
+  width: calc(160px * var(--gsc-scale));
+  height: calc(144px * var(--gsc-scale));
+  background-image: url('/sprites/stat-screens/gsc-stats-template-clean.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: #181818;
+  flex: 0 0 auto;
+}
+.gsc-sprite {
+  position: absolute;
+  /* Sprite area: template (0, 6, 56×56) */
+  left: calc(0px * var(--gsc-scale));
+  top: calc(6px * var(--gsc-scale));
+  width: calc(56px * var(--gsc-scale));
+  height: calc(56px * var(--gsc-scale));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.gsc-sprite img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.gsc-text {
+  position: absolute;
+  height: calc(8px * var(--gsc-scale));
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: calc(8px * var(--gsc-scale));
+  font-weight: normal;
+  letter-spacing: 0;
+  line-height: 1;
+  color: #181818;
+}
+
+/* Per-region positions, scaled by --gsc-scale. Coordinates verified by
+   flood-filling the original template's red placeholder rectangles. */
+.gsc-dexno {
+  left: calc(80px * var(--gsc-scale));
+  top: calc(0px * var(--gsc-scale));
+  width: calc(24px * var(--gsc-scale));
+  justify-content: flex-end;
+}
+.gsc-level {
+  left: calc(120px * var(--gsc-scale));
+  top: calc(0px * var(--gsc-scale));
+  width: calc(24px * var(--gsc-scale));
+  justify-content: flex-end;
+}
+/* Canonical ":L" icon at template (112, 0, 8×8) */
+.gsc-icon-l {
+  position: absolute;
+  left: calc(112px * var(--gsc-scale));
+  top: calc(0px * var(--gsc-scale));
+  width: calc(8px * var(--gsc-scale));
+  height: calc(8px * var(--gsc-scale));
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+.gsc-gender-pos {
+  position: absolute !important;
+  left: calc(144px * var(--gsc-scale));
+  top: calc(0px * var(--gsc-scale));
+  width: calc(8px * var(--gsc-scale));
+  height: calc(8px * var(--gsc-scale));
+  margin-left: 0 !important;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+.gsc-gender-pos svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+.gsc-nickname {
+  left: calc(64px * var(--gsc-scale));
+  top: calc(16px * var(--gsc-scale));
+  width: calc(80px * var(--gsc-scale));
+  justify-content: flex-start;
+}
+.gsc-species {
+  /* Where I previously rendered HP — actually the species name row */
+  left: calc(80px * var(--gsc-scale));
+  top: calc(32px * var(--gsc-scale));
+  width: calc(80px * var(--gsc-scale));
+  justify-content: flex-start;
+}
+/* Canonical "HP:" icon (16×8) at template (72, 48), then HP value
+   right-aligned to template right edge. */
+.gsc-icon-hp {
+  position: absolute;
+  left: calc(72px * var(--gsc-scale));
+  top: calc(48px * var(--gsc-scale));
+  width: calc(16px * var(--gsc-scale));
+  height: calc(8px * var(--gsc-scale));
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+.gsc-hp {
+  left: calc(96px * var(--gsc-scale));
+  top: calc(48px * var(--gsc-scale));
+  width: calc(64px * var(--gsc-scale));
+  justify-content: flex-end;
+}
+/* Shiny mark — replaces the blue square at template (152, 0, 8×8).
+   Vendored from gsc-menus.png "Shiny Mark" label area. */
+.gsc-shiny {
+  position: absolute;
+  left: calc(152px * var(--gsc-scale));
+  top: calc(0px * var(--gsc-scale));
+  width: calc(8px * var(--gsc-scale));
+  height: calc(8px * var(--gsc-scale));
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+.gsc-idno {
+  left: calc(16px * var(--gsc-scale));
+  top: calc(80px * var(--gsc-scale));
+  width: calc(40px * var(--gsc-scale));
+  justify-content: flex-start;
+}
+.gsc-ot {
+  left: calc(16px * var(--gsc-scale));
+  top: calc(104px * var(--gsc-scale));
+  width: calc(56px * var(--gsc-scale));
+  justify-content: flex-start;
+}
+.gsc-attack {
+  left: calc(136px * var(--gsc-scale));
+  top: calc(72px * var(--gsc-scale));
+  width: calc(24px * var(--gsc-scale));
+  justify-content: flex-end;
+}
+.gsc-defense {
+  left: calc(136px * var(--gsc-scale));
+  top: calc(88px * var(--gsc-scale));
+  width: calc(24px * var(--gsc-scale));
+  justify-content: flex-end;
+}
+.gsc-spclatk {
+  left: calc(136px * var(--gsc-scale));
+  top: calc(104px * var(--gsc-scale));
+  width: calc(24px * var(--gsc-scale));
+  justify-content: flex-end;
+}
+.gsc-spcldef {
+  left: calc(136px * var(--gsc-scale));
+  top: calc(120px * var(--gsc-scale));
+  width: calc(24px * var(--gsc-scale));
+  justify-content: flex-end;
+}
+.gsc-speed {
+  left: calc(136px * var(--gsc-scale));
+  top: calc(136px * var(--gsc-scale));
+  width: calc(24px * var(--gsc-scale));
+  justify-content: flex-end;
+}
+
+/* ============================================================
+   Legacy GSC styles below — no longer applied since the renderer was
+   replaced by the image-overlay approach above. Kept temporarily in
+   case any other code paths still reference these classes.
+   ============================================================ */
+.gsc-screen-OLD {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  height: 288px;
+  flex: 0 0 auto;
+  border: 2px solid #181818;
+  background: #f8f8f8;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: #181818;
+  font-size: 13px;
+  line-height: 1.2;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.gsc-screen-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  /* Generous breathing room — extra padding-bottom so there's a clear
+     white strip between the HP bar and the black divider line, matching
+     the in-game GBC stats screen "bezel" feel. */
+  padding: 22px 18px 30px;
+  background: #f8f8f8;
+  /* Thick black divider between header (white) and body (cyan).
+     Matches the in-game GBC border. */
+  border-bottom: 4px solid #181818;
+}
+
+.gsc-screen-sprite {
+  /* GBC in-game proportion: sprite area is ~56×56 native on 160×144
+     screen. At 360px panel that's 56 × (360/160) = 126px ideal, but
+     a tight 80×80 keeps the header compact. Crystal anim 56→80 is a
+     ~1.43× pixelated upscale; static crystal 96→80 is a ~0.83× crisp
+     downscale. */
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.gsc-screen-sprite > * {
+  width: 80px;
+  height: 80px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.gsc-screen-header-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* Stack info rows tightly at the top with comfortable gap between
+     dexNo/level row, species line, nickname line, and HP bar. */
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+.gsc-screen-title-row {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 13px;
+}
+/* Per the in-game reference: only the numeric stat VALUES are bold;
+   mon name, nickname, dex no, level, and stat labels are all normal
+   weight. Explicit font-weight: normal here so the GBC pixel font's
+   default rendering doesn't accidentally read as bold. */
+.gsc-screen-dexno { letter-spacing: 1px; font-weight: normal; }
+.gsc-screen-level { letter-spacing: 1px; font-weight: normal; }
+/* Gender symbol sits inline RIGHT NEXT to the level, not pushed to
+   the far-right edge — matches in-game "No.147 :L29 ⚥" layout. */
+.gsc-screen-gender { display: inline-flex; align-items: center; margin-left: 6px; }
+.gsc-screen-gender svg { width: 14px; height: 14px; display: block; }
+.gsc-screen-species, .gsc-screen-nickname { font-size: 16px; letter-spacing: 1px; font-weight: normal; }
+
+/* HP bar — green/yellow/red gradient inner, dark border outer.
+   Matches the in-game "HP:" widget. */
+.gsc-hp-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 11px;
+}
+.gsc-hp-label {
+  color: #c84020;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.gsc-hp-bar-outer {
+  flex: 1;
+  height: 7px;
+  background: #181818;
+  border: 1px solid #181818;
+  position: relative;
+  padding: 1px;
+}
+.gsc-hp-bar-fill {
+  height: 100%;
+  display: block;
+}
+.gsc-hp-fill-green { background: #38a040; }
+.gsc-hp-fill-yellow { background: #d8a838; }
+.gsc-hp-fill-red { background: #c83838; }
+.gsc-hp-numbers {
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+/* Body — bright canonical GSC cyan (#88f8f8 sampled from the
+   reference template). Two columns separated by a BOLD full-height
+   black divider — flex layout so the columns stretch top-to-bottom
+   of the body and the border-left renders the full height. White
+   strip border-top to provide the "bezel" gap between the black
+   divider above and the cyan body — matches the in-game inset look. */
+.gsc-screen-body {
+  flex: 1;
+  display: flex;
+  background: #88f8f8;
+  padding: 0;
+  border-top: 3px solid #f8f8f8;
+}
+.gsc-screen-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 18px;
+}
+.gsc-screen-col + .gsc-screen-col {
+  /* Full-height bold black divider between the IDNo/OT/STATUS/EXP
+     column and the ATTACK/DEFENSE/SPECIAL/SPEED column. */
+  border-left: 4px solid #181818;
+}
+/* 2-line layout matching the in-game GBC stats sub-screen: label
+   on line 1, value right-aligned on line 2 below. */
+.gsc-screen-row {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  letter-spacing: 1px;
+  line-height: 1.15;
+}
+.gsc-screen-row-label {
+  font-weight: normal;
+  font-size: 12px;        /* labels smaller — visually de-emphasized */
+  opacity: 0.78;          /* + slight fade for "less bold" perception */
+}
+.gsc-screen-row-value {
+  font-weight: normal;    /* PokemonGB is single-weight; visual emphasis via size */
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: 14px;        /* larger than labels to read as the "main" data */
+  margin-top: 2px;
+}
+
+/* ============================================================
+   RBY stat screen — image-template overlay
+   The 160×144 PNG ships all chunky black borders + every label
+   (ATTACK / DEFENSE / TYPE1 / OT / etc.) baked in. We only paint
+   the variable values into the placeholder cells, positioned in
+   template-pixel units multiplied by --rby-scale.
+   ============================================================ */
+.rby-screen {
+  /* Match GSC panel scale so BEFORE-RBY and BEFORE-GSC are the same
+     visual size (both GBC native 160×144). */
+  --rby-scale: 1.75;
+  position: relative;
+  width: calc(160px * var(--rby-scale));
+  height: calc(144px * var(--rby-scale));
+  background-image: url('/sprites/stat-screens/rby-stats-template-clean.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: #181010;
+  flex: 0 0 auto;
+}
+.rby-screen-sprite {
+  position: absolute;
+  /* sprite renders at 56×56 (native Game Boy front sprite) but the
+     template reserves an extra row below for the "No." label */
+  left: calc(8px * var(--rby-scale));
+  top: 0;
+  width: calc(56px * var(--rby-scale));
+  height: calc(56px * var(--rby-scale));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.rby-screen-sprite img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  /* The 96×96 RBY sprite assets carry ~25% transparent padding around
+     the content. Scale up so the actual mon fills the box like in-game. */
+  transform: scale(1.55);
+  transform-origin: center center;
+  /* DMG monochrome — original RBY ran on the original Game Boy, not GBC */
+  filter: grayscale(1) contrast(1.1);
+}
+.rby-text {
+  position: absolute;
+  height: calc(8px * var(--rby-scale));
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  /* PokemonGB is 8×8 native; render at exactly 24px (8 × scale 3) so the
+     pixel grid lines up with the baked template labels and the font isn't
+     anti-aliased into chunky/bold-looking glyphs. */
+  font-size: calc(8px * var(--rby-scale));
+  font-weight: normal;
+  letter-spacing: 0;
+  line-height: 1;
+  color: #181010;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: never;
+  text-rendering: geometricPrecision;
+}
+.rby-text.rby-right { justify-content: flex-end; }
+.rby-text.rby-left  { justify-content: flex-start; }
+
+/* Top-right name / level / HP / status column. Coordinates verified by
+   flood-filling the original template's red placeholder rectangles. */
+.rby-name {
+  /* Nickname is left-aligned inside the right-side text column —
+     matches in-game RBY behaviour (text starts just right of the sprite,
+     not flush with the screen-right gutter). */
+  left: calc(72px * var(--rby-scale));
+  top: calc(8px * var(--rby-scale));
+  width: calc(80px * var(--rby-scale));
+  justify-content: flex-start;
+}
+.rby-level {
+  /* ":L" baked label ends at template x≈118 — value sits immediately
+     after, left-aligned (in-game ":L<level>" reads as one tight string,
+     not "L" right-aligned to a far-right gutter) */
+  left: calc(120px * var(--rby-scale));
+  top: calc(16px * var(--rby-scale));
+  width: calc(32px * var(--rby-scale));
+  justify-content: flex-start;
+}
+.rby-hp-current {
+  left: calc(96px * var(--rby-scale));
+  top: calc(32px * var(--rby-scale));
+  width: calc(24px * var(--rby-scale));
+  justify-content: flex-end;
+}
+.rby-hp-max {
+  left: calc(128px * var(--rby-scale));
+  top: calc(32px * var(--rby-scale));
+  width: calc(24px * var(--rby-scale));
+  justify-content: flex-end;
+}
+.rby-status {
+  left: calc(128px * var(--rby-scale));
+  top: calc(48px * var(--rby-scale));
+  width: calc(24px * var(--rby-scale));
+  justify-content: flex-start;
+}
+/* "No.143" — baked "No." label ends at template x=19, y=58-62. Per
+   canonical Rhydon screenshot the digits sit a few pixels right of the
+   ".", with a small gap rather than flush-against. */
+.rby-dexno {
+  left: calc(25px * var(--rby-scale));
+  top: calc(56px * var(--rby-scale));
+  width: calc(36px * var(--rby-scale));
+  justify-content: flex-start;
+}
+/* Cream rectangle that masks the baked "TYPE2/" label when the mon is
+   monotype. Same dimensions and position as the TYPE2 row. */
+.rby-type2-mask {
+  position: absolute;
+  left: calc(80px * var(--rby-scale));
+  top: calc(96px * var(--rby-scale));
+  width: calc(72px * var(--rby-scale));
+  height: calc(8px * var(--rby-scale));
+  background: #f8f8f8;
+}
+/* Stats column (left half of bottom box) — labels baked, values fill
+   the placeholder rectangles flush-right */
+.rby-attack {
+  left: calc(47px * var(--rby-scale));
+  top: calc(80px * var(--rby-scale));
+  width: calc(24px * var(--rby-scale));
+  justify-content: flex-end;
+}
+.rby-defense {
+  left: calc(47px * var(--rby-scale));
+  top: calc(96px * var(--rby-scale));
+  width: calc(24px * var(--rby-scale));
+  justify-content: flex-end;
+}
+.rby-speed {
+  left: calc(47px * var(--rby-scale));
+  top: calc(112px * var(--rby-scale));
+  width: calc(24px * var(--rby-scale));
+  justify-content: flex-end;
+}
+.rby-special {
+  left: calc(47px * var(--rby-scale));
+  top: calc(128px * var(--rby-scale));
+  width: calc(24px * var(--rby-scale));
+  justify-content: flex-end;
+}
+/* Right half of bottom box — TYPE1, TYPE2, IDNo, OT */
+.rby-type1 {
+  left: calc(88px * var(--rby-scale));
+  top: calc(80px * var(--rby-scale));
+  width: calc(64px * var(--rby-scale));
+  justify-content: flex-start;
+}
+.rby-type2 {
+  left: calc(88px * var(--rby-scale));
+  top: calc(96px * var(--rby-scale));
+  width: calc(64px * var(--rby-scale));
+  justify-content: flex-start;
+}
+.rby-idno {
+  left: calc(96px * var(--rby-scale));
+  top: calc(112px * var(--rby-scale));
+  width: calc(56px * var(--rby-scale));
+  justify-content: flex-end;
+}
+.rby-ot {
+  left: calc(96px * var(--rby-scale));
+  top: calc(128px * var(--rby-scale));
+  width: calc(56px * var(--rby-scale));
+  justify-content: flex-start;
+}
+
+/* ============================================================
+   EMERALD stat screen — yellow/cream STATS panel
+   ============================================================ */
+.em-screen {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  /* Lock to GBA native 240×160 = 3:2 aspect → 240×160. Matches the
+     in-game Emerald STATS sub-screen proportions, same way the GSC
+     panel locks to GBC's 10:9 for consistency. */
+  aspect-ratio: 240 / 160;
+  border: 2px solid #b07020;
+  background: #f8f0c0;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: #303030;
+  font-size: 12px;
+  line-height: 1.3;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+}
+
+.em-screen-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  background: linear-gradient(180deg, #f8c860 0%, #d8a040 100%);
+  border-bottom: 2px solid #b07020;
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+.em-screen-sprite {
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #b07020;
+}
+.em-screen-sprite > * {
+  width: 48px;
+  height: 48px;
+}
+.em-screen-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.em-screen-name {
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.em-screen-meta {
+  font-size: 10px;
+}
+
+.em-screen-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #fff8e0;
+  padding: 8px 14px;
+  gap: 3px;
+}
+.em-screen-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12px;
+  letter-spacing: 1px;
+  border-bottom: 1px dashed #ddc878;
+  padding: 2px 0;
+}
+.em-screen-row:last-child { border-bottom: 0; }
+.em-screen-row-label {
+  font-weight: normal;
+}
+.em-screen-row-value {
+  display: inline-flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.em-screen-row-num {
+  font-weight: bold;
+}
+.em-nature-up { color: #d04050; }
+.em-nature-down { color: #4080d0; }
+
+.em-delta {
+  font-size: 10px;
+  font-weight: normal;
+}
+.em-delta-pos { color: #2a9038; }
+.em-delta-neg { color: #c83030; }
+.em-delta-zero { color: #888888; }
+
+/* ============================================================
+   Shared formula breakdown — Gen 3 only (the conversion output).
+   ============================================================ */
+.ss-formula {
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  font-size: 11px;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--gbc-border-outer);
+  padding: 6px 10px;
+}
+.ss-formula summary {
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 1px;
+  padding: 2px 0;
+  font-weight: bold;
+}
+.ss-formula-meta {
+  font-size: 10px;
+  color: var(--gbc-dark-gray);
+  padding: 2px 0 6px;
+}
+.ss-formula-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 1px 0;
+}
+.ss-formula-label {
+  font-size: 10px;
+  font-weight: bold;
+  min-width: 70px;
+  letter-spacing: 1px;
+}
+.ss-formula-expr {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 1px 3px;
+}
+
+/* ============================================================
+   Conversion breakdown (DV → IV, StatExp → Raw EV → Final EV).
+   Compact tables, alternating row stripe for SpA/SpD pair.
+   ============================================================ */
+/* Conversion breakdown — borderless container; the per-stat cards
+   inside provide their own visual structure */
+.ss-conv {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  color: var(--gbc-text);
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-top: 4px;
+}
+
+/* 3×2 grid of per-stat cards — replaces the wide horizontal table */
+.g3-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.g3-stat-card {
+  background: var(--gbc-bg);
+  border: 2px solid var(--gbc-border-outer);
+  padding: 6px 8px 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 10px;
+  line-height: 1.25;
+}
+.g3-stat-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  border-bottom: 1px dotted rgba(48, 48, 48, 0.3);
+  padding-bottom: 3px;
+  margin-bottom: 2px;
+}
+.g3-stat-label {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--gbc-dark-gray);
+  flex-shrink: 0;
+  width: 28px;
+}
+.g3-final {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--gbc-text);
+  flex: 1;
+  text-align: right;
+}
+.g3-final.g3-nature-up   { color: var(--gbc-accent-red); }
+.g3-final.g3-nature-down { color: var(--pc-blue); }
+.g3-delta {
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: right;
+  letter-spacing: 0;
+}
+.g3-delta-pos  { color: var(--gbc-accent-green); }
+.g3-delta-neg  { color: var(--gbc-accent-red); }
+.g3-delta-zero { color: var(--gbc-dark-gray); opacity: 0.6; }
+.g3-stat-row {
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  color: var(--gbc-text);
+  font-variant-numeric: tabular-nums;
+  cursor: help;
+}
+
+/* Footer: Σ EV total + Nature, side by side */
+.g3-footer {
+  display: flex;
+  gap: 12px;
+  background: var(--gbc-bg);
+  border: 2px solid var(--gbc-border-outer);
+  padding: 7px 10px;
+  font-size: 10px;
+  align-items: baseline;
+}
+.g3-footer-cell {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex: 1;
+}
+.g3-footer-label {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--gbc-dark-gray);
+}
+.g3-footer-value {
+  font-size: 11px;
+  color: var(--gbc-accent-yellow);
+  font-variant-numeric: tabular-nums;
+}
+.g3-footer-aux {
+  font-size: 8px;
+  color: var(--gbc-dark-gray);
+  letter-spacing: 0.2px;
+}
+.g3-nature {
+  color: var(--pc-blue) !important;
+  cursor: help;
+  border-bottom: 1px dotted var(--gbc-dark-gray);
+}
+
+.g3-warning {
+  font-size: 9px;
+  color: var(--gbc-text);
+  background: rgba(216, 168, 56, 0.12);
+  border-left: 3px solid var(--gbc-accent-yellow);
+  padding: 5px 9px;
+  letter-spacing: 0.3px;
+}
+
+.ss-conv-head-row th {
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--gbc-border-outer);
+  padding: 2px 6px;
+  text-align: center;
+  color: var(--gbc-dark-gray);
+}
+.ss-conv-h-label { width: 32px; }
+.ss-conv-h-group { /* spans 3 cols (num arrow num) */ }
+
+.ss-conv-footer {
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(48, 48, 48, 0.25);
+  color: var(--gbc-text);
+}
+.ss-conv-num-spaced { padding-left: 16px !important; }
+
+.ss-conv-formula {
+  /* Hidden by default — the formulas added a lot of visual clutter and
+     vertical height to the modal. Kept in the DOM for accessibility /
+     future "show derivation" toggle. */
+  display: none;
+}
+
+.ss-conv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  /* Fixed layout so columns stay locked to consistent widths and the
+     ">" arrows always line up vertically across rows, regardless of
+     digit count in the values. */
+  table-layout: fixed;
+}
+
+.ss-conv-table tr.ss-conv-special {
+  background: rgba(80, 140, 200, 0.12);
+}
+
+.ss-conv-table tr.ss-conv-total {
+  border-top: 1px solid var(--gbc-border-outer);
+  font-weight: bold;
+  color: var(--gbc-accent-yellow);
+}
+.ss-conv-table tr.ss-conv-total td.ss-conv-num:last-child {
+  color: var(--gbc-accent-yellow);
+}
+
+.ss-conv-table td {
+  padding: 2px 4px;
+}
+
+/* Per-column widths — table-layout:fixed picks these up from the first
+   row (which is the header row). */
+.ss-conv-h-label, .ss-conv-label { width: 38px; letter-spacing: 0.5px; font-weight: bold; }
+.ss-conv-table tr > td.ss-conv-num:nth-child(2),
+.ss-conv-table tr > td.ss-conv-num:nth-child(4) { width: 36px; }
+.ss-conv-table tr > td.ss-conv-num-spaced { width: 64px; padding-left: 12px; }
+.ss-conv-table tr > td.ss-conv-num:nth-child(7) { width: 56px; }
+
+.ss-conv-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.ss-conv-arrow {
+  width: 14px !important;
+  text-align: center;
+  color: var(--gbc-dark-gray);
+  padding: 2px 0;
+}
+
+/* Hint that headers are interactive (carry tooltips) */
+.ss-conv-h-group { cursor: help; }
+.ss-conv-nature {
+  font-weight: bold;
+  cursor: help;
+  border-bottom: 1px dotted var(--gbc-dark-gray);
+}
+
+.ss-conv-note {
+  font-size: 10px;
+  color: var(--gbc-dark-gray);
+  font-style: italic;
+  padding: 4px 0 0;
+  line-height: 1.35;
+}
+.ss-conv-note-warning {
+  color: var(--gbc-accent-yellow);
+  font-style: normal;
+  font-weight: bold;
+  background: rgba(216, 168, 56, 0.15);
+  border-left: 3px solid var(--gbc-accent-yellow);
+  padding: 6px 10px;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+  line-height: 1.45;
+}
+
+/* ============================================================
+   Action row.
+   ============================================================ */
+.ss-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 8px 0 0;
+}
+.ss-btn {
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  background: var(--gbc-bg);
+  border: 2px solid var(--gbc-border-outer);
+  padding: 7px 14px;
+  font-size: 10px;
+  font-weight: 400;
+  cursor: pointer;
+  color: var(--gbc-text);
+  letter-spacing: 1.5px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45);
+  transition: transform 0.06s;
+}
+.ss-btn:hover {
+  background: #fff8e0;
+}
+.ss-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+.ss-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+.ss-btn-remove {
+  background: #c95151;
+  color: #fff;
+}
+.ss-btn-remove:hover {
+  background: #d96161;
+}
+.ss-btn-add {
+  background: var(--gbc-accent-green, #58a058);
+  color: #fff;
+}
+.ss-btn-add:hover {
+  background: #6cb46c;
+}
+.ss-btn-add:disabled,
+.ss-btn-add[disabled] {
+  background: #b8b8b0;
+  color: #fff;
+  cursor: not-allowed;
+  filter: saturate(0.5);
+}
+.ss-btn-cancel {
+  background: var(--gbc-accent-yellow, #d8a838);
+  color: #303030;
+}
+.ss-btn-cancel:hover {
+  background: #e8b848;
+}
+.ss-deserialize-error {
+  font-size: 12px;
+  padding: 16px;
+  text-align: center;
+  color: var(--gbc-accent-red);
 }

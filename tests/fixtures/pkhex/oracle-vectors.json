@@ -21,7 +21,7 @@
     "tid": 12345,
     "sid": 9762,
     "species": 143,
-    "boxedHex": "63374fac39302226cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff0060c90000d5076d8a12ef6c8a5a416d8a0f5238df0f526d8a5a076d8a5a956da8847882b75a076d8a7b074f8a7907498a441e7985"
+    "boxedHex": "63374fac39302226cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff0060490000d5076d8a12ef6c8a5a416d8a0f5238df0f526d8a5a076d8a5a956da8847882375a076d8a7b074f8a7907498a441e7985"
   },
   {
     "label": "alakazam-competitive",
@@ -29,7 +29,7 @@
     "tid": 12345,
     "sid": 9762,
     "species": 65,
-    "boxedHex": "bd559a7f39302226cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff00ce9f000084f7b87b5b9a47668465b859a5659a59a7659c599a7cac568465b8f32ecfb8598465b859c565b859cc8db9598423b859"
+    "boxedHex": "bd559a7f39302226cdc8c9ccc6bbd2ffffff0202bbcdc2ffffffff00ce1f000084f7b87b5b9a47e68465b859a5659a59a7659c599a7cac568465b8f32ecfb8598465b859c565b859cc8db9598423b859"
   },
   {
     "label": "partial-trained",

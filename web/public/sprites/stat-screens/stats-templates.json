@@ -1,0 +1,66 @@
+{
+  "rby": {
+    "templateUrl": "sprites/stat-screens/rby-stats-template.png",
+    "templateSize": { "w": 160, "h": 144 },
+    "displayScale": 3,
+    "regions": {
+      "sprite":    { "x":   8, "y":   0, "w":  56, "h":  64 },
+      "nickname":  { "x":  72, "y":   8, "w":  80, "h":   8, "align": "left" },
+      "level":     { "x": 120, "y":  16, "w":  24, "h":   8, "align": "right" },
+      "hpCurrent": { "x":  96, "y":  32, "w":  24, "h":   8, "align": "right" },
+      "hpMax":     { "x": 128, "y":  32, "w":  24, "h":   8, "align": "right" },
+      "status":    { "x": 128, "y":  48, "w":  24, "h":   8, "align": "left" },
+      "attack":    { "x":  47, "y":  80, "w":  24, "h":   8, "align": "right" },
+      "defense":   { "x":  47, "y":  96, "w":  24, "h":   8, "align": "right" },
+      "speed":     { "x":  47, "y": 112, "w":  24, "h":   8, "align": "right" },
+      "special":   { "x":  47, "y": 128, "w":  24, "h":   8, "align": "right" },
+      "type1":     { "x":  88, "y":  80, "w":  64, "h":   8, "align": "left" },
+      "type2":     { "x":  88, "y":  96, "w":  64, "h":   8, "align": "left" },
+      "idNo":      { "x":  96, "y": 112, "w":  40, "h":   8, "align": "right" },
+      "ot":        { "x":  96, "y": 128, "w":  56, "h":   8, "align": "left" }
+    }
+  },
+  "gsc": {
+    "templateUrl": "sprites/stat-screens/gsc-stats-template.png",
+    "templateSize": { "w": 160, "h": 144 },
+    "displayScale": 3,
+    "regions": {
+      "sprite":   { "x":   0, "y":   6, "w":  56, "h":  56 },
+      "dexNo":    { "x":  80, "y":   0, "w":  24, "h":   8, "align": "left" },
+      "level":    { "x": 112, "y":   0, "w":  24, "h":   8, "align": "left" },
+      "gender":   { "x": 144, "y":   0, "w":   8, "h":   8, "align": "left" },
+      "species":  { "x":  64, "y":  16, "w":  80, "h":   8, "align": "left" },
+      "nickname": { "x":  80, "y":  32, "w":  80, "h":   8, "align": "left" },
+      "idNo":     { "x":  16, "y":  80, "w":  40, "h":   8, "align": "right" },
+      "ot":       { "x":  16, "y": 104, "w":  56, "h":   8, "align": "left" },
+      "status":   { "x":  16, "y": 104, "w":  56, "h":   8, "align": "left" },
+      "attack":   { "x": 136, "y":  72, "w":  24, "h":   8, "align": "right" },
+      "defense":  { "x": 136, "y":  88, "w":  24, "h":   8, "align": "right" },
+      "spclAtk":  { "x": 136, "y": 104, "w":  24, "h":   8, "align": "right" },
+      "spclDef":  { "x": 136, "y": 120, "w":  24, "h":   8, "align": "right" },
+      "speed":    { "x": 136, "y": 136, "w":  24, "h":   8, "align": "right" }
+    }
+  },
+  "emerald": {
+    "templateUrl": "sprites/stat-screens/emerald-stats-template.png",
+    "templateSize": { "w": 160, "h": 168 },
+    "displayScale": 3,
+    "regions": {
+      "nickname":   { "x":   3, "y":   9, "w": 154, "h":  14, "align": "left" },
+      "item":       { "x":   4, "y":  41, "w":  76, "h":   9, "align": "left" },
+      "ribbon":     { "x":  84, "y":  41, "w":  74, "h":   9, "align": "left" },
+      "hp":         { "x":  50, "y":  65, "w":  46, "h":  46, "align": "right", "_note": "left value column inside STATS box; renderer overlays HP bar+numbers" },
+      "atk":        { "x": 134, "y":  65, "w":  23, "h":   9, "align": "right", "_note": "estimated row inside right value column" },
+      "def":        { "x": 134, "y":  74, "w":  23, "h":   9, "align": "right", "_note": "estimated" },
+      "spa":        { "x": 134, "y":  83, "w":  23, "h":   9, "align": "right", "_note": "estimated" },
+      "spd":        { "x": 134, "y":  92, "w":  23, "h":   9, "align": "right", "_note": "estimated" },
+      "spe":        { "x": 134, "y": 101, "w":  23, "h":   9, "align": "right", "_note": "estimated" },
+      "expCurrent": { "x":  88, "y": 121, "w":  70, "h":  29, "align": "right" },
+      "expBar":     { "x":  88, "y": 153, "w":  64, "h":   5, "_note": "EXP bar fill region" },
+      "sprite":     { "x":   0, "y":   0, "w":   0, "h":   0, "_note": "NOT in this template; sprite lives on adjacent PROFILE panel" },
+      "level":      { "x":   0, "y":   0, "w":   0, "h":   0, "_note": "NOT in this template; level lives on PROFILE panel" },
+      "ability":    { "x":   0, "y":   0, "w":   0, "h":   0, "_note": "NOT in this template; ability lives on PROFILE panel" },
+      "nature":     { "x":   0, "y":   0, "w":   0, "h":   0, "_note": "NOT in this template; nature lives on TRAINER MEMO panel" }
+    }
+  }
+}

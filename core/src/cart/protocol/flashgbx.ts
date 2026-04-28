@@ -42,11 +42,30 @@ import {
 import { FrameReader, writeAll } from './framing.js';
 import { dlog } from './debug.js';
 import type { CartFamily, CartProtocol } from './index.js';
+import {
+  AGB_FLASH_SECTOR_BYTES,
+  agbFlashSectorPlan,
+  flashErrorMeta,
+  JedecFlash,
+  type AgbFlashSector,
+} from './agbFlash.js';
 
 const FW_TIMEOUT_MS = 3000 as const;
 const ACK_TIMEOUT_MS = 3000 as const;
 const BLOCK_TIMEOUT_MS = 7000 as const;
+/** Reads stay at 64 (per AMEND-S7a-11 — Chrome's USB CDC ReadableStream
+ *  delivers overlapping sub-chunks at TRANSFER_SIZE > 64). */
 const TRANSFER_CHUNK = 64 as const;
+/**
+ * Writes use 256 (per AMEND-S7b-3 + DECISION-6). AMEND-S7a-11's overlap
+ * symptom is a *device→host* artefact; writes flow host→device through
+ * `port.writable` which doesn't have it. Mirrors the FlashGBX trace at
+ * `flashgbx-write-dmg-pokemon-red.log:1005-1115` and the AGB Flash trace
+ * lines 223/253/283/313 etc. The `?cart-write-chunk=64` URL flag (see
+ * `cartFlasher.ts`) downgrades to the read-symmetric 64 path for HIL
+ * bisection.
+ */
+const WRITE_CHUNK_DEFAULT = 256 as const;
 
 // Opcodes — LK_Device.DEVICE_CMD subset (the ones we actually use). Other
 // opcodes (OP_AGB_CART_READ 0xC1, OP_AGB_CART_WRITE 0xC2, OP_CART_PWR_OFF
@@ -64,22 +83,60 @@ const OP_DMG_CART_WRITE_SRAM = 0xb3;
 const OP_DMG_MBC_RESET = 0xb4;
 const OP_AGB_CART_READ_SRAM = 0xc3;
 const OP_AGB_CART_WRITE_SRAM = 0xc4;
+// HIL: distinct opcode for AGB FLASH writes (Pokemon R/S/E/FR/LG carts).
+// The firmware treats AGB_CART_WRITE_SRAM as a true SRAM bus write — fine
+// for non-Flash GBA carts (32KB/64KB SRAM), but a silent no-op against
+// the Flash chip in Pokemon Ruby etc. Per LK_Device.py:74 the right
+// opcode is AGB_CART_WRITE_FLASH_DATA = 0xC7, followed by a method byte
+// (1 for 1M Flash; 2 for 0x1F3D 512K Flash). Default to method=1.
+const OP_AGB_CART_WRITE_FLASH_DATA = 0xc7;
+const AGB_FLASH_WRITE_METHOD_DEFAULT = 1;
 const OP_AGB_CART_READ = 0xc1;
 const OP_AGB_BOOTUP_SEQUENCE = 0xc9;
 const OP_CART_PWR_ON = 0xf2;
 
-// fw-variable map: name → [size_bytes, key_id]. Mirrors LK DEVICE_VAR.
+/**
+ * fw-variable map: name → [size_bytes, key_id]. Mirrors LK DEVICE_VAR
+ * **byte-for-byte** from `docs/flashgbx-reference/LK_Device.py:90-118`.
+ *
+ * IMPORTANT — DO NOT INFER ENTRIES (per AMEND-S7b-1 + DECISION-1 + DECISION-8):
+ *
+ *   The LK firmware dispatches setvar/getvar by the `(size, key)` TUPLE,
+ *   NOT by `key` alone. That's why some entries below share `key: 0x00`
+ *   (ADDRESS u32 vs TRANSFER_SIZE u16 vs CART_MODE u8) — they're all
+ *   distinct registers because their `size` byte differs. The firmware
+ *   sees them as `(size=4, key=0)` / `(size=2, key=0)` / `(size=1, key=0)`.
+ *
+ *   When adding a new var: copy the `(size, key)` tuple from
+ *   `LK_Device.py:90-118` verbatim. Inferring a key id from "the next
+ *   number" or "what looks similar" can collide silently with an existing
+ *   register and on a write path that means BUS DRIVING THE WRONG CS PULSE
+ *   → CART CORRUPTION. The ~5 minutes saved is not worth one bricked save.
+ *
+ *   `size` in the upstream source is in BITS (8/16/32); we translate to
+ *   bytes here (1/2/4) because that's what the OP_SET_VARIABLE wire byte
+ *   needs.
+ */
 type VarSize = 1 | 2 | 4;
 const VARS: Record<string, { size: VarSize; key: number }> = {
   ADDRESS: { size: 4, key: 0x00 },
   AUTO_POWEROFF_TIME: { size: 4, key: 0x01 },
   TRANSFER_SIZE: { size: 2, key: 0x00 },
+  // Per AMEND-S7b-1 / DECISION-1: STATUS_REGISTER family for AGB Flash
+  // pre-flash setup (see `flashgbx-write-agb-pokemon-ruby-jp.log:159-160`
+  // and the DMG write log lines 984-985). All sized 16-bit per upstream.
+  STATUS_REGISTER: { size: 2, key: 0x03 },
+  STATUS_REGISTER_MASK: { size: 2, key: 0x05 },
+  STATUS_REGISTER_VALUE: { size: 2, key: 0x06 },
   CART_MODE: { size: 1, key: 0x00 },
   DMG_ACCESS_MODE: { size: 1, key: 0x01 },
   DMG_READ_CS_PULSE: { size: 1, key: 0x08 },
   DMG_WRITE_CS_PULSE: { size: 1, key: 0x09 },
   DMG_READ_METHOD: { size: 1, key: 0x0b },
   AGB_READ_METHOD: { size: 1, key: 0x0c },
+  // Per AMEND-S7b-1 / DECISION-1: PULLUPS_ENABLED for the DMG write path
+  // pre-flash setup (`flashgbx-write-dmg-pokemon-red.log:983`).
+  PULLUPS_ENABLED: { size: 1, key: 0x0e },
   AUTO_POWEROFF_ENABLED: { size: 1, key: 0x0f },
 };
 
@@ -97,17 +154,39 @@ function packU32BE(n: number): Uint8Array {
   return b;
 }
 
+export interface FlashgbxOptions {
+  readonly reader?: FrameReader;
+  /**
+   * Per AMEND-S7b-3 + DECISION-6 — write page size. Defaults to 256 to
+   * mirror FlashGBX upstream traces. The `?cart-write-chunk=64` URL flag
+   * (resolved by the controller and threaded through here) downgrades to
+   * 64 for HIL bisection.
+   */
+  readonly writeChunkBytes?: 64 | 256;
+  /**
+   * Per-SET_VARIABLE post-write delay in ms. Mirrors FlashGBX's macOS
+   * tcdrain workaround (~1.4ms; we use 5ms by default). Tests override
+   * to 0 so the AGB Flash 128 KB suite (~12K setvars) finishes in
+   * seconds rather than minutes.
+   */
+  readonly setVarDelayMs?: number;
+}
+
 export class FlashgbxProtocol implements CartProtocol {
   readonly variant = 'lesserkuma' as const;
   private reader: FrameReader;
   private disposed = false;
   private upgraded = false;
   private currentFamily: CartFamily = 'gb';
+  private readonly writeChunkBytes: number;
+  private readonly setVarDelayMs: number;
   constructor(
     private readonly port: import('../types.js').Port,
-    opts: { reader?: FrameReader } = {},
+    opts: FlashgbxOptions = {},
   ) {
     this.reader = opts.reader ?? new FrameReader(port);
+    this.writeChunkBytes = opts.writeChunkBytes ?? WRITE_CHUNK_DEFAULT;
+    this.setVarDelayMs = opts.setVarDelayMs ?? 5;
   }
 
   dispose(): void {
@@ -249,8 +328,19 @@ export class FlashgbxProtocol implements CartProtocol {
     // MBC RAM bank select — write the bank number to register 0x4000.
     // Most Gen 1/2 carts (MBC1/MBC3/MBC5) accept this directly. The
     // upstream driver does the same MBC-aware bus write via _cart_write.
+    //
+    // HIL-discovered: a small post-write settle is required before the
+    // next SRAM access on Pokemon Red MBC3. Without it the FIRST page
+    // of the new bank lands against the OLD bank's address space (the
+    // firmware's bank-select latch hasn't propagated to the cart bus
+    // yet). Symptom: 2 bytes mismatched at the start of bank N during
+    // verify (the bytes our delete actually changed; the rest of the
+    // page coincidentally matched because they were unchanged anyway).
     dlog(`LK setBank(${bank})`);
     await this.dmgCartWrite(0x4000, bank & 0xff, opts);
+    if (this.setVarDelayMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, this.setVarDelayMs * 4));
+    }
   }
 
   async setRamEnabled(enabled: boolean, opts: { signal?: AbortSignal } = {}): Promise<void> {
@@ -295,33 +385,97 @@ export class FlashgbxProtocol implements CartProtocol {
     });
   }
 
+  /**
+   * Pre-write one-shot setup. Per AMEND-S7b-1 the LK firmware needs the
+   * full pre-flash register prelude that FlashGBX issues before any DMG
+   * SRAM page write or AGB Flash sector erase. Per AMEND-S7b-4 we also
+   * issue the JEDEC chip-ID **exit** sequence on AGB so a previous
+   * crashed session that left the chip in chip-ID mode doesn't corrupt
+   * our writes. Idempotent — safe to call multiple times.
+   */
+  async prepareForWrite(
+    family: CartFamily,
+    opts: { signal?: AbortSignal } = {},
+  ): Promise<void> {
+    if (family === 'gba') {
+      // AGB pre-flash setvars per `flashgbx-write-agb-pokemon-ruby-jp.log:159-160`.
+      await this.setVar('STATUS_REGISTER_MASK', 0x80, opts);
+      await this.setVar('STATUS_REGISTER_VALUE', 0x80, opts);
+      // Defensive JEDEC chip-ID exit per AMEND-S7b-4 — bullet-proofs us
+      // against a previous tool/session leaving the chip in ID/erase mode.
+      const jedec = this.makeJedec(opts);
+      await jedec.exitChipIdMode();
+      return;
+    }
+    // DMG pre-flash setvars per `flashgbx-write-dmg-pokemon-red.log:983-987`.
+    await this.setVar('PULLUPS_ENABLED', 0, opts);
+    await this.setVar('STATUS_REGISTER_MASK', 0x80, opts);
+    await this.setVar('STATUS_REGISTER_VALUE', 0x80, opts);
+    await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
+    await this.setVar('DMG_READ_CS_PULSE', 0, opts);
+  }
+
   async writeSram(
     family: CartFamily,
     bytes: Uint8Array,
     opts: CartWriteOptions = {},
   ): Promise<void> {
     if (family === 'gba') {
+      // For >64 KB carts (Pokemon R/S/E/FR/LG = 128 KB Flash) we drive
+      // the JEDEC sector-erase + poll + page write loop, banked across
+      // the two 64 KB Flash banks. For ≤64 KB carts (true SRAM, not
+      // Flash) we fall back to the flat per-page bulk SRAM writer.
+      if (bytes.length > 0x10000) {
+        await this.writeAgbFlashBanked(bytes, opts);
+        return;
+      }
       await this.bulkWriteSram(OP_AGB_CART_WRITE_SRAM, 0, bytes, opts);
       return;
     }
-    // DMG SRAM write — per FlashGBX uses DMG_WRITE_CS_PULSE + per-page
-    // DMG_CART_WRITE_SRAM frames. Keep symmetry with the read path.
-    await this.setVar('DMG_WRITE_CS_PULSE', 1, opts);
-    try {
-      const PAGE = TRANSFER_CHUNK;
-      for (let off = 0; off < bytes.length; off += PAGE) {
-        if (opts.signal?.aborted) throw new CartError('CANCELLED', 'write aborted');
-        const slice = bytes.subarray(off, Math.min(off + PAGE, bytes.length));
-        await this.setVar('TRANSFER_SIZE', slice.length, opts);
-        await this.setVar('ADDRESS', 0xa000 + off, opts);
-        await writeAll(this.port, new Uint8Array([OP_DMG_CART_WRITE_SRAM]));
-        await writeAll(this.port, slice);
-        await this.readAck(opts, 'DMG SRAM write');
-        opts.onProgress?.({ bytesWritten: off + slice.length, bytesTotal: bytes.length });
-      }
-    } finally {
-      await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
+    // DMG SRAM write — per FlashGBX trace
+    // (`flashgbx-write-dmg-pokemon-red.log:998..1500`).
+    //
+    // Per-page cadence (one bank's worth of bytes; the GbxCartSink does
+    // setRamEnabled/setBank around this call):
+    //
+    //   for each page (256 bytes per AMEND-S7b-3):
+    //     SET_VAR TRANSFER_SIZE = 256
+    //     SET_VAR ADDRESS       = 0xA000 + offset_within_bank
+    //     SET_VAR DMG_ACCESS_MODE = 4               (SRAM-write mode!)
+    //     SET_VAR DMG_WRITE_CS_PULSE = 1            (raise pulse for the page)
+    //     SET_VAR ADDRESS       = 0                 (reset before payload)
+    //     SET_VAR DMG_WRITE_CS_PULSE = 0            (lower before payload)
+    //     OP_DMG_CART_WRITE_SRAM (0xB3) + payload   → ack 0x01
+    //
+    // The DMG_ACCESS_MODE=4 setvar is critical — without it the firmware
+    // is still in whatever mode the last reader left it (likely 3 = SRAM
+    // read), and bytes write to the wrong bus state. Was the silent
+    // bug-source in the previous writeSram impl per PLAN §4.4.
+    // HIL-fix: previous impl did `ADDRESS=0` + `DMG_WRITE_CS_PULSE=0`
+    // BEFORE the data write, deasserting CS before any bytes hit the
+    // bus. Re-reading WriteRAM in LK_Device.py:1617-1636 carefully: the
+    // python `_set_fw_variable("ADDRESS", 0)` + `("DMG_WRITE_CS_PULSE", 0)`
+    // calls fire AFTER the iteration loop, NOT before each write. The
+    // FlashGBX trace prints the cleanup setvars at lines 1241-1242 but
+    // the data writes between them aren't logged at python level.
+    // Symptom of the wrong order: writes ack but the cart's SRAM is
+    // unchanged (CS deasserted means no bus activity reaches the cart).
+    const PAGE = this.writeChunkBytes;
+    for (let off = 0; off < bytes.length; off += PAGE) {
+      if (opts.signal?.aborted) throw new CartError('CANCELLED', 'write aborted');
+      const slice = bytes.subarray(off, Math.min(off + PAGE, bytes.length));
+      await this.setVar('TRANSFER_SIZE', slice.length, opts);
+      await this.setVar('ADDRESS', 0xa000 + off, opts);
+      await this.setVar('DMG_ACCESS_MODE', 4, opts);
+      await this.setVar('DMG_WRITE_CS_PULSE', 1, opts);
+      await writeAll(this.port, new Uint8Array([OP_DMG_CART_WRITE_SRAM]));
+      await writeAll(this.port, slice);
+      await this.readAck(opts, 'DMG SRAM write');
+      opts.onProgress?.({ bytesWritten: off + slice.length, bytesTotal: bytes.length });
     }
+    // Cleanup once at the end — mirrors LK_Device.py:1634-1636.
+    await this.setVar('ADDRESS', 0x0000, opts);
+    await this.setVar('DMG_WRITE_CS_PULSE', 0, opts);
   }
 
   // --- helpers ---
@@ -348,13 +502,17 @@ export class FlashgbxProtocol implements CartProtocol {
     // FlashGBX adds a ~1.4ms delay after every write on macOS — Web
     // Serial similarly doesn't guarantee tcdrain semantics. A small
     // pause lets the firmware finish processing before the next op.
-    await new Promise((resolve) => setTimeout(resolve, 5));
+    if (this.setVarDelayMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, this.setVarDelayMs));
+    }
     await this.readAck(opts, `SET_VAR ${name}=${value}`);
   }
 
   private async opAck(opcode: number, opts: { signal?: AbortSignal }): Promise<void> {
     await writeAll(this.port, new Uint8Array([opcode]));
-    await new Promise((resolve) => setTimeout(resolve, 5));
+    if (this.setVarDelayMs > 0) {
+      await new Promise((resolve) => setTimeout(resolve, this.setVarDelayMs));
+    }
     await this.readAck(opts, `op 0x${opcode.toString(16)}`);
   }
 
@@ -462,7 +620,7 @@ export class FlashgbxProtocol implements CartProtocol {
     bytes: Uint8Array,
     opts: CartWriteOptions,
   ): Promise<void> {
-    const PAGE = TRANSFER_CHUNK;
+    const PAGE = this.writeChunkBytes;
     for (let off = 0; off < bytes.length; off += PAGE) {
       if (opts.signal?.aborted) throw new CartError('CANCELLED', 'write aborted');
       const slice = bytes.subarray(off, Math.min(off + PAGE, bytes.length));
@@ -513,6 +671,133 @@ export class FlashgbxProtocol implements CartProtocol {
     await this.cartWriteAgbByte(0x2aaa, 0x55, opts);
     await this.cartWriteAgbByte(0x5555, 0xb0, opts);
     await this.cartWriteAgbByte(0x0000, bank & 0xff, opts);
+  }
+
+  /**
+   * Per-sector AGB Flash write loop. Per
+   * `flashgbx-write-agb-pokemon-ruby-jp.log:158..1305` and AMEND-S7b-3/4/5/11.
+   *
+   * For each of the (up to 32) sectors:
+   *   1. (Bank-switch on bank-boundary crossings.)
+   *   2. JEDEC sector erase (6-step cmd).
+   *   3. Poll until sector reads 0xFFFF (MAX_POLL=120 × 5ms).
+   *   4. Write the 4 KB sector body in `writeChunkBytes`-sized pages
+   *      (default 256 per AMEND-S7b-3).
+   *
+   * On any failure surfaces a structured `CartError('WRITE_FAILED', ...)`
+   * carrying `{sectorIndex, sectorAddress, withinSectorOffset, phase}`
+   * per AMEND-S7b-11.
+   */
+  private async writeAgbFlashBanked(
+    bytes: Uint8Array,
+    opts: CartWriteOptions,
+  ): Promise<void> {
+    const plan = agbFlashSectorPlan(bytes.length);
+    if (plan.length === 0) return;
+
+    const jedec = this.makeJedec(opts);
+    let currentBank = -1;
+
+    for (const sector of plan) {
+      if (opts.signal?.aborted) {
+        throw new CartError('CANCELLED', 'AGB Flash write aborted', flashErrorMeta({
+          sectorIndex: sector.sectorIndex,
+          sectorAddress: sector.addressInBank,
+          withinSectorOffset: 0,
+          phase: 'erase',
+        }));
+      }
+      if (sector.bank !== currentBank) {
+        await this.switchAgbFlashBank(sector.bank, opts);
+        currentBank = sector.bank;
+      }
+      await jedec.eraseSector(sector);
+      await jedec.pollErased(sector);
+      await this.writeAgbFlashSector(sector, bytes, opts);
+      opts.onProgress?.({
+        bytesWritten: sector.absoluteOffset + AGB_FLASH_SECTOR_BYTES,
+        bytesTotal: bytes.length,
+      });
+    }
+  }
+
+  /**
+   * Write one 4 KB sector's body. `bytes[sector.absoluteOffset .. +4096]`
+   * is the source; we slice into `writeChunkBytes`-sized pages (default
+   * 256 per AMEND-S7b-3 / DECISION-6) and ship each via
+   * AGB_CART_WRITE_SRAM with the `(TRANSFER_SIZE + ADDRESS)` prelude.
+   * Address is the within-bank Flash byte address (NOT word-shifted —
+   * SRAM-path writes use byte addresses, unlike AGB ROM reads).
+   */
+  private async writeAgbFlashSector(
+    sector: AgbFlashSector,
+    bytes: Uint8Array,
+    opts: CartWriteOptions,
+  ): Promise<void> {
+    const page = this.writeChunkBytes;
+    // HIL-fix: match FlashGBX WriteRAM exactly (LK_Device.py:1614-1638).
+    // Setvars happen ONCE before the per-page loop; firmware auto-
+    // increments ADDRESS between writes. AND we MUST readAck after each
+    // page payload — the DMG path does this, the AGB path was missing
+    // it. Without ack consumption the firmware's ack byte (0x01) lingers
+    // in the read buffer and the NEXT setvar's response gets read as
+    // an off-by-one stale byte. Symptom on real hardware: erase happens
+    // (cart goes to all 0xFF) but page writes silently no-op against
+    // the Flash chip — cart stays blank after the entire flash op.
+    await this.setVar('TRANSFER_SIZE', page, opts);
+    await this.setVar('ADDRESS', sector.addressInBank, opts);
+    for (let i = 0; i < AGB_FLASH_SECTOR_BYTES; i += page) {
+      if (opts.signal?.aborted) {
+        throw new CartError('CANCELLED', 'AGB Flash write aborted', flashErrorMeta({
+          sectorIndex: sector.sectorIndex,
+          sectorAddress: sector.addressInBank,
+          withinSectorOffset: i,
+          phase: 'write',
+        }));
+      }
+      const slice = bytes.subarray(
+        sector.absoluteOffset + i,
+        sector.absoluteOffset + i + page,
+      );
+      try {
+        await writeAll(
+          this.port,
+          new Uint8Array([OP_AGB_CART_WRITE_FLASH_DATA, AGB_FLASH_WRITE_METHOD_DEFAULT]),
+        );
+        await writeAll(this.port, slice);
+        await this.readAck(opts, `AGB Flash page write s${sector.sectorIndex}+0x${i.toString(16)}`);
+      } catch (e) {
+        throw new CartError(
+          'WRITE_FAILED',
+          `AGB Flash page write @ sector ${sector.sectorIndex} +${i}: ${(e as Error).message}`,
+          flashErrorMeta({
+            sectorIndex: sector.sectorIndex,
+            sectorAddress: sector.addressInBank,
+            withinSectorOffset: i,
+            phase: 'write',
+          }),
+        );
+      }
+    }
+  }
+
+  /**
+   * Construct a JedecFlash helper bound to this protocol's cart-write +
+   * 2-byte-read primitives. Per AMEND-S7b-5 the poll uses the existing
+   * `bulkReadAgb` machinery (TRANSFER_SIZE=2 + ADDRESS + AGB_CART_READ_SRAM)
+   * — DO NOT introduce a one-off 2-byte reader.
+   */
+  private makeJedec(opts: { signal?: AbortSignal }): JedecFlash {
+    return new JedecFlash(
+      (address, value) => this.cartWriteAgbByte(address, value, opts),
+      async (address) => {
+        const buf = await this.bulkReadAgb(OP_AGB_CART_READ_SRAM, address, 2, opts);
+        // Per AMEND-S7b-5: treat as u16 BE check == 0xFFFF — equivalent
+        // to (byte0 << 8) | byte1 when both are 0xFF, but the wider
+        // formulation guards against accidental "byte0 == 0xFF" early-exit.
+        return ((buf[0] ?? 0) << 8) | (buf[1] ?? 0);
+      },
+    );
   }
 
   private async readAgbFlashBanked(length: number, opts: CartReadOptions): Promise<Uint8Array> {

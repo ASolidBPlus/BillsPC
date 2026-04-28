@@ -35,6 +35,12 @@ const ENTRY_SIZE = 0x1c; // 28 bytes, matches PersonalInfo3.SIZE
 const OFFSET_GENDER = 0x10;
 const OFFSET_FRIENDSHIP = 0x12;
 const OFFSET_ABILITY1 = 0x16;
+// Per pkhex PersonalInfo3.cs:42 + :57 — Ability2 is at byte 0x17, and a
+// species has TWO distinct regular abilities iff Ability1 != Ability2.
+// 1-ability species store the same ability id in both slots; convert pins
+// abilityBit=0 in that case so pkhex doesn't flag "ability does not match
+// ability number" on the slot-1 lookup.
+const OFFSET_ABILITY2 = 0x17;
 
 // Base-stat offsets (PersonalInfo3 / personal_rs — canonical Gen 3 order):
 //   0x00 HP, 0x01 Atk, 0x02 Def, 0x03 Spe (speed BEFORE specials), 0x04 SpA, 0x05 SpD.
@@ -55,6 +61,9 @@ interface PersonalInfoRow {
   genderRatio: number;
   baseFriendship: number;
   ability0: number;
+  /** Slot-1 regular ability id. For 1-ability species, equals `ability0`
+   *  (per pkhex PersonalInfo3.HasSecondAbility = Ability1 != Ability2). */
+  ability1: number;
   base: {
     hp: number;
     atk: number;
@@ -91,6 +100,7 @@ async function main(): Promise<void> {
       genderRatio: buf[base + OFFSET_GENDER]!,
       baseFriendship: buf[base + OFFSET_FRIENDSHIP]!,
       ability0: buf[base + OFFSET_ABILITY1]!,
+      ability1: buf[base + OFFSET_ABILITY2]!,
       base: {
         hp: buf[base + OFFSET_BASE_HP]!,
         atk: buf[base + OFFSET_BASE_ATK]!,

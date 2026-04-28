@@ -116,7 +116,7 @@ describe('cart connect flow (controller)', () => {
     };
     const controller = createController(root, deps);
     controller.dispatch({ type: 'mode_changed', mode: 'cart' });
-    await handleCartConnect('source', (a) => controller.dispatch(a), deps);
+    await handleCartConnect('source', controller.state(), (a) => controller.dispatch(a), deps);
     const state = controller.state();
     expect(state.kind).toBe('loaded');
     if (state.kind !== 'loaded') return;
@@ -138,7 +138,7 @@ describe('cart connect flow (controller)', () => {
     };
     const controller = createController(root, deps);
     controller.dispatch({ type: 'mode_changed', mode: 'cart' });
-    await handleCartConnect('source', (a) => controller.dispatch(a), deps);
+    await handleCartConnect('source', controller.state(), (a) => controller.dispatch(a), deps);
     const state = controller.state();
     expect(state.cartReadError).toBeDefined();
     expect(state.cartReadError!.message).toContain('user cancelled');
@@ -149,7 +149,7 @@ describe('cart connect flow (controller)', () => {
     (deps as { cartReadDeps?: unknown }).cartReadDeps = undefined;
     const controller = createController(root, deps);
     controller.dispatch({ type: 'mode_changed', mode: 'cart' });
-    await handleCartConnect('source', (a) => controller.dispatch(a), deps);
+    await handleCartConnect('source', controller.state(), (a) => controller.dispatch(a), deps);
     const state = controller.state();
     expect(state.cartReadError?.reason).toBe('PORT_OPEN_FAILED');
   });

@@ -21,7 +21,8 @@ import { getSpecies } from '@pokeportal/core/internal';
 import { dialog } from './dialog.js';
 import { el } from './dom.js';
 import { spriteImg } from './sprites.js';
-import type { DestCursor } from '../state.js';
+import type { DestCursor, MonRef } from '../state.js';
+import type { SelectModifiers } from './boxBrowser.js';
 
 export const DEST_ROWS = 5;
 export const DEST_COLS = 6;
@@ -68,7 +69,24 @@ export interface DestBoxBrowserProps {
   readonly cursor: DestCursor;
   readonly onCursorMove: (drow: -1 | 0 | 1, dcol: -1 | 0 | 1) => void;
   readonly onBoxChange: (delta: -1 | 1) => void;
-  readonly onSlotClick: (slotIndex: number) => void;
+  /** S8v2.2 — second arg carries the click's modifier keys for the v2
+   *  selection model. Legacy callers (`renderDestPane` in `ui.ts` for
+   *  the non-v2 default UI) ignore it. */
+  readonly onSlotClick: (slotIndex: number, modKeys?: SelectModifiers) => void;
+  /** S8v2.2 — refs of currently-selected dest slots; matching tiles
+   *  render with `is-selected`. The MonRef shape uses
+   *  `{ bucket: 'box', boxIndex: <dest-box>, slot }` per CLAR-3. */
+  readonly selection?: ReadonlyArray<MonRef>;
+  /** S8v2.2 — staged-mon placement preview overlay per §2.7. Map keyed
+   *  by destSlot. When the slot is empty in `save.pc.boxes[boxIndex]`,
+   *  the preview sprite renders with `is-previewed` styling. Real-cart
+   *  occupants always win when both exist (the placement loop should
+   *  never have landed there per §2.6 "skip occupied slots"; this is
+   *  defensive). */
+  readonly previewedPlacements?: ReadonlyMap<
+    number,
+    { speciesId: number; nicknameDisplay: string }
+  >;
 }
 
 export function destBoxBrowser(props: DestBoxBrowserProps): HTMLElement {
@@ -103,17 +121,33 @@ export function destBoxBrowser(props: DestBoxBrowserProps): HTMLElement {
     class: 'box-grid dest-box-grid',
     style: `background-image: linear-gradient(rgba(248,248,248,0.55), rgba(248,248,248,0.55)), url(${wpUrl});`,
   });
+  // S8v2.2 — dest selection keyset. The dest selection's MonRef shape
+  // uses `{ bucket: 'box', boxIndex: dest-box-index, slot }`. Match
+  // against the visible box only.
+  const selSlots = new Set<number>();
+  if (props.selection) {
+    for (const r of props.selection) {
+      if (r.bucket === 'box' && (r.boxIndex ?? 0) === props.boxIndex) {
+        selSlots.add(r.slot);
+      }
+    }
+  }
+
   for (let row = 0; row < DEST_ROWS; row++) {
     for (let col = 0; col < DEST_COLS; col++) {
       const slot = row * DEST_COLS + col;
       const slotData = box[slot] as BoxedSlot | undefined;
       const isCursor = row === props.cursor.row && col === props.cursor.col;
       const filled = slotData?.kind === 'filled';
+      const isSelected = selSlots.has(slot);
+      const preview = filled ? undefined : props.previewedPlacements?.get(slot);
       const tile = el('div', {
         class:
           'box-tile dest-box-tile' +
           (filled ? ' is-occupied' : ' is-empty') +
-          (isCursor ? ' is-cursor' : ''),
+          (isCursor ? ' is-cursor' : '') +
+          (isSelected ? ' is-selected' : '') +
+          (preview ? ' is-previewed' : ''),
         'data-row': String(row),
         'data-col': String(col),
         'data-slot': String(slot),
@@ -121,7 +155,11 @@ export function destBoxBrowser(props: DestBoxBrowserProps): HTMLElement {
       });
       if (filled) {
         const species = slotData.species;
-        const spriteSet = species > 0 && species <= HIGHEST_OVERWORLD_SPRITE ? 'overworld' : 'gen3';
+        // pret/pokeemerald party icons cover all of ndex 1..386 so the
+        // legacy fallback to the static gen3 front sprite for high ndex
+        // is no longer needed — the variable stays for readability.
+        void HIGHEST_OVERWORLD_SPRITE;
+        const spriteSet = 'party-gen3' as const;
         const speciesName = getSpecies(species)?.name ?? `species-${species}`;
         tile.append(spriteImg(species, spriteSet, speciesName));
         // Hover tooltip — feature parity with the source-side box browser.
@@ -131,10 +169,22 @@ export function destBoxBrowser(props: DestBoxBrowserProps): HTMLElement {
         if (summary) {
           tile.append(monTooltip(summary, speciesName));
         }
+      } else if (preview) {
+        // S8v2.2 — render the placement-preview sprite under the
+        // `is-previewed` styling (60% opacity, dashed outline per §2.7
+        // / DECISION-S8v2.2-8). The sprite is the post-conversion
+        // ndex (per AMEND-S8v2.2-8).
+        tile.append(spriteImg(preview.speciesId, 'party-gen3', preview.nicknameDisplay));
       } else {
         tile.append(el('span', { class: 'empty-marker' }, '·'));
       }
-      tile.addEventListener('click', () => props.onSlotClick(slot));
+      tile.addEventListener('click', (ev: MouseEvent) => {
+        props.onSlotClick(slot, {
+          meta: ev.metaKey,
+          ctrl: ev.ctrlKey,
+          shift: ev.shiftKey,
+        });
+      });
       grid.append(tile);
     }
   }

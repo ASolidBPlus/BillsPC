@@ -112,7 +112,7 @@ describe('destBoxBrowser', () => {
     expect(tiles[5]?.getAttribute('title')).toBe('occupied');
   });
 
-  it('renders overworld walker sprites for both Kanto/Johto and Hoenn species', () => {
+  it('renders pret/pokeemerald party-icon sprites for both Kanto/Johto and Hoenn species', () => {
     const el = destBoxBrowser({
       save: fakeSave({
         0: [
@@ -127,9 +127,10 @@ describe('destBoxBrowser', () => {
       onSlotClick: () => {},
     });
     const tiles = Array.from(el.querySelectorAll('.box-tile.dest-box-tile'));
-    // Both species now use the overworld walker chrome (background-image div).
-    expect(tiles[0]?.querySelector('.ow-sprite')).not.toBeNull();
-    expect(tiles[1]?.querySelector('.ow-sprite')).not.toBeNull();
+    // Both species now use the pret/pokeemerald party-icon chrome
+    // (background-image div with the 2-frame bounce animation).
+    expect(tiles[0]?.querySelector('.party-icon-gen3')).not.toBeNull();
+    expect(tiles[1]?.querySelector('.party-icon-gen3')).not.toBeNull();
   });
 
   it('cursor tile carries .is-cursor', () => {

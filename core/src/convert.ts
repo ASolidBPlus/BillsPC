@@ -109,7 +109,7 @@ export function convert(src: Gen12Pokemon, opts: ConvertOptions = {}): Gen3Inter
     ivs: ivResult.ivs,
     evs: evResult.evs,
     nature,
-    abilitySlot: abilitySlot(),
+    abilitySlot: abilitySlot(pidResult.pid, personal.ability0 !== personal.ability1),
     moves: moveSet.moves,
     pp: moveSet.pp,
     ppUps: moveSet.ppUps,

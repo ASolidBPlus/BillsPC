@@ -17,7 +17,7 @@
 import type { SaveFormat } from '@pokeportal/core';
 import { el, img } from './dom.js';
 
-export type SpriteSet = 'gen1' | 'gen2' | 'gen3' | 'overworld';
+export type SpriteSet = 'gen1' | 'gen2' | 'gen3' | 'overworld' | 'party-gen2' | 'party-gen3';
 
 export const SPRITE_RENDER_SIZE: Readonly<Record<SpriteSet, number>> = {
   // All Gen 1/2/3 source/destination sprites render at the same size so the
@@ -28,6 +28,11 @@ export const SPRITE_RENDER_SIZE: Readonly<Record<SpriteSet, number>> = {
   gen2: 96,
   gen3: 96,
   overworld: 32, // single-frame display size; source strip is 288×32 (9 frames)
+  // 2-frame vertical strips animated via CSS background-position; both render
+  // at 32×32 in-page (gen2 source is 16×32, scaled 2×; gen3 source is 32×64,
+  // displayed at native frame size).
+  'party-gen2': 32,
+  'party-gen3': 32,
 };
 
 /**
@@ -46,7 +51,14 @@ export const SPRITE_RENDER_SIZE: Readonly<Record<SpriteSet, number>> = {
  * - GS                  → crystal/<n>.png     (no GS sprite set fetched yet — fallback)
  */
 function perCartPath(set: SpriteSet, ndex: number, format: SaveFormat | null): string | null {
-  if (set === 'gen3' || set === 'overworld' || format === null) return null;
+  if (
+    set === 'gen3' ||
+    set === 'overworld' ||
+    set === 'party-gen2' ||
+    set === 'party-gen3' ||
+    format === null
+  )
+    return null;
   if (format === 'RBY-RED' || format === 'RBY-BLUE') {
     return `sprites/red-blue/${ndex}.png`;
   }
@@ -90,6 +102,7 @@ export function spriteImg(
   format: SaveFormat | null = null,
 ): HTMLElement {
   if (set === 'overworld') return overworldTile(ndex, alt);
+  if (set === 'party-gen2' || set === 'party-gen3') return partyIconTile(ndex, set, alt, format);
   const size = SPRITE_RENDER_SIZE[set];
   return img({
     src: spritePath(ndex, set, format),
@@ -124,4 +137,53 @@ function overworldTile(ndex: number, alt: string): HTMLElement {
     style: `background-image: url(${spritePath(ndex, 'overworld')});`,
   });
   return tile;
+}
+
+/**
+ * In-place "bouncing" party-icon tile. The source PNG is a 2-frame vertical
+ * strip (16×32 for SoupPotato Gen 1/2 icons; 32×64 for pret/pokeemerald Gen 3
+ * icons). CSS keyframes step background-position between frame_a (top) and
+ * frame_b (bottom) at the GSC/RSE party-menu cadence (~0.5s).
+ *
+ * Variant chrome:
+ *   - `party-icon-gen2` — SoupPotato source. RBY saves get the
+ *     `is-monochrome` modifier (CSS grayscale filter) so Gen 1 cart loads
+ *     don't render with the GSC colour palette they pre-date.
+ *   - `party-icon-gen3` — pret/pokeemerald source.
+ *
+ * NOTE: We deliberately do NOT add `is-big` here. The artists already
+ * authored these at uniform menu-icon scale; the legacy 1.4× scale-up
+ * (carried over from the HGSS overworld pack where each species' walker
+ * was hand-sized) overflows the box-tile and looks broken (Dragonite,
+ * Snorlax, etc. spilling out of the cell).
+ */
+function partyIconTile(
+  ndex: number,
+  set: 'party-gen2' | 'party-gen3',
+  alt: string,
+  format: SaveFormat | null,
+): HTMLElement {
+  // iOS Safari is unreliable about honoring `image-rendering: pixelated`
+  // on `background-image` (especially when combined with a CSS `filter`
+  // for the RBY grayscale path) — produces visible blur even though the
+  // underlying pixels are 4-color indexed art. Rendering as a real
+  // `<img>` inside an overflow-hidden wrapper bypasses that bug
+  // because Safari respects image-rendering on `<img>` elements.
+  // Animation is via the inner img's `top` keyframe (sliding the
+  // 2-frame strip up/down inside the clip).
+  const isRby = set === 'party-gen2' && format !== null && format.startsWith('RBY-');
+  const variantClass = set === 'party-gen2' ? 'party-icon-gen2' : 'party-icon-gen3';
+  const wrap = el('div', {
+    class: `sprite ${variantClass}${isRby ? ' is-monochrome' : ''}`,
+    role: 'img',
+    'aria-label': alt,
+  });
+  wrap.append(
+    el('img', {
+      class: 'party-icon-img',
+      src: spritePath(ndex, set),
+      alt: '',
+    }),
+  );
+  return wrap;
 }

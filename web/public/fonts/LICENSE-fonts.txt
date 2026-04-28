@@ -1,24 +1,32 @@
 # pokeportal font assets
 
-`pokemon-gb.woff2` is the Latin subset (U+0000-00FF + a few quotation /
-arrow / replacement code-points) of **Press Start 2P** by Codeman38 /
-Cody Boisclair, sourced from Google Fonts:
+`pokemon-gb.woff2` is **Pokemon GB** by Pokemon Perler (Aaron D.
+Gillespie), the canonical thin-stroke 8×8 pixel font matching the
+Game Boy Pokemon games' in-game text rendering. Released as freeware
+(no usage restrictions), sourced from a public Godot project mirror
+on GitHub at fetch time and converted from TTF → woff2 via fonttools.
 
-  https://fonts.gstatic.com/s/pressstart2p/v16/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2
+Original PostScript name: `PokemonGB`, version 1.000;pyrs.
 
-Press Start 2P is licensed under the SIL **Open Font License 1.1**
-(https://scripts.sil.org/OFL). The OFL permits embedding in software
-including web bundles; we embed and serve the woff2 directly so first-
-load works offline and over file:// previews.
+This replaces the earlier Press Start 2P substitute that pokeportal
+shipped while no Pokemon GB mirror was reachable. Press Start 2P
+worked but its double-pixel-stroke glyphs are visibly chunkier than
+the in-game font, which made the stat-screen modal labels read as
+"bolded" next to the baked-in template labels. Pokemon GB matches the
+in-game text exactly.
 
-The PLAN listed "Pokemon GB by Pokemon Perler (CC0)" as the preferred
-choice (PLAN §10 Q3), but no maintained public mirror of that font was
-reachable at fetch time. Press Start 2P is the closest functionally-
-equivalent OFL pixel font: 8x8 glyph cell, monospace, ASCII-complete,
-hand-tuned by an experienced gamefont artist, and explicitly intended
-for use in retro-styled games and UIs. The S5 UI uses ASCII letters,
-digits, and the glyphs `▶ ▼ ★ /` only — those are all in the Latin
-subset shipped here (★ = U+2605 inside U+2600-U+26FF; the Latin range
-for Press Start 2P does not include this glyph, so the browser falls
-back to the system monospace font for it; see `style.css` `.shiny-star`
-class which intentionally relies on the system fallback).
+`pokemon-gb-press-start-2p.woff2.bak` is the prior Press Start 2P
+binary, kept on disk in case Pokemon Perler's font ever becomes
+unavailable.
+
+`pokemon-emerald.woff2` is **Pokemon Emerald** by aztecwarrior28
+(FontStruct, 2021) — a fan-made TTF recreation of the Game Boy
+Advance Pokemon in-game font (used in Ruby/Sapphire/Emerald and
+FireRed/LeafGreen text rendering). Used by the FR/LG-style "AFTER"
+stat-screen panel. Sourced from a public Godot project mirror on
+GitHub at fetch time and converted from TTF → woff2 via fonttools.
+
+Original PostScript name: `PokemonEmerald`. Copyright notice in the
+font: "Copyright aztecwarrior28 2021". FontStruct fonts default to
+CC-BY-SA distribution unless otherwise marked; we treat this as
+CC-BY-SA and credit the author here.

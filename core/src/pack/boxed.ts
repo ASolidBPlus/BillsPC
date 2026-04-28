@@ -246,12 +246,10 @@ export function unpackBoxed(bytes: Uint8Array): Gen3Intermediate | DecodeError {
   if (misc.isEgg) {
     return makeDecodeError('UNEXPECTED_LITERAL_FIELD', 'isEgg bit set; S1 always emits false');
   }
-  if (misc.abilityBit !== 0) {
-    return makeDecodeError(
-      'UNEXPECTED_LITERAL_FIELD',
-      'abilityBit set; S1 always emits abilitySlot 0',
-    );
-  }
+  // abilityBit may be 0 or 1: convert now derives `abilitySlot = pid & 1`
+  // per Gen 3 mechanics (slot 0 = even-PID regular ability, slot 1 = odd-PID
+  // regular ability; for 1-ability species both resolve to the same in-game).
+  // Keeping the field on `intermediate` so the un/re-pack roundtrip is exact.
   if (misc.ribbonsAndObedience !== 0) {
     return makeDecodeError(
       'UNEXPECTED_LITERAL_FIELD',
@@ -284,7 +282,7 @@ export function unpackBoxed(bytes: Uint8Array): Gen3Intermediate | DecodeError {
     ivs: misc.ivs,
     evs: evCond.evs,
     nature: 0, // not stored on wire; S1 derives from DVs but decode can't recover
-    abilitySlot: 0,
+    abilitySlot: misc.abilityBit,
     moves: attacks.moves,
     pp: attacks.pp,
     ppUps: growth.ppUps,

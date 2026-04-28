@@ -33,6 +33,14 @@ export interface CartProtocol {
    *  count (32 KB for Gen 1/2, 128 KB for Gen 3). */
   readSram(family: CartFamily, length: number, opts?: CartReadOptions): Promise<Uint8Array>;
   writeSram(family: CartFamily, bytes: Uint8Array, opts?: CartWriteOptions): Promise<void>;
+  /**
+   * S7b — one-shot pre-write setup. Per AMEND-S7b-1/-4: LK firmware needs
+   * PULLUPS_ENABLED + STATUS_REGISTER setvars (DMG) and the JEDEC chip-ID
+   * EXIT sequence (AGB Flash) before any sector erase. Optional on
+   * protocols that don't need it (insidegadgets stock OFW). The `GbxCartSink`
+   * calls this once before its bank loop.
+   */
+  prepareForWrite?(family: CartFamily, opts?: { signal?: AbortSignal }): Promise<void>;
   /** Set GBxCart mode + voltage for the cart family. Insidegadgets uses
    *  'G'/'g' + '5'/'3'; Lesserkuma uses 0xC0-family setup. */
   setMode(family: CartFamily, opts?: { signal?: AbortSignal }): Promise<void>;

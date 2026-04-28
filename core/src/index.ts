@@ -27,6 +27,8 @@ export { deleteMonGen1 } from './sav/gen1/writer.js';
 export type { Gen1DeleteRef, Gen1WriterFormat } from './sav/gen1/writer.js';
 export { deleteMonGen2 } from './sav/gen2/writer.js';
 export type { Gen2DeleteRef, Gen2WriterFormat } from './sav/gen2/writer.js';
+export { encodeMonGen2 } from './sav/gen2/encoder.js';
+export type { EncodedGen2Mon } from './sav/gen2/encoder.js';
 
 // Sprint 6a Gen 3 destination save reader/inject.
 export {
@@ -76,6 +78,34 @@ export {
   InsidegadgetsProtocol,
   FlashgbxProtocol,
 } from './cart/index.js';
+
+// Sprint 7b — cart-write side: composable sinks + JEDEC Flash helper +
+// transfer-matrix planner. The SaveSink interface itself is re-exported
+// above from `gen3/saveSink.ts` (which re-exports from the canonical
+// family-agnostic `sav/saveSink.ts` per AMEND-S7b-13).
+export { GbxCartSink } from './cart/sinks/gbxCartSink.js';
+export { WriteAndVerifySink, WriteVerifyError } from './cart/sinks/writeAndVerifySink.js';
+export type { WriteVerifyMismatch } from './cart/sinks/types.js';
+export {
+  JedecFlash,
+  agbFlashSectorPlan,
+  AGB_FLASH_SECTOR_BYTES,
+  AGB_FLASH_BANK_BYTES,
+  AGB_FLASH_BANK_COUNT,
+  AGB_FLASH_TOTAL_BYTES,
+} from './cart/protocol/agbFlash.js';
+export { planTransfer, TransferMatrixRefusal } from './transfer/matrix.js';
+export type {
+  TransferPlan,
+  TransferConversion,
+  TransferMatrixRefusalReason,
+} from './transfer/matrix.js';
+export { composeSourceWrite, composeDestinationWrite, isComposeError } from './transfer/composeWrite.js';
+export type {
+  StagedMonRefGen12,
+  StagedMonRefGen3,
+  ComposeError,
+} from './transfer/composeWrite.js';
 export type {
   Port,
   CartIdentity,
