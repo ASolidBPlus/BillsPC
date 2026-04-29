@@ -150,8 +150,20 @@ export function packBoxed(intermediate: Gen3Intermediate): Uint8Array {
  * Inverse of `packBoxed`. Returns a fully-populated `Gen3Intermediate`
  * with `_meta = DECODED_META` on success, or a `DecodeError` on any
  * malformed input. Never throws.
+ *
+ * Pass `{ permissive: true }` to skip the Sprint-1-literal-field checks
+ * (metLocation === 146, originGame === FireRed, ball === Poke Ball,
+ * ribbons === 0, contest stats === 0, isEgg === false). The strict
+ * checks are correct for verifying our own convert output round-trips,
+ * but they reject ANY real-cart mon that earned a ribbon, has the
+ * Mew obedience bit set, was caught in a different ball, or originated
+ * from a different game. Patch mode (S10) needs the permissive flavor
+ * to decode whatever's on the user's destination cart.
  */
-export function unpackBoxed(bytes: Uint8Array): Gen3Intermediate | DecodeError {
+export function unpackBoxed(
+  bytes: Uint8Array,
+  opts: { permissive?: boolean } = {},
+): Gen3Intermediate | DecodeError {
   if (bytes.length !== BOXED_SIZE) {
     return makeDecodeError(
       'BAD_LENGTH',
@@ -221,54 +233,58 @@ export function unpackBoxed(bytes: Uint8Array): Gen3Intermediate | DecodeError {
     );
   }
 
-  // Literal-field enforcement (PLAN_EVAL A1).
-  if (misc.metLocation !== 146) {
-    return makeDecodeError(
-      'UNEXPECTED_LITERAL_FIELD',
-      `metLocation expected 146, got ${misc.metLocation}`,
-    );
-  }
-  if (misc.metLevel !== 0) {
-    return makeDecodeError('UNEXPECTED_LITERAL_FIELD', `metLevel expected 0, got ${misc.metLevel}`);
-  }
-  if (misc.originGameId !== ORIGIN_GAME_FIRERED) {
-    return makeDecodeError(
-      'UNEXPECTED_LITERAL_FIELD',
-      `originGame expected FireRed (id ${ORIGIN_GAME_FIRERED}), got id ${misc.originGameId}`,
-    );
-  }
-  if (misc.ballId !== BALL_POKEBALL) {
-    return makeDecodeError(
-      'UNEXPECTED_LITERAL_FIELD',
-      `ball expected Poke Ball (id ${BALL_POKEBALL}), got id ${misc.ballId}`,
-    );
-  }
-  if (misc.isEgg) {
-    return makeDecodeError('UNEXPECTED_LITERAL_FIELD', 'isEgg bit set; S1 always emits false');
-  }
-  // abilityBit may be 0 or 1: convert now derives `abilitySlot = pid & 1`
-  // per Gen 3 mechanics (slot 0 = even-PID regular ability, slot 1 = odd-PID
-  // regular ability; for 1-ability species both resolve to the same in-game).
-  // Keeping the field on `intermediate` so the un/re-pack roundtrip is exact.
-  if (misc.ribbonsAndObedience !== 0) {
-    return makeDecodeError(
-      'UNEXPECTED_LITERAL_FIELD',
-      `ribbons/obedience word non-zero (0x${misc.ribbonsAndObedience.toString(16)}); S1 emits no ribbons`,
-    );
-  }
-  const cs = evCond.contestStats;
-  if (
-    cs.cool !== 0 ||
-    cs.beauty !== 0 ||
-    cs.cute !== 0 ||
-    cs.clever !== 0 ||
-    cs.tough !== 0 ||
-    cs.sheen !== 0
-  ) {
-    return makeDecodeError(
-      'UNEXPECTED_LITERAL_FIELD',
-      'contest stats non-zero; S1 emits all zeros',
-    );
+  // Literal-field enforcement (PLAN_EVAL A1). Skipped under `permissive`
+  // — see header doc for why patch mode needs to decode arbitrary on-cart
+  // mons (ribbons earned in-game, Mew-style obedience bit, non-FireRed
+  // origin game, non-Poke Ball capture, non-zero contest stats).
+  if (!opts.permissive) {
+    if (misc.metLocation !== 146) {
+      return makeDecodeError(
+        'UNEXPECTED_LITERAL_FIELD',
+        `metLocation expected 146, got ${misc.metLocation}`,
+      );
+    }
+    if (misc.metLevel !== 0) {
+      return makeDecodeError(
+        'UNEXPECTED_LITERAL_FIELD',
+        `metLevel expected 0, got ${misc.metLevel}`,
+      );
+    }
+    if (misc.originGameId !== ORIGIN_GAME_FIRERED) {
+      return makeDecodeError(
+        'UNEXPECTED_LITERAL_FIELD',
+        `originGame expected FireRed (id ${ORIGIN_GAME_FIRERED}), got id ${misc.originGameId}`,
+      );
+    }
+    if (misc.ballId !== BALL_POKEBALL) {
+      return makeDecodeError(
+        'UNEXPECTED_LITERAL_FIELD',
+        `ball expected Poke Ball (id ${BALL_POKEBALL}), got id ${misc.ballId}`,
+      );
+    }
+    if (misc.isEgg) {
+      return makeDecodeError('UNEXPECTED_LITERAL_FIELD', 'isEgg bit set; S1 always emits false');
+    }
+    if (misc.ribbonsAndObedience !== 0) {
+      return makeDecodeError(
+        'UNEXPECTED_LITERAL_FIELD',
+        `ribbons/obedience word non-zero (0x${misc.ribbonsAndObedience.toString(16)}); S1 emits no ribbons`,
+      );
+    }
+    const cs = evCond.contestStats;
+    if (
+      cs.cool !== 0 ||
+      cs.beauty !== 0 ||
+      cs.cute !== 0 ||
+      cs.clever !== 0 ||
+      cs.tough !== 0 ||
+      cs.sheen !== 0
+    ) {
+      return makeDecodeError(
+        'UNEXPECTED_LITERAL_FIELD',
+        'contest stats non-zero; S1 emits all zeros',
+      );
+    }
   }
 
   const intermediate: Gen3Intermediate = {

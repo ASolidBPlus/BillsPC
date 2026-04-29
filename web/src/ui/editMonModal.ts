@@ -143,7 +143,12 @@ export function openEditMonModal(opts: EditMonModalOpts): void {
   }
 
   // Decode the current slot to seed initial field values.
-  const decoded = unpackBoxed(opts.currentSlot);
+  // Patch mode decodes arbitrary on-cart mons — pass permissive so the
+  // S1-only literal-field checks (ribbons === 0, ball === Poke Ball,
+  // origin === FireRed, isEgg === false) don't reject mons that earned
+  // a ribbon in-game, were caught in a different ball, originated from
+  // a different game, or carry the Mew-style obedience bit.
+  const decoded = unpackBoxed(opts.currentSlot, { permissive: true });
   if (isDecodeError(decoded)) {
     console.error('[edit-modal] unpack failed:', decoded.reason, decoded.message);
     opts.onCancel();

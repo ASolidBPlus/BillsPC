@@ -81,7 +81,9 @@ export function patchGen3Slot(
   if (slotBytes.length !== BOXED_SIZE) {
     return err('INTERNAL', `patchGen3Slot: expected ${BOXED_SIZE} bytes, got ${slotBytes.length}`);
   }
-  const unpacked = unpackBoxed(slotBytes);
+  // Patch mode targets are real on-cart mons, not S1 outputs — pass
+  // permissive so ribbons/obedience/non-FireRed origin/etc don't reject.
+  const unpacked = unpackBoxed(slotBytes, { permissive: true });
   if (isDecodeError(unpacked)) {
     return err(
       'DECODE_FAILED',
