@@ -25,6 +25,9 @@ export interface ParsedUrlFlags {
   readonly writeChunkBytes?: 64 | 256;
   /** Per AMEND-S7b-19 #2 — write-side baud override. */
   readonly writeBaud?: 1_000_000 | 1_500_000;
+  /** S10 D1 — `?patch=1` opens the manual cart-patch workbench.
+   *  Literal `'1'` only; any other value (`q`, `0`, `true`, …) is ignored. */
+  readonly patch?: '1';
 }
 
 /**
@@ -42,7 +45,11 @@ export function parseUrlFlags(search: string): ParsedUrlFlags {
     return {};
   }
 
-  const result: { writeChunkBytes?: 64 | 256; writeBaud?: 1_000_000 | 1_500_000 } = {};
+  const result: {
+    writeChunkBytes?: 64 | 256;
+    writeBaud?: 1_000_000 | 1_500_000;
+    patch?: '1';
+  } = {};
 
   const chunk = params.get('cart-write-chunk');
   if (chunk === '64') result.writeChunkBytes = 64;
@@ -51,6 +58,10 @@ export function parseUrlFlags(search: string): ParsedUrlFlags {
   const baud = params.get('cart-write-baud');
   if (baud === '1m' || baud === '1M') result.writeBaud = 1_000_000;
   else if (baud === '1.5m' || baud === '1.5M') result.writeBaud = 1_500_000;
+
+  // S10 D1: only literal '1' enables patch mode; anything else ignored.
+  const patch = params.get('patch');
+  if (patch === '1') result.patch = '1';
 
   return result;
 }

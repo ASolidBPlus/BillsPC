@@ -79,6 +79,8 @@ import { renderWorkbench, type LeftRole, type WorkbenchProps } from './ui/workbe
 import { confirmFlashDialog } from './ui/confirmFlashDialog.js';
 import { flashProgressOverlay } from './ui/flashProgressOverlay.js';
 import { recoveryDialog } from './ui/recoveryDialog.js';
+import { renderPatchMode } from './ui/patchMode.js';
+import { emptyPatchSession } from './state.js';
 import { StagingStore } from './cart/stagingStore.js';
 import {
   runAddSelectedToTransfer as runAddSelectedToTransferImpl,
@@ -212,6 +214,15 @@ export function createController(
   // First render. Keyboard navigation removed per user request — interaction is
   // mouse/touch only via the box-tile click handlers and the menu/dialog buttons.
   render(root, current, dispatch, effectiveDeps);
+
+  // S10 — `?patch=1` boot-time flag dispatch. Reads the same URL search
+  // string the legacy URL-flag parser uses; literal '1' only (D1).
+  if (typeof window !== 'undefined' && window.location) {
+    const flags = parseUrlFlags(window.location.search);
+    if (flags.patch === '1') {
+      dispatch({ type: 'patch_mode_enabled' });
+    }
+  }
 
   // S7b — open the IDB-backed staging store and subscribe. The store
   // surface is pub/sub: every mutation pushes a fresh `StagingSessionV1`
@@ -525,6 +536,13 @@ function renderV2(
   deps: ControllerDeps,
 ): void {
   root.replaceChildren();
+  // S10 — `?patch=1` swaps in the patch-mode workbench instead of the
+  // standard v2 layout. Without the flag, behaviour is byte-identical
+  // to S9 (modulo the always-on stat-screen identity strip per D4).
+  if (state.patchMode === true) {
+    renderPatchModeWorkbench(root, state, dispatch, deps);
+    return;
+  }
   // AMEND-S8v2.1-8 — defensive close: if `state.openMon` is set when v2
   // first renders (e.g. user toggled `?ui=v2` mid-session after clicking
   // a source mon), clear it so we don't have a stuck-overlay state. v2.1
@@ -2970,3 +2988,138 @@ function decodeNickFallback(mon: Gen12Pokemon, speciesName: string): string {
 // Keep these constants importable so tests can reference them without
 // re-importing the boxBrowser module.
 export { BROWSER_COLS, BROWSER_ROWS };
+
+/**
+ * S10 — patch-mode workbench renderer. Branched into when `?patch=1`
+ * is on the URL. Reuses the existing source/dest file handlers (so
+ * the SAV-upload path produces an equivalent `SaveContents` to a cart
+ * read, per D8) and threads the patch_*_loaded actions through the
+ * reducer.
+ *
+ * The patch flow does NOT touch `state.staging` or the existing
+ * commit handlers — patch edits live on `state.patchSession.pendingEdits`
+ * (RA-2 #1). The actual flash wiring is added in Stage 2.
+ */
+function renderPatchModeWorkbench(
+  root: HTMLElement,
+  state: AppState,
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): void {
+  const session = state.patchSession ?? emptyPatchSession();
+  const cartAvailable = deps.cartAvailable ?? isWebSerialAvailable();
+  root.append(
+    renderPatchMode({
+      session,
+      cartAvailable,
+      onLoadSourceCart: () => {
+        // Source can be Gen 1/2/3. Reuse the existing cart-read flow;
+        // when it succeeds, mirror the bytes into the patch session
+        // (NOT into state.kind=loaded — patch source is read-only and
+        // independent of the standard workbench).
+        void handlePatchSourceCart(dispatch, deps);
+      },
+      onLoadSourceSav: (file) => {
+        void handlePatchSourceSav(file, dispatch, deps);
+      },
+      onLoadDestCart: () => {
+        void handlePatchDestCart(dispatch, deps);
+      },
+      onLoadDestSav: (file) => {
+        void handlePatchDestSav(file, dispatch, deps);
+      },
+      onEditApplied: (boxIndex, slot, edits) => {
+        dispatch({ type: 'patch_edit_applied', boxIndex, slot, edits });
+      },
+    }),
+  );
+}
+
+/**
+ * Reuse the existing cart-read deps to load a source cart (any family)
+ * for the patch reference panel. Maps the result onto a
+ * `patch_source_loaded` dispatch.
+ */
+async function handlePatchSourceCart(
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): Promise<void> {
+  const cartReadDeps = deps.cartReadDeps;
+  if (!cartReadDeps) return;
+  const result = await readCart(cartReadDeps, {});
+  if (result.kind === 'error') {
+    console.error('[patch] source cart read failed:', result.error.reason);
+    return;
+  }
+  if (result.kind === 'gen12' && result.gen12) {
+    dispatch({
+      type: 'patch_source_loaded',
+      save: result.gen12,
+      cartLabel: result.banner,
+    });
+    return;
+  }
+  // gen3 source is also legitimate for reference (dest is also gen3 —
+  // but the user might compare two gen3 carts).
+  if (result.kind === 'gen3' && result.gen3) {
+    // Patch source carries SaveContents (Gen 1/2). For Gen 3 sources we
+    // skip — the modal is the visual comparison surface and Gen 3
+    // source-side rendering isn't implemented in S10 (the Plan only
+    // mentions Gen 1/2 sources for the bug recovery).
+    console.warn('[patch] Gen 3 source carts not yet supported as reference');
+    return;
+  }
+  console.warn('[patch] source cart returned unsupported result');
+}
+
+async function handlePatchSourceSav(
+  file: File,
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): Promise<void> {
+  const buf = await file.arrayBuffer();
+  const bytes = new Uint8Array(buf);
+  const parsed = deps.parseSave(bytes);
+  if (deps.isSaveError(parsed)) {
+    console.error('[patch] source SAV parse failed:', parsed.reason);
+    return;
+  }
+  dispatch({ type: 'patch_source_loaded', save: parsed, cartLabel: file.name });
+}
+
+async function handlePatchDestCart(
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): Promise<void> {
+  const cartReadDeps = deps.cartReadDeps;
+  if (!cartReadDeps) return;
+  const result = await readCart(cartReadDeps, {});
+  if (result.kind === 'error') {
+    console.error('[patch] dest cart read failed:', result.error.reason);
+    return;
+  }
+  if (result.kind === 'gen3' && result.gen3) {
+    dispatch({
+      type: 'patch_dest_loaded',
+      save: result.gen3,
+      cartLabel: result.banner,
+    });
+    return;
+  }
+  console.warn('[patch] dest cart was not Gen 3');
+}
+
+async function handlePatchDestSav(
+  file: File,
+  dispatch: (a: Action) => void,
+  deps: ControllerDeps,
+): Promise<void> {
+  const buf = await file.arrayBuffer();
+  const bytes = new Uint8Array(buf);
+  const parsed = deps.parseGen3Save(bytes);
+  if (deps.isGen3SaveError(parsed)) {
+    console.error('[patch] dest SAV parse failed:', parsed.reason);
+    return;
+  }
+  dispatch({ type: 'patch_dest_loaded', save: parsed, cartLabel: file.name });
+}

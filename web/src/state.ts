@@ -112,6 +112,46 @@ export interface DestSlot {
 export type Mode = 'upload' | 'cart';
 
 /**
+ * S10 — manual edits to a single Gen 3 mon block. Only present fields
+ * are changed by `patchGen3Slot`. Nature / abilitySlot are PID-derived
+ * and intentionally absent — modal is responsible for any PID search.
+ */
+export interface Gen3MonEdits {
+  readonly pid?: number;
+  readonly tid?: number;
+  readonly sid?: number;
+  readonly ivs?: {
+    readonly hp?: number;
+    readonly atk?: number;
+    readonly def?: number;
+    readonly spa?: number;
+    readonly spd?: number;
+    readonly spe?: number;
+  };
+  /** Validated upstream by `validateOtName` via `encodeGen3` round-trip. */
+  readonly otName?: string;
+}
+
+/**
+ * S10 — patch-mode session. Source/dest are independent loads; pending
+ * edits are keyed by `${boxIndex}:${slot}`. In-memory only per RA-2 #1
+ * (refresh loses corrections; the panel header carries a notice).
+ */
+export interface PatchSession {
+  readonly source: { readonly save: SaveContents; readonly cartLabel: string } | null;
+  readonly dest: { readonly save: Gen3SaveContents; readonly cartLabel: string } | null;
+  readonly pendingEdits: ReadonlyMap<string, Gen3MonEdits>;
+}
+
+export function patchEditKey(boxIndex: number, slot: number): string {
+  return `${boxIndex}:${slot}`;
+}
+
+export function emptyPatchSession(): PatchSession {
+  return { source: null, dest: null, pendingEdits: new Map() };
+}
+
+/**
  * S7a — cart-mode connection state (additive). When `mode === 'cart'`
  * AND a cart is connected, this carries the firmware variant + a
  * display-friendly device id (e.g. "GBxCart RW v1.4 PCB Firmware R26").
@@ -213,6 +253,15 @@ export interface CartSlot {
    *  by the controller right after `staging_loaded` if the migration
    *  dropped staged mons past the 30-slot cap. Dismissible. */
   readonly stagingMigrationOverflowBanner?: { readonly dropped: number };
+  /** S10 — `?patch=1` flag dispatched at boot. When true the renderer
+   *  swaps to the two-column patch workbench. Without the flag the app
+   *  is byte-identical to S9 (modulo the always-on stat-screen identity
+   *  strip per D4). */
+  readonly patchMode?: boolean;
+  /** S10 — patch-mode session: source/dest loads + in-memory pending
+   *  edits keyed by `${boxIndex}:${slot}`. Per RA-2 #1, NOT persisted
+   *  in IDB; refresh loses corrections. */
+  readonly patchSession?: PatchSession;
 }
 
 /**
@@ -516,7 +565,26 @@ export type Action =
       type: 'v2_dest_bytes_refreshed';
       readonly bytes: Uint8Array;
       readonly save: Gen3SaveContents;
-    };
+    }
+  // S10 patch-mode actions (per PLAN §3.5):
+  | { type: 'patch_mode_enabled' }
+  | {
+      type: 'patch_source_loaded';
+      readonly save: SaveContents;
+      readonly cartLabel: string;
+    }
+  | {
+      type: 'patch_dest_loaded';
+      readonly save: Gen3SaveContents;
+      readonly cartLabel: string;
+    }
+  | {
+      type: 'patch_edit_applied';
+      readonly boxIndex: number;
+      readonly slot: number;
+      readonly edits: Gen3MonEdits;
+    }
+  | { type: 'patch_session_cleared' };
 
 export const INITIAL_STATE: AppState = { kind: 'idle' };
 
@@ -1333,6 +1401,57 @@ export function reducer(state: AppState, action: Action): AppState {
       return {
         ...state,
         dest: { ...state.dest, save: action.save },
+      };
+    }
+    // S10 patch-mode reducers. All additive; without `?patch=1` none of
+    // these dispatch and the existing UI is unchanged.
+    case 'patch_mode_enabled': {
+      if (state.patchMode === true && state.patchSession !== undefined) return state;
+      return {
+        ...state,
+        patchMode: true,
+        patchSession: state.patchSession ?? emptyPatchSession(),
+      };
+    }
+    case 'patch_source_loaded': {
+      if (state.patchMode !== true) return state;
+      const session = state.patchSession ?? emptyPatchSession();
+      return {
+        ...state,
+        patchSession: {
+          ...session,
+          source: { save: action.save, cartLabel: action.cartLabel },
+        },
+      };
+    }
+    case 'patch_dest_loaded': {
+      if (state.patchMode !== true) return state;
+      const session = state.patchSession ?? emptyPatchSession();
+      return {
+        ...state,
+        patchSession: {
+          ...session,
+          dest: { save: action.save, cartLabel: action.cartLabel },
+        },
+      };
+    }
+    case 'patch_edit_applied': {
+      const session = state.patchSession;
+      if (!session || session.dest === null) return state;
+      const next = new Map(session.pendingEdits);
+      next.set(patchEditKey(action.boxIndex, action.slot), action.edits);
+      return {
+        ...state,
+        patchSession: { ...session, pendingEdits: next },
+      };
+    }
+    case 'patch_session_cleared': {
+      const session = state.patchSession;
+      if (!session) return state;
+      if (session.pendingEdits.size === 0) return state;
+      return {
+        ...state,
+        patchSession: { ...session, pendingEdits: new Map() },
       };
     }
     default:
