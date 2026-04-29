@@ -1987,9 +1987,10 @@ function resolveCartFlashContext(
     const refs = stagedMons.map((m) => stagedToGen12Ref(m, state)).filter(notNull);
     const composed = composeSourceWrite(state.sourceBytes, refs);
     if (isComposeError(composed)) {
+      const idx = 'stagedIndex' in composed ? composed.stagedIndex : -1;
       return {
         kind: 'error',
-        message: `composeSourceWrite failed at staged index ${composed.stagedIndex}: ${composed.reason}`,
+        message: `composeSourceWrite failed at staged index ${idx}: ${composed.reason}`,
       };
     }
     return {
@@ -2020,9 +2021,10 @@ function resolveCartFlashContext(
     }));
   const composed = composeDestinationWrite(state.dest.save, refs);
   if (isComposeError(composed)) {
+    const idx = 'stagedIndex' in composed ? composed.stagedIndex : -1;
     return {
       kind: 'error',
-      message: `composeDestinationWrite failed at staged index ${composed.stagedIndex}: ${composed.reason}`,
+      message: `composeDestinationWrite failed at staged index ${idx}: ${composed.reason}`,
     };
   }
   return {

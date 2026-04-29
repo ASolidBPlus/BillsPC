@@ -20,14 +20,21 @@ import type { Action, AppState, MonRef } from '../state.js';
 import type { ControllerDeps } from '../ui.js';
 import type {
   Gen12Pokemon,
+  Gen3MonEdits,
   Gen3SaveContents,
+  InjectTarget,
   SaveContents,
   SaveFormat,
   StagedMonRefGen12,
   StagedMonRefGen3,
 } from '@pokeportal/core';
 import type { CartFamily } from '@pokeportal/core';
-import { composeSourceWrite, composeDestinationWrite, isComposeError } from '@pokeportal/core';
+import {
+  composeSourceWrite,
+  composeDestinationWrite,
+  composeDestinationPatchWrite,
+  isComposeError,
+} from '@pokeportal/core';
 import { getSpecies, decodeGen12 } from '@pokeportal/core/internal';
 import type { StagedSlot } from '../cart/stagingStore.types.js';
 import type { StagingStore } from '../cart/stagingStore.js';
@@ -338,6 +345,36 @@ export interface CommitDeps {
   readonly composeDest?: typeof composeDestinationWrite;
 }
 
+/** S10 — turn the pendingEdits map into the composer-shaped array.
+ *  Keys are `${boxIndex}:${slot}`; we split and coerce to integers. */
+function patchEditsAsArray(
+  pendingEdits: ReadonlyMap<string, Gen3MonEdits>,
+): ReadonlyArray<{ target: InjectTarget; edits: Gen3MonEdits }> {
+  const out: Array<{ target: InjectTarget; edits: Gen3MonEdits }> = [];
+  for (const [key, edits] of pendingEdits) {
+    const [b, s] = key.split(':').map((x) => Number(x));
+    if (!Number.isInteger(b) || !Number.isInteger(s)) continue;
+    out.push({ target: { boxIndex: b!, slot: s! }, edits });
+  }
+  return out;
+}
+
+/** S10 — branch composer call: when `patches` is empty, defer to the
+ *  injected `composeDest` (or legacy fallback) so existing tests stay
+ *  golden; when patches exist, use the new patch-aware composer. */
+function composeBytesWithMaybePatches(
+  save: Gen3SaveContents,
+  refs: ReadonlyArray<StagedMonRefGen3>,
+  patches: ReadonlyArray<{ target: InjectTarget; edits: Gen3MonEdits }>,
+  composeDestOverride?: typeof composeDestinationWrite,
+): ReturnType<typeof composeDestinationWrite> {
+  if (patches.length === 0) {
+    const fn = composeDestOverride ?? composeDestinationWrite;
+    return fn(save, refs);
+  }
+  return composeDestinationPatchWrite(save, patches, refs);
+}
+
 /** Per AMEND-S8v2.3-6: in-flight guard reuses `state.cartFlash.kind`
  *  rather than introducing a separate `commitInFlight` flag. */
 function isCartFlashInFlight(state: AppState): boolean {
@@ -521,9 +558,8 @@ export async function runCommitSource(deps: CommitDeps): Promise<void> {
   const composeFn = deps.composeSource ?? composeSourceWrite;
   const composed = composeFn(state.sourceBytes, sortRefsForDelete(refs));
   if (isComposeError(composed)) {
-    console.error(
-      `runCommitSource: composeSourceWrite failed at staged index ${composed.stagedIndex}`,
-    );
+    const idx = 'stagedIndex' in composed ? composed.stagedIndex : -1;
+    console.error(`runCommitSource: composeSourceWrite failed at staged index ${idx}`);
     return;
   }
   const newBytes = composed;
@@ -651,17 +687,32 @@ export async function runCommitDestination(deps: CommitDeps): Promise<void> {
     console.error(`runCommitDestination: ${built.reason}`);
     return;
   }
-  if (built.slotIdxs.length === 0) return;
 
-  const composeFn = deps.composeDest ?? composeDestinationWrite;
-  const composed = composeFn(state.dest.save, built.refs);
-  if (isComposeError(composed)) {
+  // S10 — branch on patch-mode pendingEdits. When patches are present
+  // we use composeDestinationPatchWrite (which can interleave with
+  // staged Gen 3 injects); otherwise the legacy composeDestinationWrite
+  // path runs unchanged. RA-1: this preserves the existing transfer
+  // flow's "no occupied targets" contract.
+  const patches: ReadonlyArray<{ target: InjectTarget; edits: Gen3MonEdits }> = patchEditsAsArray(
+    state.patchSession?.pendingEdits ?? new Map(),
+  );
+
+  if (built.slotIdxs.length === 0 && patches.length === 0) return;
+
+  const newBytes = composeBytesWithMaybePatches(
+    state.dest.save,
+    built.refs,
+    patches,
+    deps.composeDest,
+  );
+  if (isComposeError(newBytes)) {
     console.error(
-      `runCommitDestination: composeDestinationWrite failed at staged index ${composed.stagedIndex}`,
+      `runCommitDestination: composer failed (${newBytes.reason}) at index ${
+        newBytes.reason === 'GEN3_PATCH_FAILED' ? newBytes.patchIndex : newBytes.stagedIndex
+      }`,
     );
     return;
   }
-  const newBytes = composed;
 
   const cartMode = !!state.cartConnection;
   const cartLabel = state.cartConnection?.deviceId ?? state.dest.fileName;
@@ -753,6 +804,12 @@ async function commitDestFinalize(
     }
   });
   dispatch({ type: 'v2_dest_committed', slotIdxs });
+  // S10 — clear any patch-mode pending edits that just landed. The
+  // patcher already mutated the dest bytes; leaving the in-memory
+  // pendingEdits around would queue a duplicate flash next time.
+  if ((deps.state.patchSession?.pendingEdits.size ?? 0) > 0) {
+    dispatch({ type: 'patch_session_cleared' });
+  }
 }
 
 /**

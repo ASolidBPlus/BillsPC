@@ -38,6 +38,8 @@ describe('public API surface', () => {
       'WriteAndVerifySink',
       'WriteVerifyError',
       'agbFlashSectorPlan',
+      // S10 — manual cart-patch composer:
+      'composeDestinationPatchWrite',
       'composeDestinationWrite',
       'composeSourceWrite',
       'convert',
@@ -62,6 +64,8 @@ describe('public API surface', () => {
       'isComposeError',
       'isDecodeError',
       'isGen3InjectError',
+      // S10 — patch error guard:
+      'isGen3PatchError',
       'isGen3SaveError',
       'isRefusal',
       'isSaveError',
@@ -70,10 +74,20 @@ describe('public API surface', () => {
       'packParty',
       'parseCartHeader',
       'parseGen3Save',
+      // S10 — patch primitives:
+      'parsePid',
       'parseSave',
+      'patchGen3Slot',
+      'patchSlotInSave',
       'planTransfer',
       'setCartDebug',
       'unpackBoxed',
+      // S10 — edit-form validators:
+      'validateIv',
+      'validateOtName',
+      'validatePid',
+      'validateSid',
+      'validateTid',
     ]);
   });
 

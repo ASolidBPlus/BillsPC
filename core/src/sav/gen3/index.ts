@@ -25,6 +25,22 @@ export {
   type InjectTarget,
 } from './injectMon.js';
 
+// S10 — manual cart-patch primitives.
+export { patchGen3Slot, isGen3PatchError } from './patchMon.js';
+export type { Gen3MonEdits, Gen3PatchError, Gen3PatchErrorReason } from './patchMon.js';
+export { patchSlotInSave } from './patchSave.js';
+export {
+  validatePid,
+  parsePid,
+  validateTid,
+  validateSid,
+  validateIv,
+  validateOtName,
+  type Validation,
+  type ValidationOk,
+  type ValidationFail,
+} from './editValidate.js';
+
 export {
   detectGen3,
   familyOf,

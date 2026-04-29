@@ -10,5 +10,10 @@ export type {
   TransferMatrixRefusalReason,
 } from './matrix.js';
 
-export { composeSourceWrite, composeDestinationWrite, isComposeError } from './composeWrite.js';
+export {
+  composeSourceWrite,
+  composeDestinationWrite,
+  composeDestinationPatchWrite,
+  isComposeError,
+} from './composeWrite.js';
 export type { StagedMonRefGen12, StagedMonRefGen3, ComposeError } from './composeWrite.js';

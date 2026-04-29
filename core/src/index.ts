@@ -46,6 +46,24 @@ export {
   PCBUFFER_BOX_COUNT,
   PCBUFFER_SLOTS_PER_BOX,
   PCBUFFER_SLOT_BYTES,
+  // S10 patch primitives.
+  patchGen3Slot,
+  patchSlotInSave,
+  isGen3PatchError,
+  validatePid,
+  parsePid,
+  validateTid,
+  validateSid,
+  validateIv,
+  validateOtName,
+} from './sav/gen3/index.js';
+export type {
+  Gen3MonEdits,
+  Gen3PatchError,
+  Gen3PatchErrorReason,
+  Validation,
+  ValidationOk,
+  ValidationFail,
 } from './sav/gen3/index.js';
 export type {
   Gen3SaveContents,
@@ -108,6 +126,7 @@ export type {
 export {
   composeSourceWrite,
   composeDestinationWrite,
+  composeDestinationPatchWrite,
   isComposeError,
 } from './transfer/composeWrite.js';
 export type { StagedMonRefGen12, StagedMonRefGen3, ComposeError } from './transfer/composeWrite.js';

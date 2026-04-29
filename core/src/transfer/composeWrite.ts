@@ -24,8 +24,12 @@ import { deleteMonGen2, type Gen2DeleteRef, type Gen2WriterFormat } from '../sav
 import {
   injectIntoSave,
   isGen3InjectError,
+  patchSlotInSave,
+  isGen3PatchError,
   type Gen3SaveContents,
   type Gen3InjectError,
+  type Gen3PatchError,
+  type Gen3MonEdits,
   type InjectTarget,
 } from '../sav/gen3/index.js';
 
@@ -51,6 +55,12 @@ export type ComposeError =
       readonly reason: 'GEN12_DELETE_FAILED';
       readonly message: string;
       readonly stagedIndex: number;
+    }
+  | {
+      readonly kind: 'compose_error';
+      readonly reason: 'GEN3_PATCH_FAILED';
+      readonly underlying: Gen3PatchError;
+      readonly patchIndex: number;
     };
 
 export function isComposeError(x: unknown): x is ComposeError {
@@ -113,6 +123,57 @@ export function composeDestinationWrite(
       };
     }
     current = result;
+  }
+  return new Uint8Array(current.bytes);
+}
+
+/**
+ * S10 — combined patch + inject composer for the manual cart-patch flow.
+ *
+ * Per RA-1: this is a SEPARATE composer from `composeDestinationWrite`.
+ * That function's "no occupied targets" contract stays sacred for the
+ * existing transfer flow; the patch path needs to MUTATE occupied
+ * targets (every patch target is, by definition, filled).
+ *
+ * Order: patches first (each via `patchSlotInSave` threading the
+ * updated save), then any staged injects on the patched save. Final
+ * bytes feed `flashCart` unchanged. The optional `staged` array makes
+ * it ergonomic to combine a patch session with a transfer session in
+ * a single flash, but the typical S10 caller passes patches only.
+ */
+export function composeDestinationPatchWrite(
+  save: Gen3SaveContents,
+  patches: readonly { readonly target: InjectTarget; readonly edits: Gen3MonEdits }[],
+  staged?: readonly StagedMonRefGen3[],
+): Uint8Array | ComposeError {
+  let current = save;
+  for (let i = 0; i < patches.length; i++) {
+    const p = patches[i]!;
+    const result = patchSlotInSave(current, p.target, p.edits);
+    if (isGen3PatchError(result)) {
+      return {
+        kind: 'compose_error',
+        reason: 'GEN3_PATCH_FAILED',
+        underlying: result,
+        patchIndex: i,
+      };
+    }
+    current = result;
+  }
+  if (staged && staged.length > 0) {
+    for (let i = 0; i < staged.length; i++) {
+      const s = staged[i]!;
+      const result = injectIntoSave(current, s.target, s.bytes);
+      if (isGen3InjectError(result)) {
+        return {
+          kind: 'compose_error',
+          reason: 'GEN3_INJECT_FAILED',
+          underlying: result,
+          stagedIndex: i,
+        };
+      }
+      current = result;
+    }
   }
   return new Uint8Array(current.bytes);
 }

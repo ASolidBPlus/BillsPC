@@ -345,7 +345,32 @@ export function renderEmeraldStatScreen(
   );
   wrap.append(body);
 
+  // S10 D4 — always-on PID/TID/SID identity strip. Renders both inside
+  // and outside patch mode (read-only outside; patch mode wires the
+  // click-to-edit elsewhere).
+  wrap.append(renderIdentityStrip(mon.pid, mon.tid, mon.sid));
+
   return wrap;
+}
+
+/**
+ * S10 D4 — read-only PID/TID/SID strip appended to every Gen 3
+ * stat-screen render (Emerald + FRLG variants). Always rendered
+ * regardless of patch mode (per the user's "always-on" decision); the
+ * click-to-edit behavior lives on the patch-mode dest browser, not on
+ * this strip itself.
+ */
+function renderIdentityStrip(pid: number, tid: number, sid: number): HTMLElement {
+  const strip = el('div', { class: 'em-screen-identity' });
+  const hex = pid.toString(16).toUpperCase().padStart(8, '0');
+  strip.append(
+    el('span', { class: 'em-screen-identity-pid' }, `PID 0x${hex}`),
+    el('span', { class: 'em-screen-identity-sep' }, ' · '),
+    el('span', { class: 'em-screen-identity-tid' }, `TID ${String(tid).padStart(5, '0')}`),
+    el('span', { class: 'em-screen-identity-sep' }, ' · '),
+    el('span', { class: 'em-screen-identity-sid' }, `SID ${String(sid).padStart(5, '0')}`),
+  );
+  return strip;
 }
 
 function emRow(
@@ -526,6 +551,9 @@ function renderFrlgAfterPanel(gen3: Gen3Intermediate, source?: Gen12Pokemon): HT
   if (desc) {
     wrap.append(el('div', { class: 'frlg-text frlg-val frlg-ability-desc' }, desc));
   }
+
+  // S10 D4 — always-on PID/TID/SID strip on the FRLG variant too.
+  wrap.append(renderIdentityStrip(gen3.pid, gen3.tid, gen3.sid));
 
   return wrap;
 }
