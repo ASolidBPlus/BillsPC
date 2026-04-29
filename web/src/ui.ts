@@ -3054,6 +3054,66 @@ function renderPatchModeWorkbench(
       },
     }),
   );
+
+  // Surface the SAME cart-read / flash / recovery overlays the regular
+  // workbench shows. The dispatches fire from runCommitDestination +
+  // handlePatchDestCart progress callbacks; without rendering them here,
+  // patch mode silently performs reads/flashes with no UI feedback.
+  const cf = state.cartFlash;
+  if (cf && (cf.kind === 'cart_flash_progressing' || cf.kind === 'cart_recovery_progressing')) {
+    root.append(flashProgressOverlay({ state: cf }));
+  } else if (cf && cf.kind === 'cart_flash_failed') {
+    root.append(
+      recoveryDialog({
+        errorReason: cf.errorReason,
+        errorMessage: cf.errorMessage,
+        recoveryAvailable: cf.recoveryAvailable,
+        attemptsExhausted: false,
+        onRetry: () => {
+          if (cf.recoveryAvailable) {
+            dispatch({
+              type: 'recovery_started',
+              backupFilename: cf.recoveryAvailable.backupFilename,
+            });
+          }
+        },
+        onDismiss: () => dispatch({ type: 'cart_flash_dismissed' }),
+      }),
+    );
+  } else if (cf && cf.kind === 'cart_recovery_failed') {
+    root.append(
+      recoveryDialog({
+        errorReason: cf.errorReason,
+        errorMessage: cf.errorMessage,
+        recoveryAvailable: null,
+        attemptsExhausted: cf.attemptsExhausted,
+        onRetry: () => dispatch({ type: 'cart_flash_dismissed' }),
+        onDismiss: () => dispatch({ type: 'cart_flash_dismissed' }),
+      }),
+    );
+  }
+  // Cart-read progress overlay — same `cart-loading-overlay` shape the
+  // regular workbench mounts on document.body. Re-built every render;
+  // disappears when cartReadProgress clears.
+  for (const stale of Array.from(document.body.querySelectorAll('.cart-loading-overlay'))) {
+    stale.remove();
+  }
+  if (state.cartReadProgress) {
+    const overlay = el('div', { class: 'cart-loading-overlay' });
+    const inner = el('div', { class: 'cart-loading-inner' });
+    const sideLabel = state.cartReadProgress.side === 'source' ? 'SOURCE' : 'DESTINATION';
+    inner.append(el('div', { class: 'cart-loading-phase' }, `READING ${sideLabel} CART…`));
+    inner.append(
+      cartProgress({
+        label: state.cartConnection?.deviceId ?? '',
+        bytesRead: state.cartReadProgress.bytesRead,
+        bytesTotal: state.cartReadProgress.bytesTotal,
+        ...(state.cartReadProgress.phase ? { phase: state.cartReadProgress.phase } : {}),
+      }),
+    );
+    overlay.append(inner);
+    document.body.append(overlay);
+  }
 }
 
 /**
@@ -3067,7 +3127,25 @@ async function handlePatchSourceCart(
 ): Promise<void> {
   const cartReadDeps = deps.cartReadDeps;
   if (!cartReadDeps) return;
-  const result = await readCart(cartReadDeps, {});
+  dispatch({ type: 'cart_connect_started', side: 'source' });
+  const result = await readCart(cartReadDeps, {
+    onPhase: (phase) =>
+      dispatch({
+        type: 'cart_connect_progress',
+        side: 'source',
+        bytesRead: 0,
+        bytesTotal: 0,
+        ...(phase ? { phase } : {}),
+      }),
+    onProgress: (p) =>
+      dispatch({
+        type: 'cart_connect_progress',
+        side: 'source',
+        bytesRead: p.bytesRead,
+        bytesTotal: p.bytesTotal,
+        phase: 'reading',
+      }),
+  });
   if (result.kind === 'error') {
     console.error('[patch] source cart read failed:', result.error.reason);
     return;
@@ -3114,7 +3192,25 @@ async function handlePatchDestCart(
 ): Promise<void> {
   const cartReadDeps = deps.cartReadDeps;
   if (!cartReadDeps) return;
-  const result = await readCart(cartReadDeps, {});
+  dispatch({ type: 'cart_connect_started', side: 'dest' });
+  const result = await readCart(cartReadDeps, {
+    onPhase: (phase) =>
+      dispatch({
+        type: 'cart_connect_progress',
+        side: 'dest',
+        bytesRead: 0,
+        bytesTotal: 0,
+        ...(phase ? { phase } : {}),
+      }),
+    onProgress: (p) =>
+      dispatch({
+        type: 'cart_connect_progress',
+        side: 'dest',
+        bytesRead: p.bytesRead,
+        bytesTotal: p.bytesTotal,
+        phase: 'reading',
+      }),
+  });
   if (result.kind === 'error') {
     console.error('[patch] dest cart read failed:', result.error.reason);
     return;
