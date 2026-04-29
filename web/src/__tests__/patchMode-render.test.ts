@@ -189,12 +189,16 @@ describe('source-mon click → details pane (Stage 3)', () => {
         onLoadSourceSav: () => {},
         onLoadDestCart: () => {},
         onLoadDestSav: () => {},
+        // Stub convert — returns null to skip the AFTER panel; we only
+        // assert the BEFORE/AFTER modal overlay opens, not its contents.
+        convert: () => null,
       }),
     );
     // Find the first occupied box-tile in the source browser and click it.
     const occupied = host.querySelector('.patch-source-browser .box-tile.is-occupied');
     expect(occupied).not.toBeNull();
     (occupied as HTMLElement).click();
-    expect(document.body.querySelector('.source-details-overlay')).not.toBeNull();
+    // Stat-screen modal opens with `.ss-overlay` class.
+    expect(document.body.querySelector('.ss-overlay')).not.toBeNull();
   });
 });

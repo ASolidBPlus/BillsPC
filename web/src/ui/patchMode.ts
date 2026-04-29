@@ -11,14 +11,20 @@
  * branches in `ui.ts`).
  */
 
-import type { Gen12Pokemon, Gen3SaveContents, SaveContents } from '@pokeportal/core';
+import type {
+  Gen12Pokemon,
+  Gen3Intermediate,
+  Gen3SaveContents,
+  SaveContents,
+  SaveFormat,
+} from '@pokeportal/core';
 import type { Gen3MonEdits, MonRef, PatchSession } from '../state.js';
 import { el } from './dom.js';
 import { destBoxBrowser } from './destBoxBrowser.js';
 import { boxBrowser, entriesForBox } from './boxBrowser.js';
 import { textDialog } from './dialog.js';
 import { openEditMonModal } from './editMonModal.js';
-import { openSourceDetailsPane } from './sourceDetailsPane.js';
+import { openStatScreenModal } from './statScreen.js';
 
 export interface PatchModeProps {
   readonly session: PatchSession;
@@ -34,6 +40,10 @@ export interface PatchModeProps {
    *  responsibility lives in the controller; this prop is just the
    *  dispatch hook. */
   readonly onEditApplied?: (boxIndex: number, slot: number, edits: Gen3MonEdits) => void;
+  /** Used by source-mon click to render the BEFORE/AFTER stat-inspect
+   *  modal (with computed Gen 3 PID / SID / TID / IVs the user types
+   *  into the dest edit modal manually). */
+  readonly convert?: (mon: Gen12Pokemon) => Gen3Intermediate | null;
 }
 
 export function renderPatchMode(props: PatchModeProps): HTMLElement {
@@ -87,7 +97,7 @@ function renderSourceColumn(props: PatchModeProps): HTMLElement {
         { class: 'trainer-dialog patch-source-summary' },
       ),
     );
-    col.append(renderReadOnlySourceBrowser(src.save, props.onSourceMonOpen));
+    col.append(renderReadOnlySourceBrowser(src.save, props.convert, props.onSourceMonOpen));
     return col;
   }
 
@@ -142,6 +152,7 @@ function renderSourceColumn(props: PatchModeProps): HTMLElement {
 
 function renderReadOnlySourceBrowser(
   save: SaveContents,
+  convert?: (mon: Gen12Pokemon) => Gen3Intermediate | null,
   onMonOpen?: (ref: MonRef) => void,
 ): HTMLElement {
   const wrap = el('div', { class: 'patch-source-browser' });
@@ -176,12 +187,17 @@ function renderReadOnlySourceBrowser(
           renderInto(host);
         },
         onMonOpen: (ref) => {
-          // S10 Stage 3 — clicking a source mon opens a read-only details
-          // pane showing TID/SID/PID/IVs/OT/nickname for visual
-          // comparison with the dest. The user reads + types the values
-          // into the dest modal manually (D2: no auto-match).
+          // S10 Stage 3 — clicking a source mon opens the FULL existing
+          // STAT INSPECT modal (BEFORE = source DV/StatExp; AFTER =
+          // computed Gen 3 PID/SID/TID/IVs from convert). The user reads
+          // the AFTER values + types them into the dest edit modal.
           const mon = monAtRef(save, ref);
-          if (mon) openSourceDetailsPane(mon);
+          if (mon) {
+            openStatScreenModal({
+              subject: { kind: 'sourceMon', mon, sourceFormat: save.format },
+              ...(convert ? { convert } : {}),
+            });
+          }
           if (onMonOpen) onMonOpen(ref);
         },
       }),

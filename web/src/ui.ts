@@ -3033,6 +3033,11 @@ function renderPatchModeWorkbench(
       onEditApplied: (boxIndex, slot, edits) => {
         dispatch({ type: 'patch_edit_applied', boxIndex, slot, edits });
       },
+      convert: (mon) => {
+        const r = deps.convert(mon);
+        if (deps.isRefusal(r)) return null;
+        return r;
+      },
     }),
   );
 }

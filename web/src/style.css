@@ -3489,6 +3489,31 @@ button.secondary {
 .em-screen-row:last-child {
   border-bottom: 0;
 }
+
+/* S10 D4 — always-on PID/TID/SID identity strip on Emerald + FRLG
+   stat-screens. The whole point of patch mode is being able to read
+   these values from the source-side AFTER panel and type them into
+   the dest edit modal — so they need to be obvious and not get
+   visually buried. */
+.em-screen-identity {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin-top: 8px;
+  padding: 6px 8px;
+  background: #f8e6a8;
+  border: 1px dashed #b89640;
+  border-radius: 3px;
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #2c1d08;
+}
+.em-screen-identity-pid {
+  font-weight: bold;
+}
+.em-screen-identity-sep {
+  color: #b89640;
+}
 .em-screen-row-label {
   font-weight: normal;
 }
