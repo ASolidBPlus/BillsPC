@@ -11,13 +11,14 @@
  * branches in `ui.ts`).
  */
 
-import type { Gen3SaveContents, SaveContents } from '@pokeportal/core';
+import type { Gen12Pokemon, Gen3SaveContents, SaveContents } from '@pokeportal/core';
 import type { Gen3MonEdits, MonRef, PatchSession } from '../state.js';
 import { el } from './dom.js';
 import { destBoxBrowser } from './destBoxBrowser.js';
 import { boxBrowser, entriesForBox } from './boxBrowser.js';
 import { textDialog } from './dialog.js';
 import { openEditMonModal } from './editMonModal.js';
+import { openSourceDetailsPane } from './sourceDetailsPane.js';
 
 export interface PatchModeProps {
   readonly session: PatchSession;
@@ -175,6 +176,12 @@ function renderReadOnlySourceBrowser(
           renderInto(host);
         },
         onMonOpen: (ref) => {
+          // S10 Stage 3 — clicking a source mon opens a read-only details
+          // pane showing TID/SID/PID/IVs/OT/nickname for visual
+          // comparison with the dest. The user reads + types the values
+          // into the dest modal manually (D2: no auto-match).
+          const mon = monAtRef(save, ref);
+          if (mon) openSourceDetailsPane(mon);
           if (onMonOpen) onMonOpen(ref);
         },
       }),
@@ -182,6 +189,12 @@ function renderReadOnlySourceBrowser(
   };
   renderInto(wrap);
   return wrap;
+}
+
+function monAtRef(save: SaveContents, ref: MonRef): Gen12Pokemon | null {
+  if (ref.bucket === 'party') return save.party[ref.slot] ?? null;
+  if (ref.bucket === 'currentBox') return save.currentBox?.[ref.slot] ?? null;
+  return save.boxes[ref.boxIndex ?? 0]?.[ref.slot] ?? null;
 }
 
 function clamp(v: number, lo: number, hi: number): number {
