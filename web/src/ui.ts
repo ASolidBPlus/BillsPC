@@ -3120,6 +3120,21 @@ async function handlePatchDestCart(
     return;
   }
   if (result.kind === 'gen3' && result.gen3) {
+    // Dispatch BOTH actions: cart_dest_connect_succeeded populates
+    // state.dest + state.cartConnection (which the existing flash flow
+    // reads to know "we're in cart mode, fire BackupSink + flash + verify"),
+    // and patch_dest_loaded populates state.patchSession.dest for the
+    // patch-mode UI to render.
+    dispatch({
+      type: 'cart_dest_connect_succeeded',
+      connection: {
+        variant: detectVariantFromBanner(result.banner),
+        deviceId: result.banner,
+      },
+      save: result.gen3,
+      bytes: result.bytes,
+      fileName: result.fileName,
+    });
     dispatch({
       type: 'patch_dest_loaded',
       save: result.gen3,
@@ -3142,5 +3157,10 @@ async function handlePatchDestSav(
     console.error('[patch] dest SAV parse failed:', parsed.reason);
     return;
   }
+  // SAV-loaded dest: populate state.dest (the existing flash flow uses
+  // it to know the current bytes / file name for the download path)
+  // but NOT cartConnection — without a cart, the commit falls through
+  // to the download-modified-SAV branch, which is exactly what we want.
+  dispatch({ type: 'dest_file_parsed', save: parsed, fileName: file.name });
   dispatch({ type: 'patch_dest_loaded', save: parsed, cartLabel: file.name });
 }
