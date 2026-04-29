@@ -3571,6 +3571,26 @@ button.secondary {
   justify-content: flex-end;
   margin-top: 12px;
 }
+
+.patch-mode-pending-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #fff4cc;
+  border: 1px dashed #b89640;
+  border-radius: 3px;
+}
+.patch-mode-pending {
+  font-family: 'PokemonGB', 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #4a3010;
+}
+.patch-flash-btn {
+  white-space: nowrap;
+}
 .em-screen-row-label {
   font-weight: normal;
 }

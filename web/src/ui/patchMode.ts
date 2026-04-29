@@ -44,6 +44,11 @@ export interface PatchModeProps {
    *  modal (with computed Gen 3 PID / SID / TID / IVs the user types
    *  into the dest edit modal manually). */
   readonly convert?: (mon: Gen12Pokemon) => Gen3Intermediate | null;
+  /** Called when the user clicks "Flash patches to cart". Only enabled
+   *  when `session.pendingEdits.size > 0` AND `session.dest` is set.
+   *  Hooks into the existing `runCommitDestination` flow which already
+   *  branches on `pendingEdits.size > 0` to use the patch composer. */
+  readonly onFlashPatches?: () => void;
 }
 
 export function renderPatchMode(props: PatchModeProps): HTMLElement {
@@ -61,7 +66,8 @@ export function renderPatchMode(props: PatchModeProps): HTMLElement {
     ),
   );
   if (props.session.pendingEdits.size > 0) {
-    header.append(
+    const pendingRow = el('div', { class: 'patch-mode-pending-row' });
+    pendingRow.append(
       el(
         'div',
         { class: 'patch-mode-pending' },
@@ -70,6 +76,16 @@ export function renderPatchMode(props: PatchModeProps): HTMLElement {
         } staged.`,
       ),
     );
+    if (props.onFlashPatches && props.session.dest) {
+      const flashBtn = el(
+        'button',
+        { class: 'primary patch-flash-btn', type: 'button' },
+        'Flash patches to cart',
+      ) as HTMLButtonElement;
+      flashBtn.addEventListener('click', () => props.onFlashPatches?.());
+      pendingRow.append(flashBtn);
+    }
+    header.append(pendingRow);
   }
   root.append(header);
 

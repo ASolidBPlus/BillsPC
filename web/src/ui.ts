@@ -3038,6 +3038,20 @@ function renderPatchModeWorkbench(
         if (deps.isRefusal(r)) return null;
         return r;
       },
+      onFlashPatches: () => {
+        // Reuse the existing dest-commit pipeline; v2Actions branches on
+        // `pendingEdits.size > 0` to call `composeDestinationPatchWrite`
+        // instead of the regular composer. BackupSink wraps the flash
+        // unchanged.
+        void runCommitDestinationImpl({
+          state,
+          dispatch,
+          controller: deps,
+          flashDeps: deps.flashDeps ?? null,
+          confirmFlashDialog,
+          downloadFn: blobDownload,
+        });
+      },
     }),
   );
 }
