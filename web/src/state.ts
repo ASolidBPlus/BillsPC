@@ -141,6 +141,12 @@ export interface PatchSession {
   readonly source: { readonly save: SaveContents; readonly cartLabel: string } | null;
   readonly dest: { readonly save: Gen3SaveContents; readonly cartLabel: string } | null;
   readonly pendingEdits: ReadonlyMap<string, Gen3MonEdits>;
+  /** Box-browser cursor state for the source pane — survives re-renders
+   *  triggered by patch_edit_applied so applying an edit doesn't snap
+   *  the source back to box 1. */
+  readonly sourceBoxIndex: number;
+  /** Same for the destination pane. */
+  readonly destBoxIndex: number;
 }
 
 export function patchEditKey(boxIndex: number, slot: number): string {
@@ -148,7 +154,7 @@ export function patchEditKey(boxIndex: number, slot: number): string {
 }
 
 export function emptyPatchSession(): PatchSession {
-  return { source: null, dest: null, pendingEdits: new Map() };
+  return { source: null, dest: null, pendingEdits: new Map(), sourceBoxIndex: 0, destBoxIndex: 0 };
 }
 
 /**
@@ -584,7 +590,9 @@ export type Action =
       readonly slot: number;
       readonly edits: Gen3MonEdits;
     }
-  | { type: 'patch_session_cleared' };
+  | { type: 'patch_session_cleared' }
+  | { type: 'patch_source_box_changed'; boxIndex: number }
+  | { type: 'patch_dest_box_changed'; boxIndex: number };
 
 export const INITIAL_STATE: AppState = { kind: 'idle' };
 
@@ -1452,6 +1460,22 @@ export function reducer(state: AppState, action: Action): AppState {
       return {
         ...state,
         patchSession: { ...session, pendingEdits: new Map() },
+      };
+    }
+    case 'patch_source_box_changed': {
+      const session = state.patchSession ?? emptyPatchSession();
+      if (action.boxIndex === session.sourceBoxIndex) return state;
+      return {
+        ...state,
+        patchSession: { ...session, sourceBoxIndex: action.boxIndex },
+      };
+    }
+    case 'patch_dest_box_changed': {
+      const session = state.patchSession ?? emptyPatchSession();
+      if (action.boxIndex === session.destBoxIndex) return state;
+      return {
+        ...state,
+        patchSession: { ...session, destBoxIndex: action.boxIndex },
       };
     }
     default:

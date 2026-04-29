@@ -3052,6 +3052,12 @@ function renderPatchModeWorkbench(
           downloadFn: blobDownload,
         });
       },
+      onSourceBoxChange: (boxIndex) => {
+        dispatch({ type: 'patch_source_box_changed', boxIndex });
+      },
+      onDestBoxChange: (boxIndex) => {
+        dispatch({ type: 'patch_dest_box_changed', boxIndex });
+      },
     }),
   );
 

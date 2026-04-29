@@ -58,6 +58,11 @@ export interface EditMonModalOpts {
   readonly slot: number;
   readonly onApply: (edits: Gen3MonEdits) => void;
   readonly onCancel: () => void;
+  /** Pending edit for this slot from a prior Apply that hasn't flashed
+   *  yet — overlay these values on top of the decoded slot bytes so
+   *  re-opening the modal shows the staged values, not the unmodified
+   *  cart bytes. */
+  readonly pendingEdit?: Gen3MonEdits;
 }
 
 interface FieldState {
@@ -157,21 +162,39 @@ export function openEditMonModal(opts: EditMonModalOpts): void {
 
   // Best-effort decode of the OT bytes. The modal lets the user retype
   // OT freely; the validator handles round-trip safety.
-  const otString = decodeOtBytes(decoded.otName);
+  const baselineOt = decodeOtBytes(decoded.otName);
+
+  // Overlay pending edits from a prior Apply (not yet flashed) so the
+  // modal shows the LATEST staged values when the user re-opens it.
+  const pe = opts.pendingEdit;
+  const initialPid = pe?.pid !== undefined ? pe.pid : decoded.pid;
+  const initialTid = pe?.tid !== undefined ? pe.tid : decoded.tid;
+  const initialSid = pe?.sid !== undefined ? pe.sid : decoded.sid;
+  const initialIvs = {
+    hp: pe?.ivs?.hp !== undefined ? pe.ivs.hp : decoded.ivs.hp,
+    atk: pe?.ivs?.atk !== undefined ? pe.ivs.atk : decoded.ivs.atk,
+    def: pe?.ivs?.def !== undefined ? pe.ivs.def : decoded.ivs.def,
+    spa: pe?.ivs?.spa !== undefined ? pe.ivs.spa : decoded.ivs.spa,
+    spd: pe?.ivs?.spd !== undefined ? pe.ivs.spd : decoded.ivs.spd,
+    spe: pe?.ivs?.spe !== undefined ? pe.ivs.spe : decoded.ivs.spe,
+  };
+  const initialOt = pe?.otName !== undefined ? pe.otName : baselineOt;
 
   const fields: FieldState = {
-    pid: decoded.pid.toString(16).toUpperCase().padStart(8, '0'),
-    tid: String(decoded.tid),
-    sid: String(decoded.sid),
-    hp: String(decoded.ivs.hp),
-    atk: String(decoded.ivs.atk),
-    def: String(decoded.ivs.def),
-    spa: String(decoded.ivs.spa),
-    spd: String(decoded.ivs.spd),
-    spe: String(decoded.ivs.spe),
-    ot: otString,
+    // Prefix with `0x` so the user can SEE it's hex rather than guessing
+    // (an 8-digit value like "12345678" is ambiguous between hex and
+    // decimal). parsePid handles `0x` prefix correctly.
+    pid: '0x' + initialPid.toString(16).toUpperCase().padStart(8, '0'),
+    tid: String(initialTid),
+    sid: String(initialSid),
+    hp: String(initialIvs.hp),
+    atk: String(initialIvs.atk),
+    def: String(initialIvs.def),
+    spa: String(initialIvs.spa),
+    spd: String(initialIvs.spd),
+    spe: String(initialIvs.spe),
+    ot: initialOt,
   };
-  const baselineOt = otString;
 
   const overlay = el('div', { class: 'edit-mon-overlay' });
   const inner = el('div', { class: 'edit-mon-inner card' });

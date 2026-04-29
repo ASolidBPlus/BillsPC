@@ -49,7 +49,7 @@ describe('openEditMonModal — live derived display', () => {
     const overlay = document.body.querySelector('.edit-mon-overlay');
     expect(overlay).not.toBeNull();
     const pidInput = overlay!.querySelector('.edit-mon-input-pid') as HTMLInputElement;
-    expect(pidInput.value).toMatch(/^[0-9A-F]{8}$/);
+    expect(pidInput.value).toMatch(/^0x[0-9A-F]{8}$/);
     const tidInput = overlay!.querySelector('.edit-mon-input-tid') as HTMLInputElement;
     expect(/^\d+$/.test(tidInput.value)).toBe(true);
     // Six IV inputs.

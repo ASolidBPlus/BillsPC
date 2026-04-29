@@ -49,6 +49,11 @@ export interface PatchModeProps {
    *  Hooks into the existing `runCommitDestination` flow which already
    *  branches on `pendingEdits.size > 0` to use the patch composer. */
   readonly onFlashPatches?: () => void;
+  /** Source/dest box-browser nav callbacks — both panes lift their
+   *  boxIndex into PatchSession state so patch_edit_applied dispatches
+   *  don't reset the box back to 1. */
+  readonly onSourceBoxChange?: (boxIndex: number) => void;
+  readonly onDestBoxChange?: (boxIndex: number) => void;
 }
 
 export function renderPatchMode(props: PatchModeProps): HTMLElement {
@@ -113,7 +118,15 @@ function renderSourceColumn(props: PatchModeProps): HTMLElement {
         { class: 'trainer-dialog patch-source-summary' },
       ),
     );
-    col.append(renderReadOnlySourceBrowser(src.save, props.convert, props.onSourceMonOpen));
+    col.append(
+      renderReadOnlySourceBrowser(
+        src.save,
+        props.session.sourceBoxIndex,
+        props.onSourceBoxChange,
+        props.convert,
+        props.onSourceMonOpen,
+      ),
+    );
     return col;
   }
 
@@ -168,15 +181,16 @@ function renderSourceColumn(props: PatchModeProps): HTMLElement {
 
 function renderReadOnlySourceBrowser(
   save: SaveContents,
+  initialBoxIndex: number,
+  onBoxChange?: (boxIndex: number) => void,
   convert?: (mon: Gen12Pokemon) => Gen3Intermediate | null,
   onMonOpen?: (ref: MonRef) => void,
 ): HTMLElement {
   const wrap = el('div', { class: 'patch-source-browser' });
-  // Source pane is read-only; we show box 0 and let the user navigate.
-  // Selection / cursor state lives locally — it's reference-only and
-  // doesn't drive any commit path, so we keep it module-local rather
-  // than threading a full state slice.
-  let boxIndex = 0;
+  // Source pane: boxIndex hoisted into PatchSession so re-renders
+  // triggered by patch_edit_applied don't snap the source back to box 1.
+  // Cursor stays local — it's purely visual.
+  let boxIndex = initialBoxIndex;
   let cursor = { row: 0, col: 0 };
   const renderInto = (host: HTMLElement): void => {
     host.replaceChildren();
@@ -200,6 +214,9 @@ function renderReadOnlySourceBrowser(
           const max = Math.max(0, stored + live - 1);
           boxIndex = clamp(boxIndex + delta, 0, max);
           cursor = { row: 0, col: 0 };
+          // Persist into PatchSession so a parent-driven re-render keeps
+          // this box selected.
+          if (onBoxChange) onBoxChange(boxIndex);
           renderInto(host);
         },
         onMonOpen: (ref) => {
@@ -305,7 +322,7 @@ function renderDestColumn(props: PatchModeProps): HTMLElement {
 
 function renderEditableDestBrowser(save: Gen3SaveContents, props: PatchModeProps): HTMLElement {
   const wrap = el('div', { class: 'patch-dest-browser' });
-  let boxIndex = 0;
+  let boxIndex = props.session.destBoxIndex;
   let cursor = { row: 0, col: 0 };
   const renderInto = (host: HTMLElement): void => {
     host.replaceChildren();
@@ -324,6 +341,7 @@ function renderEditableDestBrowser(save: Gen3SaveContents, props: PatchModeProps
         onBoxChange: (delta) => {
           boxIndex = clamp(boxIndex + delta, 0, 13);
           cursor = { row: 0, col: 0 };
+          if (props.onDestBoxChange) props.onDestBoxChange(boxIndex);
           renderInto(host);
         },
         onSlotClick: (slot) => {
@@ -334,10 +352,15 @@ function renderEditableDestBrowser(save: Gen3SaveContents, props: PatchModeProps
           cursor = { row, col };
           const slotData = save.pc.boxes[boxIndex]?.[slot];
           if (slotData?.kind === 'filled') {
+            // Pre-fill the modal with any pending edit for this slot, so
+            // re-opening after Apply shows the EDITED values, not the
+            // pre-edit cart bytes (which haven't been flashed yet).
+            const pending = props.session.pendingEdits.get(`${boxIndex}:${slot}`);
             openEditMonModal({
               currentSlot: slotData.bytes,
               boxIndex,
               slot,
+              ...(pending ? { pendingEdit: pending } : {}),
               onApply: (edits) => {
                 props.onEditApplied?.(boxIndex, slot, edits);
               },
